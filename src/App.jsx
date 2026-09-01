@@ -22,9 +22,15 @@ import { ReceiptModal } from './components/common/ReceiptModal';
 import { Toast } from './components/common/Toast';
 
 const MainApp = () => {
-  const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('landing'); // landing, katalog-public, sirkular, portal-nasabah, admin
-  const [adminTab, setAdminTab] = useState('dashboard'); // dashboard, setor, tarik, nasabah, transaksi, katalog, maggot, laporan
+  const { user, loading } = useAuth();
+  
+  // Public tabs (only available for non-admin visitors)
+  const [activeTab, setActiveTab] = useState('landing'); // landing, katalog-public, sirkular, portal-nasabah
+
+  // Admin tabs (persisted in localStorage so refreshing stays on the current tab)
+  const [adminTab, setAdminTabState] = useState(() => {
+    return localStorage.getItem('SI_BSDES_ADMIN_TAB') || 'dashboard';
+  });
   const [adminSidebarOpen, setAdminSidebarOpen] = useState(false);
 
   // Modals state
@@ -34,6 +40,11 @@ const MainApp = () => {
   // Query parameter state for nasabah quick search
   const [nasabahQuickQuery, setNasabahQuickQuery] = useState('');
 
+  const setAdminTab = (tab) => {
+    setAdminTabState(tab);
+    localStorage.setItem('SI_BSDES_ADMIN_TAB', tab);
+  };
+
   const handleQuickCheck = (nikOrRek) => {
     setNasabahQuickQuery(nikOrRek);
     setActiveTab('portal-nasabah');
@@ -41,23 +52,33 @@ const MainApp = () => {
   };
 
   const handleLoginSuccess = () => {
-    setActiveTab('admin');
-    setAdminTab('dashboard');
+    setLoginModalOpen(false);
   };
 
-  // If in admin view and user is authenticated
-  if (activeTab === 'admin' && user) {
+  // 1. Loading state while checking authentication session
+  if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row font-sans">
-        {/* Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-50 transform ${adminSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition duration-200 ease-in-out`}>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
+        <div className="text-center space-y-3">
+          <div className="w-8 h-8 border-2 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-slate-500 font-medium">Memuat sistem SI-BSDes...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. ADMIN VIEW (Fixed Viewport: Sidebar stays locked in position, Main content scrolls smoothly)
+  if (user) {
+    return (
+      <div className="h-screen w-screen overflow-hidden bg-slate-50 flex font-sans">
+        {/* Sidebar Container (Fixed height on desktop, Drawer on mobile) */}
+        <div className={`fixed inset-y-0 left-0 z-50 transform ${adminSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 lg:z-auto transition duration-200 ease-in-out flex-shrink-0 h-full`}>
           <AdminSidebar
             activeTab={adminTab}
             setActiveTab={(tab) => {
               setAdminTab(tab);
               setAdminSidebarOpen(false);
             }}
-            onNavigateHome={() => setActiveTab('landing')}
           />
         </div>
 
@@ -69,14 +90,14 @@ const MainApp = () => {
           />
         )}
 
-        {/* Main Admin Content */}
-        <div className="flex-1 flex flex-col min-h-screen overflow-x-hidden">
+        {/* Main Admin Content (Independently scrollable) */}
+        <div className="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden min-w-0 bg-slate-50">
           <AdminHeader
             activeTab={adminTab}
             onToggleSidebar={() => setAdminSidebarOpen(!adminSidebarOpen)}
           />
 
-          <main className="flex-1">
+          <main className="flex-1 pb-16">
             {adminTab === 'dashboard' && (
               <DashboardOverview
                 onNavigate={(t) => setAdminTab(t)}
@@ -105,7 +126,7 @@ const MainApp = () => {
     );
   }
 
-  // Public Views
+  // 3. PUBLIC CITIZEN VIEW (Only rendered when user is not authenticated)
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
       <Navbar

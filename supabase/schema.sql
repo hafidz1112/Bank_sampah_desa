@@ -66,9 +66,11 @@ CREATE TABLE log_aliran_organik (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 7. TRIGGER OTOMATIS PEMBARUAN SALDO NASABAH
+-- 7. TRIGGER OTOMATIS PEMBARUAN SALDO NASABAH (SECURITY DEFINER)
 CREATE OR REPLACE FUNCTION tr_update_saldo()
-RETURNS TRIGGER AS $$ 
+RETURNS TRIGGER 
+SECURITY DEFINER
+AS $$ 
 BEGIN     
     IF NEW.jenis = 'setor' THEN         
         UPDATE nasabah SET saldo_aktif = saldo_aktif + NEW.total_nominal WHERE id = NEW.nasabah_id;     
@@ -102,25 +104,11 @@ ALTER TABLE transaksi ENABLE ROW LEVEL SECURITY;
 ALTER TABLE detail_setoran ENABLE ROW LEVEL SECURITY;
 ALTER TABLE log_aliran_organik ENABLE ROW LEVEL SECURITY;
 
--- Kebijakan Akses:
--- Kategori Sampah dapat dibaca publik (untuk landing page & nasabah)
-CREATE POLICY "Public Read Kategori Sampah" ON kategori_sampah FOR SELECT USING (true);
-CREATE POLICY "Admin All Kategori Sampah" ON kategori_sampah FOR ALL TO authenticated USING (true);
-
--- Nasabah: Publik dapat membaca data nasabah untuk cek saldo berdasarkan NIK/No Rek
-CREATE POLICY "Public Read Nasabah" ON nasabah FOR SELECT USING (true);
-CREATE POLICY "Admin All Nasabah" ON nasabah FOR ALL TO authenticated USING (true);
-
--- Transaksi & Detail: Publik dapat membaca riwayat transaksi
-CREATE POLICY "Public Read Transaksi" ON transaksi FOR SELECT USING (true);
-CREATE POLICY "Admin All Transaksi" ON transaksi FOR ALL TO authenticated USING (true);
-
-CREATE POLICY "Public Read Detail Setoran" ON detail_setoran FOR SELECT USING (true);
-CREATE POLICY "Admin All Detail Setoran" ON detail_setoran FOR ALL TO authenticated USING (true);
-
--- Log Aliran Organik: Publik dapat melihat edukasi maggot & Admin mengelola
-CREATE POLICY "Public Read Log Organik" ON log_aliran_organik FOR SELECT USING (true);
-CREATE POLICY "Admin All Log Organik" ON log_aliran_organik FOR ALL TO authenticated USING (true);
+CREATE POLICY "Allow All Kategori Sampah" ON kategori_sampah FOR ALL TO public USING (true) WITH CHECK (true);
+CREATE POLICY "Allow All Nasabah" ON nasabah FOR ALL TO public USING (true) WITH CHECK (true);
+CREATE POLICY "Allow All Transaksi" ON transaksi FOR ALL TO public USING (true) WITH CHECK (true);
+CREATE POLICY "Allow All Detail Setoran" ON detail_setoran FOR ALL TO public USING (true) WITH CHECK (true);
+CREATE POLICY "Allow All Log Organik" ON log_aliran_organik FOR ALL TO public USING (true) WITH CHECK (true);
 
 -- ==============================================================================
 -- 10. SEED DATA AWAL (KATALOG SAMPAH & NASABAH DESA MEKARJAYA)
