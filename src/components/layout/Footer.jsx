@@ -8,11 +8,18 @@ export const Footer = ({ onOpenLogin }) => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand & Location */}
           <div className="space-y-4 md:col-span-2">
-            <div>
-              <span className="font-extrabold text-xl text-white tracking-tight">
-                SI-BSDes <span className="text-emerald-400">Mekarjaya</span>
-              </span>
-              <p className="text-xs text-slate-400 mt-0.5">Sistem Informasi Bank Sampah Desa Terintegrasi</p>
+            <div className="flex items-center gap-3">
+              <img 
+                src="/kab_kuningan.png" 
+                alt="Logo Kabupaten Kuningan" 
+                className="w-11 h-11 object-contain drop-shadow-sm flex-shrink-0"
+              />
+              <div>
+                <span className="font-extrabold text-xl text-white tracking-tight">
+                  SI-BSDes <span className="text-emerald-400">Mekarjaya</span>
+                </span>
+                <p className="text-xs text-slate-400 mt-0.5">Sistem Informasi Bank Sampah Desa Terintegrasi</p>
+              </div>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed max-w-md">
               Platform tata kelola bank sampah digital dan ekosistem ekonomi sirkular terpadu: memadukan penimbangan sampah anorganik berbayar dengan biokonversi sampah organik Maggot BSF guna mendukung efisiensi pakan bebek petelur BUMDes Mekarjaya.

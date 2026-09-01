@@ -28,12 +28,14 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
 
   return (
     <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 h-full border-r border-slate-800 select-none">
-      {/* Sidebar Header (Fixed at top) */}
-      <div className="p-5 border-b border-slate-800 flex-shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold shadow-sm shadow-emerald-500/20">
-            <Scale className="w-4 h-4" />
-          </div>
+      {/* Sidebar Header (Fixed at top with Logo Kabupaten Kuningan) */}
+      <div className="p-4 sm:p-5 border-b border-slate-800 flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <img 
+            src="/kab_kuningan.png" 
+            alt="Logo Kabupaten Kuningan" 
+            className="w-9 h-9 object-contain drop-shadow-sm flex-shrink-0"
+          />
           <div>
             <h2 className="text-sm font-extrabold text-white tracking-tight leading-none">
               SI-BSDes <span className="text-emerald-400">Admin</span>

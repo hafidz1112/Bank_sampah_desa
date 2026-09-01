@@ -15,16 +15,23 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
     <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/70 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Minimalist Aesthetic Brand */}
+          {/* Brand with Logo Kabupaten Kuningan */}
           <div
             onClick={() => handleNavClick('landing')}
-            className="cursor-pointer group flex flex-col justify-center"
+            className="cursor-pointer group flex items-center gap-3"
           >
-            <div className="text-base sm:text-lg font-bold text-slate-950 tracking-tight leading-none group-hover:text-emerald-700 transition-colors">
-              SI-BSDes Mekarjaya
-            </div>
-            <div className="text-[11px] text-slate-400 font-normal tracking-wide mt-1">
-              Bank Sampah Desa Terintegrasi
+            <img 
+              src="/kab_kuningan.png" 
+              alt="Logo Kabupaten Kuningan" 
+              className="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow-xs group-hover:scale-105 transition-transform"
+            />
+            <div className="flex flex-col justify-center">
+              <div className="text-base sm:text-lg font-bold text-slate-950 tracking-tight leading-none group-hover:text-emerald-700 transition-colors">
+                SI-BSDes Mekarjaya
+              </div>
+              <div className="text-[11px] text-slate-400 font-normal tracking-wide mt-1">
+                Bank Sampah Desa Terintegrasi
+              </div>
             </div>
           </div>
 

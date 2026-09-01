@@ -9,8 +9,24 @@ export const AuthProvider = ({ children }) => {
   const [isDemoUser, setIsDemoUser] = useState(false);
 
   useEffect(() => {
-    // Check local storage for demo session or supabase session
+    // Check session on initial load
     const checkAuth = async () => {
+      if (isSupabaseConfigured() && supabase) {
+        try {
+          const { data: { session }, error } = await supabase.auth.getSession();
+          if (session?.user && !error) {
+            setUser(session.user);
+            setIsDemoUser(false);
+            localStorage.removeItem('SI_BSDES_DEMO_ADMIN');
+            setLoading(false);
+            return;
+          }
+        } catch (err) {
+          console.warn('Supabase getSession note:', err);
+        }
+      }
+
+      // Check local storage for demo session (if offline / demo mode)
       const savedDemo = localStorage.getItem('SI_BSDES_DEMO_ADMIN');
       if (savedDemo === 'true') {
         setUser({
@@ -22,26 +38,14 @@ export const AuthProvider = ({ children }) => {
           }
         });
         setIsDemoUser(true);
-        setLoading(false);
-        return;
       }
 
-      if (isSupabaseConfigured() && supabase) {
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user) {
-            setUser(session.user);
-            setIsDemoUser(false);
-          }
-        } catch (err) {
-          console.warn('Supabase getSession error:', err);
-        }
-      }
       setLoading(false);
     };
 
     checkAuth();
 
+    // Listen to real-time auth changes from Supabase
     if (isSupabaseConfigured() && supabase) {
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
         if (session?.user) {
@@ -50,6 +54,7 @@ export const AuthProvider = ({ children }) => {
           localStorage.removeItem('SI_BSDES_DEMO_ADMIN');
         } else if (!localStorage.getItem('SI_BSDES_DEMO_ADMIN')) {
           setUser(null);
+          setIsDemoUser(false);
         }
       });
 
@@ -58,14 +63,60 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    // 1. Check if user wants demo quick login
-    if (
-      (email === 'admin@mekarjaya.desa.id' && password === 'admin123') ||
-      (!isSupabaseConfigured())
-    ) {
+    const cleanEmail = (email || '').trim();
+
+    // 1. Prioritize Supabase Real Authentication
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password: password
+        });
+
+        if (error) {
+          // If login fails on Supabase Auth, check if it's the offline demo fallback
+          if (cleanEmail === 'admin@mekarjaya.desa.id' && password === 'admin123') {
+            const demoUser = {
+              id: 'demo-admin-id',
+              email: cleanEmail,
+              user_metadata: {
+                full_name: 'Operator Bank Sampah Mekarjaya',
+                role: 'operator',
+                dusun: 'Desa Mekarjaya'
+              }
+            };
+            localStorage.setItem('SI_BSDES_DEMO_ADMIN', 'true');
+            setUser(demoUser);
+            setIsDemoUser(true);
+            return { success: true, user: demoUser };
+          }
+
+          // User-friendly error messages
+          let userMsg = error.message;
+          if (error.message.includes('Invalid login credentials')) {
+            userMsg = 'Email atau kata sandi salah. Pastikan akun sudah terdaftar dan diverifikasi.';
+          } else if (error.message.includes('Email not confirmed')) {
+            userMsg = 'Email belum dikonfirmasi. Silakan centang "Auto Confirm" di dashboard Supabase.';
+          }
+          return { success: false, error: userMsg };
+        }
+
+        if (data?.user) {
+          setUser(data.user);
+          setIsDemoUser(false);
+          localStorage.removeItem('SI_BSDES_DEMO_ADMIN');
+          return { success: true, user: data.user };
+        }
+      } catch (err) {
+        return { success: false, error: err.message || 'Gagal menghubungi server autentikasi.' };
+      }
+    }
+
+    // 2. Offline / Local Demo Fallback
+    if (cleanEmail === 'admin@mekarjaya.desa.id' && password === 'admin123') {
       const demoUser = {
         id: 'demo-admin-id',
-        email: email || 'admin@mekarjaya.desa.id',
+        email: cleanEmail,
         user_metadata: {
           full_name: 'Operator Bank Sampah Mekarjaya',
           role: 'operator',
@@ -78,35 +129,19 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: demoUser };
     }
 
-    // 2. Try Supabase Auth
-    if (isSupabaseConfigured() && supabase) {
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
-        if (error) throw error;
-        setUser(data.user);
-        setIsDemoUser(false);
-        localStorage.removeItem('SI_BSDES_DEMO_ADMIN');
-        return { success: true, user: data.user };
-      } catch (err) {
-        return { success: false, error: err.message || 'Login gagal' };
-      }
-    }
-
-    return { success: false, error: 'Kredensial tidak valid' };
+    return { success: false, error: 'Email atau kata sandi tidak valid.' };
   };
 
   const logout = async () => {
-    if (isSupabaseConfigured() && supabase && !isDemoUser) {
+    if (isSupabaseConfigured() && supabase) {
       try {
         await supabase.auth.signOut();
       } catch (err) {
-        console.error('Logout error:', err);
+        console.warn('Logout note:', err);
       }
     }
     localStorage.removeItem('SI_BSDES_DEMO_ADMIN');
+    localStorage.removeItem('SI_BSDES_ADMIN_TAB');
     setUser(null);
     setIsDemoUser(false);
   };

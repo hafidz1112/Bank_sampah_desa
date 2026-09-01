@@ -39,10 +39,12 @@ export const NasabahCardModal = ({ isOpen, onClose, nasabah }) => {
 
             {/* Header Card */}
             <div className="flex items-start justify-between relative z-10">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-white text-emerald-800 flex items-center justify-center font-black text-sm shadow-sm">
-                  MJ
-                </div>
+              <div className="flex items-center gap-2.5">
+                <img 
+                  src="/kab_kuningan.png" 
+                  alt="Logo Kabupaten Kuningan" 
+                  className="w-9 h-9 object-contain drop-shadow-sm"
+                />
                 <div>
                   <h4 className="font-extrabold text-sm tracking-tight text-white leading-none">
                     BANK SAMPAH MEKARJAYA
