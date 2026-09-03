@@ -29,6 +29,14 @@ export const NasabahManagement = () => {
   const [editingNasabah, setEditingNasabah] = useState(null);
   const [cardModalNasabah, setCardModalNasabah] = useState(null);
 
+  const matchDusunName = (itemDusun, filterVal) => {
+    if (!filterVal || filterVal === 'all') return true;
+    if (!itemDusun) return false;
+    const cleanItem = String(itemDusun).toLowerCase().replace('dusun ', '').trim();
+    const cleanFilter = String(filterVal).toLowerCase().replace('dusun ', '').trim();
+    return cleanItem === cleanFilter;
+  };
+
   // Filtered List
   const filteredNasabah = nasabahList.filter(n => {
     const matchSearch =
@@ -36,7 +44,7 @@ export const NasabahManagement = () => {
       n.nik.includes(searchQuery) ||
       n.no_rekening.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchDusun = selectedDusun === 'all' || n.dusun === selectedDusun;
+    const matchDusun = matchDusunName(n.dusun, selectedDusun);
     return matchSearch && matchDusun;
   });
 
@@ -149,7 +157,7 @@ export const NasabahManagement = () => {
                   : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
               }`}
             >
-              {d.replace('Dusun ', '')} ({nasabahList.filter(n => n.dusun === d).length})
+              {d.replace('Dusun ', '')} ({nasabahList.filter(n => matchDusunName(n.dusun, d)).length})
             </button>
           ))}
         </div>

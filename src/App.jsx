@@ -15,7 +15,6 @@ import { TransaksiTarik } from './components/admin/TransaksiTarik';
 import { NasabahManagement } from './components/admin/NasabahManagement';
 import { RiwayatTransaksi } from './components/admin/RiwayatTransaksi';
 import { KatalogManagement } from './components/admin/KatalogManagement';
-import { LogAliranOrganik } from './components/admin/LogAliranOrganik';
 import { LaporanEkspor } from './components/admin/LaporanEkspor';
 import { LoginModal } from './components/auth/LoginModal';
 import { ReceiptModal } from './components/common/ReceiptModal';
@@ -109,7 +108,6 @@ const MainApp = () => {
             {adminTab === 'nasabah' && <NasabahManagement />}
             {adminTab === 'transaksi' && <RiwayatTransaksi />}
             {adminTab === 'katalog' && <KatalogManagement />}
-            {adminTab === 'maggot' && <LogAliranOrganik />}
             {adminTab === 'laporan' && <LaporanEkspor />}
           </main>
         </div>

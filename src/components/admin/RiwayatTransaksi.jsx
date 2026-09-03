@@ -17,6 +17,7 @@ import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah, formatWeight, formatDate } from '../../lib/utils';
 import { exportToCSV, exportTransaksiPDF } from '../../lib/exportUtils';
 import { ReceiptModal } from '../common/ReceiptModal';
+import { Select } from '../ui/Select';
 
 export const RiwayatTransaksi = () => {
   const { transaksiList, nasabahList } = useBankSampah();
@@ -164,15 +165,18 @@ export const RiwayatTransaksi = () => {
           </div>
 
           {/* Date Filter */}
-          <select
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            className="p-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
-          >
-            <option value="all">Semua Waktu</option>
-            <option value="today">Hari Ini</option>
-            <option value="this-month">Bulan Ini</option>
-          </select>
+          <div className="w-36">
+            <Select
+              value={dateFilter}
+              onChange={(val) => setDateFilter(val)}
+              options={[
+                { value: 'all', label: 'Semua Waktu' },
+                { value: 'today', label: 'Hari Ini' },
+                { value: 'this-month', label: 'Bulan Ini' }
+              ]}
+              size="sm"
+            />
+          </div>
         </div>
       </div>
 

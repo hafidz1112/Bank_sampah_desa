@@ -11,10 +11,11 @@ import {
   Scale,
   Egg,
   MapPin,
-  ChevronRight
+  ChevronRight,
+  ExternalLink
 } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
-import { formatRupiah, formatWeight } from '../../lib/utils';
+import { formatRupiah, formatWeight, MAGGOT_MONITORING_URL } from '../../lib/utils';
 
 export const LandingPage = ({ onNavigate, onQuickCheck }) => {
   const { getStats, katalogList } = useBankSampah();
@@ -179,17 +180,17 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
           {/* Organik ke Maggot BSF */}
           <div className="bg-white rounded-2xl p-4 sm:p-5 lg:p-6 border border-amber-100/90 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider line-clamp-1">Organik Maggot</span>
+              <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider line-clamp-1">Suplai Organik</span>
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-4 h-4" />
+                <Leaf className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-3">
               <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-slate-900 font-sans tracking-tight">
-                {formatWeight(stats.totalSampahOrganikLogKg)}
+                {formatWeight(stats.totalSampahOrganikKg || stats.totalSampahOrganikLogKg || 0)}
               </div>
               <p className="mt-1 text-[10px] sm:text-xs text-amber-700 font-semibold flex items-center gap-1 line-clamp-1">
-                <Egg className="w-3 h-3 flex-shrink-0" /> Pakan Bebek BUMDes
+                <Sparkles className="w-3 h-3 flex-shrink-0" /> Diteruskan ke Tim Maggot
               </p>
             </div>
           </div>
@@ -321,14 +322,23 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                 <button
                   onClick={() => onNavigate('sirkular')}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-sm transition min-h-[42px]"
                 >
-                  <span>Lihat Diagram Alur Sirkular Lengkap</span>
+                  <span>Edukasi Alur Sirkular</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
+                <a
+                  href={MAGGOT_MONITORING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-amber-50 text-amber-950 font-bold text-xs sm:text-sm shadow-sm border border-amber-200 transition min-h-[42px] group"
+                >
+                  <span>Web Monitoring Maggot</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-amber-700 group-hover:translate-x-0.5 transition-transform" />
+                </a>
               </div>
             </div>
 

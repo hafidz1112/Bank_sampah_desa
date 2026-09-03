@@ -1,5 +1,6 @@
 import React from 'react';
-import { MapPin, Heart, BookOpen, Shield, ArrowRight } from 'lucide-react';
+import { MapPin, Heart, BookOpen, Shield, ArrowRight, ExternalLink } from 'lucide-react';
+import { MAGGOT_MONITORING_URL } from '../../lib/utils';
 
 export const Footer = ({ onOpenLogin }) => {
   return (
@@ -44,10 +45,12 @@ export const Footer = ({ onOpenLogin }) => {
               Program Kerja KKM
             </h4>
             <ul className="space-y-1.5 sm:space-y-2 text-xs text-slate-400">
-              <li>• KKM Universitas Muhammadiyah Cirebon (UMC) 2026</li>
+              <li>• KKM Universitas Muhammadiyah Cirebon 2026</li>
               <li>• Program Studi Teknik Informatika</li>
-              <li>• Lokasi: Desa Mekarjaya, Kec. Ciawigebang, Kab. Kuningan</li>
-              <li>• Fokus: Digitalisasi Desa & Circular Economy</li>
+              <li>• Lokasi: Desa Mekarjaya, Ciawigebang</li>
+              <li>
+                • Mitra: <a href={MAGGOT_MONITORING_URL} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 underline font-semibold">Web Monitoring Maggot ↗</a>
+              </li>
             </ul>
           </div>
 

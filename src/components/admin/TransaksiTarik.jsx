@@ -12,6 +12,7 @@ import {
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah } from '../../lib/utils';
 import { ReceiptModal } from '../common/ReceiptModal';
+import { Select } from '../ui/Select';
 
 export const TransaksiTarik = () => {
   const { nasabahList, processPenarikan } = useBankSampah();
@@ -28,6 +29,13 @@ export const TransaksiTarik = () => {
 
   const selectedNasabah = nasabahList.find(n => n.id === Number(selectedNasabahId));
   const withdrawAmount = parseFloat(nominal) || 0;
+
+  const nasabahOptions = nasabahList.map(n => ({
+    value: n.id,
+    label: `${n.nama} [${n.no_rekening}]`,
+    sublabel: `${n.dusun} • Saldo: ${formatRupiah(n.saldo_aktif)}`,
+    searchValue: `${n.nama} ${n.no_rekening} ${n.nik} ${n.dusun}`
+  }));
   const currentSaldo = selectedNasabah ? (parseFloat(selectedNasabah.saldo_aktif) || 0) : 0;
   const remainingSaldo = currentSaldo - withdrawAmount;
   const isInsufficient = selectedNasabah && withdrawAmount > currentSaldo;
@@ -102,19 +110,15 @@ export const TransaksiTarik = () => {
             1. Pilih Nasabah Penarik
           </label>
 
-          <select
-            required
+          <Select
             value={selectedNasabahId}
-            onChange={(e) => setSelectedNasabahId(e.target.value)}
-            className="w-full p-3 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50"
-          >
-            <option value="">-- Pilih Nasabah / Rekening --</option>
-            {nasabahList.map(n => (
-              <option key={n.id} value={n.id}>
-                {n.nama} [{n.no_rekening}] - {n.dusun} (Saldo: {formatRupiah(n.saldo_aktif)})
-              </option>
-            ))}
-          </select>
+            onChange={(val) => setSelectedNasabahId(val)}
+            options={nasabahOptions}
+            placeholder="-- Pilih Nasabah / Rekening --"
+            searchable={true}
+            searchPlaceholder="Ketik nama, dusun, atau no rekening..."
+            size="md"
+          />
 
           {/* Balance card */}
           {selectedNasabah && (

@@ -6,11 +6,12 @@ import {
   Wallet, 
   Receipt, 
   Tag, 
-  Sparkles, 
   FileSpreadsheet, 
-  LogOut 
+  LogOut,
+  ExternalLink
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { MAGGOT_MONITORING_URL } from '../../lib/utils';
 
 export const AdminSidebar = ({ activeTab, setActiveTab }) => {
   const { logout, user } = useAuth();
@@ -22,7 +23,6 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
     { id: 'nasabah', label: 'Data Nasabah Desa', icon: Users },
     { id: 'transaksi', label: 'Buku Jurnal Mutasi', icon: Receipt },
     { id: 'katalog', label: 'Katalog & Tarif Sampah', icon: Tag },
-    { id: 'maggot', label: 'Log Sirkular Maggot BSF', icon: Sparkles, badge: 'Sirkular' },
     { id: 'laporan', label: 'Laporan & Ekspor Data', icon: FileSpreadsheet },
   ];
 
@@ -77,6 +77,27 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
             </button>
           );
         })}
+
+        {/* Sinergi Mitra KKM - Web Rekan */}
+        <div className="pt-4 mt-3 border-t border-slate-800">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 pb-2">
+            Sinergi KKM UMC 2026
+          </div>
+          <a
+            href={MAGGOT_MONITORING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-amber-300 hover:text-white bg-amber-950/20 hover:bg-amber-900/40 border border-amber-500/20 transition group"
+          >
+            <div className="flex items-center gap-2.5">
+              <ExternalLink className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+              <span>Web Monitoring Maggot</span>
+            </div>
+            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300">
+              Mitra
+            </span>
+          </a>
+        </div>
       </nav>
 
       {/* User Info & Logout Button (Pinned at bottom) */}

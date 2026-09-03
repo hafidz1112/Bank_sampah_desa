@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Tag, Plus, Edit, Trash2, CheckCircle2, XCircle, Search, DollarSign, X, AlertCircle } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah } from '../../lib/utils';
+import { Select } from '../ui/Select';
 
 export const KatalogManagement = () => {
   const { katalogList, addKategori, updateKategori, deleteKategori, toggleKategoriActive } = useBankSampah();
@@ -267,14 +268,15 @@ export const KatalogManagement = () => {
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Tipe Sampah *
                   </label>
-                  <select
+                  <Select
                     value={formData.tipe}
-                    onChange={(e) => setFormData({ ...formData, tipe: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  >
-                    <option value="anorganik">Anorganik</option>
-                    <option value="organik">Organik (Pakan Maggot)</option>
-                  </select>
+                    onChange={(val) => setFormData({ ...formData, tipe: val })}
+                    options={[
+                      { value: 'anorganik', label: 'Anorganik', badge: 'ANORGANIK' },
+                      { value: 'organik', label: 'Organik (Pakan Maggot)', badge: 'ORGANIK' }
+                    ]}
+                    size="sm"
+                  />
                 </div>
 
                 <div>

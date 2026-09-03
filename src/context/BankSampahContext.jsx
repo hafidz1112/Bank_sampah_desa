@@ -352,27 +352,6 @@ export const BankSampahProvider = ({ children }) => {
         syncLocalNasabah(updatedNasabahList);
       }
 
-      // Check if organic waste was deposited, optionally log to maggot biopond
-      const organicItems = items.filter(it => {
-        const kat = katalogList.find(k => k.id === it.kategori_id);
-        return kat && kat.tipe === 'organik';
-      });
-
-      if (organicItems.length > 0) {
-        const organicKg = organicItems.reduce((acc, curr) => acc + (parseFloat(curr.berat_kg) || 0), 0);
-        if (organicKg > 0) {
-          // Auto log to maggot aliran organik
-          addLogOrganik({
-            tanggal: new Date().toISOString().slice(0, 10),
-            volume_sampah_organik_kg: organicKg,
-            tujuan_biopond: 'Biopond Maggot Unit 1 (Kandang Utama)',
-            est_maggot_panen_kg: (organicKg * 0.2).toFixed(2), // 20% conversion standard
-            target_alokasi: 'Pakan Bebek Petelur BUMDes Mekarjaya',
-            keterangan: `Dari Setoran ${kodeTransaksi} (${nasabah.nama})`
-          }, false);
-        }
-      }
-
       syncLocalTransaksi([createdTx, ...transaksiList]);
       triggerConfetti();
       showToast(`Setoran ${kodeTransaksi} berhasil dicatat! Saldo ${nasabah.nama} bertambah.`, 'success');
@@ -519,8 +498,32 @@ export const BankSampahProvider = ({ children }) => {
     const totalUangTarik = totalPenarikanTx.reduce((acc, t) => acc + (parseFloat(t.total_nominal) || 0), 0);
     const totalBeratSampahKg = totalSetoranTx.reduce((acc, t) => acc + (parseFloat(t.total_berat_kg) || 0), 0);
 
-    const totalSampahOrganikLogKg = logOrganikList.reduce((acc, l) => acc + (parseFloat(l.volume_sampah_organik_kg) || 0), 0);
-    const totalEstMaggotKg = logOrganikList.reduce((acc, l) => acc + (parseFloat(l.est_maggot_panen_kg) || 0), 0);
+    // Calculate organic vs anorganic waste from setoran transactions
+    let totalSampahOrganikKg = 0;
+    let totalSampahAnorganikKg = 0;
+
+    totalSetoranTx.forEach(t => {
+      if (t.items && Array.isArray(t.items) && t.items.length > 0) {
+        t.items.forEach(it => {
+          const kat = katalogList.find(k => k.id === it.kategori_id);
+          const w = parseFloat(it.berat_kg) || 0;
+          if (kat && kat.tipe === 'organik') {
+            totalSampahOrganikKg += w;
+          } else {
+            totalSampahAnorganikKg += w;
+          }
+        });
+      }
+    });
+
+    // Fallback if detail items not populated in legacy data:
+    if (totalSampahOrganikKg === 0 && totalSampahAnorganikKg === 0 && totalBeratSampahKg > 0) {
+      totalSampahOrganikKg = totalBeratSampahKg * 0.35;
+      totalSampahAnorganikKg = totalBeratSampahKg * 0.65;
+    }
+
+    // Estimated maggot conversion (~20% standard bioconversion factor) for educational insight
+    const totalEstMaggotKg = totalSampahOrganikKg * 0.20;
 
     // Dusun distribution
     const dusunStats = {
@@ -529,11 +532,31 @@ export const BankSampahProvider = ({ children }) => {
       'Dusun Cimuda': { count: 0, saldo: 0, weight: 0 }
     };
 
+    const normalizeDusunName = (val) => {
+      if (!val) return 'Dusun Cimenang';
+      const clean = String(val).trim().toLowerCase();
+      if (clean.includes('cimenang')) return 'Dusun Cimenang';
+      if (clean.includes('ciganda')) return 'Dusun Ciganda';
+      if (clean.includes('cimuda')) return 'Dusun Cimuda';
+      return clean.startsWith('dusun ') ? val : `Dusun ${val}`;
+    };
+
     nasabahList.forEach(n => {
-      const dusunKey = n.dusun?.trim() || 'Dusun Cimenang';
-      if (dusunStats[dusunKey]) {
-        dusunStats[dusunKey].count += 1;
-        dusunStats[dusunKey].saldo += (parseFloat(n.saldo_aktif) || 0);
+      const targetKey = normalizeDusunName(n.dusun);
+      if (dusunStats[targetKey]) {
+        dusunStats[targetKey].count += 1;
+        dusunStats[targetKey].saldo += (parseFloat(n.saldo_aktif) || 0);
+      }
+    });
+
+    // Compute setoran weight per dusun
+    totalSetoranTx.forEach(t => {
+      const foundNasabah = nasabahList.find(n => n.id === t.nasabah_id);
+      if (foundNasabah) {
+        const targetKey = normalizeDusunName(foundNasabah.dusun);
+        if (dusunStats[targetKey]) {
+          dusunStats[targetKey].weight += (parseFloat(t.total_berat_kg) || 0);
+        }
       }
     });
 
@@ -543,7 +566,9 @@ export const BankSampahProvider = ({ children }) => {
       totalUangSetor,
       totalUangTarik,
       totalBeratSampahKg,
-      totalSampahOrganikLogKg,
+      totalSampahOrganikKg,
+      totalSampahAnorganikKg,
+      totalSampahOrganikLogKg: totalSampahOrganikKg, // Alias for backward compatibility
       totalEstMaggotKg,
       totalTransaksiCount: transaksiList.length,
       dusunStats

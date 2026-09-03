@@ -14,7 +14,6 @@ export const AdminHeader = ({ onToggleSidebar, activeTab }) => {
     nasabah: 'Manajemen Data Nasabah Desa Mekarjaya',
     transaksi: 'Buku Jurnal Mutasi & Transaksi Lengkap',
     katalog: 'Manajemen Katalog Kategori & Tarif Sampah',
-    maggot: 'Log Sirkular Aliran Organik ke Biopond Maggot BSF',
     laporan: 'Laporan Rekapitulasi & Ekspor Dokumen',
   };
 

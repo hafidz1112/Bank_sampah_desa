@@ -16,6 +16,7 @@ import {
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah, formatWeight } from '../../lib/utils';
 import { ReceiptModal } from '../common/ReceiptModal';
+import { Select } from '../ui/Select';
 
 export const TransaksiSetor = () => {
   const { nasabahList, katalogList, processSetoran } = useBankSampah();
@@ -45,6 +46,20 @@ export const TransaksiSetor = () => {
     n.nik.includes(searchNasabahQuery) ||
     n.no_rekening.toLowerCase().includes(searchNasabahQuery.toLowerCase())
   );
+
+  const nasabahOptions = nasabahList.map(n => ({
+    value: n.id,
+    label: `${n.nama} [${n.no_rekening}]`,
+    sublabel: `${n.dusun} • Saldo Aktif: ${formatRupiah(n.saldo_aktif)}`,
+    searchValue: `${n.nama} ${n.no_rekening} ${n.nik} ${n.dusun}`
+  }));
+
+  const kategoriOptions = activeKatalog.map(k => ({
+    value: k.id,
+    label: `${k.nama_kategori} (${formatRupiah(k.harga_per_kg)}/kg)`,
+    badge: k.tipe.toUpperCase(),
+    sublabel: k.deskripsi || ''
+  }));
 
   // Handle Item Row changes
   const handleKategoriChange = (index, katId) => {
@@ -165,19 +180,15 @@ export const TransaksiSetor = () => {
               <label className="block text-xs font-bold text-slate-700 mb-1.5">
                 Cari / Pilih Nasabah Desa *
               </label>
-              <select
-                required
+              <Select
                 value={selectedNasabahId}
-                onChange={(e) => setSelectedNasabahId(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50"
-              >
-                <option value="">-- Pilih Nama Warga / No Rekening --</option>
-                {nasabahList.map(n => (
-                  <option key={n.id} value={n.id}>
-                    {n.nama} [{n.no_rekening}] - {n.dusun} (Saldo: {formatRupiah(n.saldo_aktif)})
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setSelectedNasabahId(val)}
+                options={nasabahOptions}
+                placeholder="-- Pilih Nama Warga / No Rekening --"
+                searchable={true}
+                searchPlaceholder="Ketik nama, dusun, atau no rekening..."
+                size="md"
+              />
             </div>
 
             {/* Quick Nasabah Preview Card */}
@@ -239,17 +250,13 @@ export const TransaksiSetor = () => {
                     <label className="block text-[11px] font-bold text-slate-600 mb-1">
                       Kategori Sampah #{idx + 1}
                     </label>
-                    <select
+                    <Select
                       value={row.kategori_id}
-                      onChange={(e) => handleKategoriChange(idx, e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
-                    >
-                      {activeKatalog.map(k => (
-                        <option key={k.id} value={k.id}>
-                          [{k.tipe.toUpperCase()}] {k.nama_kategori} - {formatRupiah(k.harga_per_kg)}/kg
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(val) => handleKategoriChange(idx, val)}
+                      options={kategoriOptions}
+                      placeholder="Pilih Kategori Sampah..."
+                      size="sm"
+                    />
                   </div>
 
                   {/* Weight Input (3 cols) */}

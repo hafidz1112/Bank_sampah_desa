@@ -13,17 +13,18 @@ import {
   ChevronRight, 
   Calendar,
   Egg,
-  Leaf
+  Leaf,
+  ExternalLink,
+  Info
 } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
-import { formatRupiah, formatWeight, formatDate } from '../../lib/utils';
+import { formatRupiah, formatWeight, formatDate, MAGGOT_MONITORING_URL } from '../../lib/utils';
 
 export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
-  const { getStats, transaksiList, nasabahList, logOrganikList } = useBankSampah();
+  const { getStats, transaksiList, nasabahList } = useBankSampah();
   const stats = getStats();
 
-  const recentTx = transaksiList.slice(0, 5);
-  const recentLogs = logOrganikList.slice(0, 4);
+  const recentTx = transaksiList.slice(0, 6);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-8">
@@ -37,7 +38,7 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
             Selamat Bertugas di SI-BSDes Mekarjaya!
           </h2>
           <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-            Kelola penimbangan sampah harian warga, mutasi saldo tabungan, dan pasokan sampah organik ke unit biopond Maggot BSF secara terintegrasi.
+            Kelola penimbangan sampah harian warga, pembukuan saldo tabungan rupiah, dan penyediaan data suplai sampah organik desa secara terintegrasi.
           </p>
         </div>
 
@@ -116,16 +117,16 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Organik ke Maggot BSF</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Suplai Sampah Organik</span>
             <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Sparkles className="w-5 h-5" />
+              <Leaf className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 text-2xl font-extrabold text-amber-700 font-sans">
-            {formatWeight(stats.totalSampahOrganikLogKg)}
+          <div className="mt-3 text-2xl font-extrabold text-amber-800 font-sans">
+            {formatWeight(stats.totalSampahOrganikKg || 0)}
           </div>
           <div className="mt-1 text-xs text-amber-700 font-semibold flex items-center gap-1">
-            <Egg className="w-3.5 h-3.5" /> Pakan Bebek BUMDes
+            <Sparkles className="w-3.5 h-3.5" /> Dihimpun untuk Pakan Maggot
           </div>
         </div>
       </div>
@@ -219,60 +220,74 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
           </div>
         </div>
 
-        {/* Maggot Log Feed & Quick Summary (5 Cols) */}
-        <div className="lg:col-span-5 bg-amber-50/50 rounded-3xl p-6 border border-amber-200/70 shadow-sm space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
-                <Sparkles className="w-4 h-4 text-amber-700" />
+        {/* Sinergi Budidaya Maggot & Komposisi Sampah (5 Cols) */}
+        <div className="lg:col-span-5 bg-gradient-to-br from-amber-50 via-orange-50/40 to-emerald-50/50 rounded-3xl p-6 border border-amber-200/80 shadow-sm space-y-4 flex flex-col justify-between">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+                  <Sparkles className="w-4 h-4 text-amber-700" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-slate-900">Sinergi Sampah Organik</h3>
+                  <p className="text-xs text-amber-800">Diteruskan ke Unit Maggot BSF Desa</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold text-base text-slate-900">Biopond Maggot BSF</h3>
-                <p className="text-xs text-amber-800">Sirkular Sampah Organik Desa</p>
-              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-200/60 text-amber-900 border border-amber-300">
+                Sistem Terpisah
+              </span>
             </div>
-            <button
-              onClick={() => onNavigate('maggot')}
-              className="text-xs font-bold text-amber-800 hover:text-amber-900 flex items-center gap-1"
-            >
-              <span>Kelola Log</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
 
-          <div className="p-4 bg-white rounded-2xl border border-amber-100 shadow-xs space-y-2">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-500">Total Pasokan Organik:</span>
-              <span className="font-bold text-slate-800">{formatWeight(stats.totalSampahOrganikLogKg)}</span>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-500">Hasil Panen Maggot:</span>
-              <span className="font-bold text-amber-700">~{formatWeight(stats.totalEstMaggotKg)}</span>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-500">Tujuan Pakan Utama:</span>
-              <span className="font-semibold text-emerald-800">Bebek Petelur BUMDes</span>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              Pengiriman Organik Terbaru
-            </span>
-            <div className="space-y-2">
-              {recentLogs.map((log) => (
-                <div key={log.id} className="p-3 bg-white rounded-xl border border-amber-100 text-xs flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-slate-800">{log.tujuan_biopond.split('(')[0]}</div>
-                    <div className="text-[10px] text-slate-400">{formatDate(log.tanggal, false)}</div>
+            {/* Komposisi Sampah Masuk Bank Sampah */}
+            <div className="p-4 bg-white rounded-2xl border border-amber-100 shadow-xs space-y-3">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+                Komposisi Sampah Terkumpul di Pos
+              </span>
+              <div className="space-y-2">
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600 font-medium">Sampah Anorganik (Kardus/Plastik/Logam)</span>
+                    <span className="font-bold text-slate-900 font-sans">{formatWeight(stats.totalSampahAnorganikKg || (stats.totalBeratSampahKg * 0.7))}</span>
                   </div>
-                  <div className="text-right">
-                    <div className="font-extrabold text-amber-800 font-sans">{formatWeight(log.volume_sampah_organik_kg)}</div>
-                    <div className="text-[10px] text-emerald-600">Panen ~{formatWeight(log.est_maggot_panen_kg)}</div>
+                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div className="bg-sky-500 h-full rounded-full" style={{ width: '70%' }} />
                   </div>
                 </div>
-              ))}
+
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-emerald-800 font-medium">Sampah Organik (Pakan Biopond)</span>
+                    <span className="font-bold text-emerald-800 font-sans">{formatWeight(stats.totalSampahOrganikKg || (stats.totalBeratSampahKg * 0.3))}</span>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div className="bg-emerald-500 h-full rounded-full" style={{ width: '30%' }} />
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {/* Info Box Rekan KKM */}
+            <div className="p-4 bg-amber-100/50 rounded-2xl border border-amber-200/60 text-xs text-amber-900 space-y-2">
+              <div className="flex items-center gap-1.5 font-bold">
+                <Info className="w-4 h-4 text-amber-700 flex-shrink-0" />
+                <span>Monitoring Budidaya Maggot BSF</span>
+              </div>
+              <p className="text-[11px] text-amber-800/90 leading-relaxed">
+                Manajemen biopond, pemantauan sensor suhu/kelembapan, konversi larva, dan jadwal alokasi pakan bebek petelur BUMDes dikelola di platform website khusus rekan KKM.
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <a
+              href={MAGGOT_MONITORING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md shadow-amber-600/20 transition flex items-center justify-center gap-2 group"
+            >
+              <span>Buka Website Monitoring Maggot</span>
+              <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </a>
           </div>
         </div>
       </div>

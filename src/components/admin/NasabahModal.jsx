@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, UserPlus, Save, AlertCircle } from 'lucide-react';
 import { DUSUN_LIST, generateNoRekening } from '../../lib/utils';
 import { useBankSampah } from '../../context/BankSampahContext';
+import { Select } from '../ui/Select';
 
 export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
   const { addNasabah, updateNasabah, nasabahList } = useBankSampah();
@@ -20,11 +21,17 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
 
   useEffect(() => {
     if (editingNasabah) {
+      const rawDusun = editingNasabah.dusun || '';
+      let selectedDusun = 'Dusun Cimenang';
+      if (rawDusun.toLowerCase().includes('ciganda')) selectedDusun = 'Dusun Ciganda';
+      else if (rawDusun.toLowerCase().includes('cimuda')) selectedDusun = 'Dusun Cimuda';
+      else if (rawDusun.toLowerCase().includes('cimenang')) selectedDusun = 'Dusun Cimenang';
+
       setFormData({
         nama: editingNasabah.nama || '',
         nik: editingNasabah.nik || '',
         no_rekening: editingNasabah.no_rekening || '',
-        dusun: editingNasabah.dusun || 'Dusun Cimenang',
+        dusun: selectedDusun,
         rw: editingNasabah.rw || '01',
         rt: editingNasabah.rt || '01',
         no_hp: editingNasabah.no_hp || '',
@@ -167,15 +174,12 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Wilayah Dusun *
               </label>
-              <select
+              <Select
                 value={formData.dusun}
-                onChange={(e) => setFormData({ ...formData, dusun: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              >
-                {DUSUN_LIST.map((d) => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
-              </select>
+                onChange={(val) => setFormData({ ...formData, dusun: val })}
+                options={DUSUN_LIST.map((d) => ({ value: d, label: d }))}
+                size="sm"
+              />
             </div>
 
             <div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, Filter, Calculator, Scale, Info, CheckCircle2, Tag } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah } from '../../lib/utils';
+import { Select } from '../ui/Select';
 
 export const KatalogHargaPublic = () => {
   const { katalogList } = useBankSampah();
@@ -69,17 +70,16 @@ export const KatalogHargaPublic = () => {
                 <label className="block text-[11px] sm:text-xs font-bold text-slate-700 mb-1">
                   Pilih Kategori Sampah
                 </label>
-                <select
+                <Select
                   value={calcKategoriId}
-                  onChange={(e) => setCalcKategoriId(Number(e.target.value))}
-                  className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium bg-white"
-                >
-                  {katalogList.filter(k => k.is_active).map(k => (
-                    <option key={k.id} value={k.id}>
-                      [{k.tipe.toUpperCase()}] {k.nama_kategori} ({formatRupiah(k.harga_per_kg)}/kg)
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => setCalcKategoriId(Number(val))}
+                  options={katalogList.filter(k => k.is_active).map(k => ({
+                    value: k.id,
+                    label: `${k.nama_kategori} (${formatRupiah(k.harga_per_kg)}/kg)`,
+                    badge: k.tipe.toUpperCase()
+                  }))}
+                  size="sm"
+                />
               </div>
 
               <div>
@@ -166,15 +166,18 @@ export const KatalogHargaPublic = () => {
             <span className="text-[11px] sm:text-xs text-slate-500 font-semibold flex items-center gap-1">
               <Filter className="w-3.5 h-3.5" /> Urutkan:
             </span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="text-xs p-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-slate-700 bg-white"
-            >
-              <option value="default">Bawaan</option>
-              <option value="price-desc">Harga Tertinggi</option>
-              <option value="price-asc">Harga Terendah</option>
-            </select>
+            <div className="w-36">
+              <Select
+                value={sortBy}
+                onChange={(val) => setSortBy(val)}
+                options={[
+                  { value: 'default', label: 'Bawaan' },
+                  { value: 'price-desc', label: 'Harga Tertinggi' },
+                  { value: 'price-asc', label: 'Harga Terendah' }
+                ]}
+                size="sm"
+              />
+            </div>
           </div>
         </div>
       </div>

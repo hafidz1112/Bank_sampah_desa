@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   FileSpreadsheet, 
   Download, 
@@ -8,29 +8,24 @@ import {
   FileText, 
   Users, 
   Receipt, 
-  Sparkles,
+  Tag,
   BookOpen,
   Award,
   Layers
 } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah, formatWeight } from '../../lib/utils';
-import { exportNasabahPDF, exportTransaksiPDF, exportLogMaggotPDF, exportToCSV } from '../../lib/exportUtils';
+import { exportNasabahPDF, exportTransaksiPDF, exportToCSV } from '../../lib/exportUtils';
 
 export const LaporanEkspor = () => {
-  const { nasabahList, transaksiList, logOrganikList, getStats } = useBankSampah();
+  const { nasabahList, transaksiList, katalogList, getStats } = useBankSampah();
   const stats = getStats();
-
-  const [selectedReportType, setSelectedReportType] = useState('all');
 
   const handleExportAllPDF = () => {
     exportTransaksiPDF(transaksiList, 'Laporan Lengkap Transaksi KKM UMC 2026');
     setTimeout(() => {
       exportNasabahPDF(nasabahList);
-    }, 500);
-    setTimeout(() => {
-      exportLogMaggotPDF(logOrganikList);
-    }, 1000);
+    }, 600);
   };
 
   return (
@@ -85,8 +80,8 @@ export const LaporanEkspor = () => {
             <div className="text-xl font-extrabold text-emerald-300 mt-1">{formatRupiah(stats.totalSaldoAktif)}</div>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Organik ke Maggot</span>
-            <div className="text-xl font-extrabold text-amber-300 mt-1">{formatWeight(stats.totalSampahOrganikLogKg)}</div>
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Suplai Sampah Organik</span>
+            <div className="text-xl font-extrabold text-amber-300 mt-1">{formatWeight(stats.totalSampahOrganikKg || 0)}</div>
           </div>
         </div>
       </div>
@@ -165,39 +160,35 @@ export const LaporanEkspor = () => {
           </div>
         </div>
 
-        {/* Report 3: Sirkular Maggot */}
+        {/* Report 3: Katalog & Tarif Sampah */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition">
           <div className="space-y-2">
             <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-amber-600" />
+              <Tag className="w-5 h-5 text-amber-600" />
             </div>
             <h4 className="font-extrabold text-base text-slate-900">
-              Log Sirkular Maggot BSF
+              Katalog & Tarif Sampah Resmi
             </h4>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Laporan aliran limbah organik desa yang dikonversi menjadi maggot fresh untuk pakan bebek petelur BUMDes Mekarjaya.
+              Daftar tarif beli sampah anorganik dan organik per kilogram sebagai acuan timbangan resmi warga Desa Mekarjaya.
             </p>
           </div>
 
           <div className="space-y-2 pt-2 border-t border-slate-100">
             <button
-              onClick={() => exportLogMaggotPDF(logOrganikList)}
+              onClick={() => {
+                const headers = ['Nama Kategori', 'Tipe Sampah', 'Tarif per Kg (Rp)', 'Status', 'Petunjuk Pilah'];
+                const rows = katalogList.map(k => [k.nama_kategori, k.tipe.toUpperCase(), k.harga_per_kg, k.is_active ? 'Aktif' : 'Nonaktif', k.deskripsi || '-']);
+                exportToCSV('Katalog_Tarif_Sampah_Mekarjaya', rows, headers);
+              }}
               className="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" />
-              Unduh PDF Sirkular Maggot
+              Unduh Katalog & Tarif (CSV)
             </button>
-            <button
-              onClick={() => {
-                const headers = ['Tanggal', 'Volume Organik (Kg)', 'Tujuan Biopond', 'Est Maggot (Kg)', 'Target Alokasi', 'Keterangan'];
-                const rows = logOrganikList.map(l => [l.tanggal, l.volume_sampah_organik_kg, l.tujuan_biopond, l.est_maggot_panen_kg, l.target_alokasi, l.keterangan]);
-                exportToCSV('Log_Sirkular_Maggot_Mekarjaya', rows, headers);
-              }}
-              className="w-full py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold text-xs transition flex items-center justify-center gap-1.5"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-amber-600" />
-              Unduh Format Excel (CSV)
-            </button>
+            <div className="p-2 rounded-xl bg-slate-50 text-[11px] text-slate-500 text-center font-medium border border-slate-100">
+              {katalogList.length} Jenis Kategori Terdaftar
+            </div>
           </div>
         </div>
       </div>

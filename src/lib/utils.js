@@ -66,3 +66,7 @@ export const BIOPOND_UNITS = [
   'Biopond Maggot Unit 3 (Dusun Cimenang)',
   'Biopond Maggot Unit 4 (Dusun Cimuda)'
 ];
+
+// URL Website Rekan KKM untuk Monitoring Budidaya Maggot BSF
+export const MAGGOT_MONITORING_URL = 'https://monitoring-maggot-mekarjaya.vercel.app';
+
