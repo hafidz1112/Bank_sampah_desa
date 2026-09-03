@@ -7,6 +7,7 @@ import { LandingPage } from './components/public/LandingPage';
 import { KatalogHargaPublic } from './components/public/KatalogHargaPublic';
 import { AlurSirkularMaggot } from './components/public/AlurSirkularMaggot';
 import { NasabahPortal } from './components/public/NasabahPortal';
+import { GamePilahSampah } from './components/public/GamePilahSampah';
 import { AdminSidebar } from './components/layout/AdminSidebar';
 import { AdminHeader } from './components/layout/AdminHeader';
 import { DashboardOverview } from './components/admin/DashboardOverview';
@@ -148,10 +149,22 @@ const MainApp = () => {
         {activeTab === 'portal-nasabah' && (
           <NasabahPortal initialSearch={nasabahQuickQuery} />
         )}
+        {activeTab === 'game-edukasi' && (
+          <GamePilahSampah
+            onNavigate={(tab) => {
+              setActiveTab(tab);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
       </main>
 
       <Footer
         onOpenLogin={() => setLoginModalOpen(true)}
+        onNavigate={(tab) => {
+          setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
 
       {/* Global Modals */}

@@ -12,7 +12,16 @@ import {
   Egg,
   MapPin,
   ChevronRight,
-  ExternalLink
+  ExternalLink,
+  Gamepad2,
+  CheckCircle2,
+  HelpCircle,
+  Wallet,
+  Smartphone,
+  UserCheck,
+  Layers,
+  ChevronDown,
+  BookOpen
 } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah, formatWeight, MAGGOT_MONITORING_URL } from '../../lib/utils';
@@ -21,6 +30,11 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
   const { getStats, katalogList } = useBankSampah();
   const stats = getStats();
   const [quickNik, setQuickNik] = useState('');
+  const [openFaqIndex, setOpenFaqIndex] = useState(null);
+
+  const scrollToPanduan = () => {
+    document.getElementById('panduan-warga')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleQuickSubmit = (e) => {
     e.preventDefault();
@@ -91,6 +105,13 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3 pt-2 w-full max-w-md sm:max-w-none mx-auto">
+              <button
+                onClick={scrollToPanduan}
+                className="w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs sm:text-sm shadow-sm transition flex items-center justify-center gap-2 min-h-[42px]"
+              >
+                <BookOpen className="w-4 h-4 text-emerald-300" />
+                <span>Panduan Warga Baru</span>
+              </button>
               <button
                 onClick={() => onNavigate('katalog-public')}
                 className="w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm shadow-sm transition flex items-center justify-center gap-2 min-h-[42px]"
@@ -231,6 +252,245 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
         </div>
       </section>
 
+      {/* Educational Guide for Citizens & Prospective Customers */}
+      <section id="panduan-warga" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24 space-y-8 sm:space-y-10">
+        <div className="text-center max-w-3xl mx-auto space-y-2.5">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] sm:text-xs font-bold border border-emerald-200">
+            <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
+            Panduan Calon Nasabah Warga Desa
+          </span>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+            Bagaimana Sistem Bank Sampah Bekerja?
+          </h2>
+          <p className="text-xs sm:text-base text-slate-600 leading-relaxed">
+            Warga Desa Mekarjaya tidak perlu bingung. Cukup ikuti <strong>4 langkah mudah</strong> berikut dari rumah hingga sampah Anda berubah menjadi tabungan saldo nyata dan berkah lingkungan!
+          </p>
+        </div>
+
+        {/* 4 Step Visual Roadmap */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative">
+          {/* Langkah 1 */}
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-slate-100 hover:border-emerald-300 shadow-sm hover:shadow-md transition flex flex-col justify-between relative group">
+            <div className="space-y-3.5">
+              <div className="flex items-center justify-between">
+                <span className="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-800 font-black text-sm flex items-center justify-center shadow-xs">
+                  01
+                </span>
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  Dari Rumah
+                </span>
+              </div>
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl">
+                ♻️
+              </div>
+              <h3 className="font-extrabold text-base sm:text-lg text-slate-900 leading-snug">
+                Pilah Sampah Mandiri
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Pisahkan sampah rumah tangga Anda menjadi 2 kelompok utama sebelum dibawa ke pos:
+              </p>
+              <ul className="space-y-1.5 text-xs text-slate-600 pt-1">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                  <span><strong>Anorganik Kering:</strong> Kardus, botol/gelas plastik, kaleng soda/susu, besi (dibersihkan & dipipihkan).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                  <span><strong>Organik Dapur:</strong> Sisa sayur, sisa buah, nasi basi, ampas kelapa (jangan dicampur plastik/batu).</span>
+                </li>
+              </ul>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-emerald-700">
+              💡 Tips: Botol plastik dikempeskan agar muat banyak di kantong.
+            </div>
+          </div>
+
+          {/* Langkah 2 */}
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-slate-100 hover:border-blue-300 shadow-sm hover:shadow-md transition flex flex-col justify-between relative group">
+            <div className="space-y-3.5">
+              <div className="flex items-center justify-between">
+                <span className="w-9 h-9 rounded-2xl bg-blue-100 text-blue-800 font-black text-sm flex items-center justify-center shadow-xs">
+                  02
+                </span>
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  Cukup 1x Saja
+                </span>
+              </div>
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl">
+                📝
+              </div>
+              <h3 className="font-extrabold text-base sm:text-lg text-slate-900 leading-snug">
+                Daftar Rekening di Pos
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Kunjungi pos penimbangan terdekat di dusun Anda (Dusun Cimenang, Ciganda, atau Cimuda):
+              </p>
+              <ul className="space-y-1.5 text-xs text-slate-600 pt-1">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <span>Cukup sebutkan atau tunjukkan <strong>16 Digit NIK KTP</strong> Anda kepada petugas.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <span>Sistem otomatis menerbitkan <strong>Nomor Rekening Resmi</strong> unik (<span className="font-mono font-bold text-blue-800">BSDES-MJ-XXX</span>).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <span><strong>100% Gratis</strong> tanpa biaya pendaftaran atau iuran bulanan apapun.</span>
+                </li>
+              </ul>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-blue-700">
+              💡 Pendaftaran hanya perlu dilakukan satu kali seumur hidup.
+            </div>
+          </div>
+
+          {/* Langkah 3 */}
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-slate-100 hover:border-amber-300 shadow-sm hover:shadow-md transition flex flex-col justify-between relative group">
+            <div className="space-y-3.5">
+              <div className="flex items-center justify-between">
+                <span className="w-9 h-9 rounded-2xl bg-amber-100 text-amber-800 font-black text-sm flex items-center justify-center shadow-xs">
+                  03
+                </span>
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  Transparan
+                </span>
+              </div>
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl">
+                ⚖️
+              </div>
+              <h3 className="font-extrabold text-base sm:text-lg text-slate-900 leading-snug">
+                Timbang & Catat Digital
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Bawa sampah Anda saat jadwal penimbangan berkala pos dusun berlangsung:
+              </p>
+              <ul className="space-y-1.5 text-xs text-slate-600 pt-1">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <span>Ditimbang secara terbuka dan jujur di hadapan nasabah.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <span>Petugas menginput bobot ke aplikasi SI-BSDes, saldo otomatis terhitung per kg.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <span>Sampah organik dialirkan ke <strong>Biopond Maggot BSF</strong> pakan bebek petelur BUMDes.</span>
+                </li>
+              </ul>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-amber-800">
+              💡 Saldo langsung masuk real-time ke rekening tanpa potongan.
+            </div>
+          </div>
+
+          {/* Langkah 4 */}
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-slate-100 hover:border-purple-300 shadow-sm hover:shadow-md transition flex flex-col justify-between relative group">
+            <div className="space-y-3.5">
+              <div className="flex items-center justify-between">
+                <span className="w-9 h-9 rounded-2xl bg-purple-100 text-purple-800 font-black text-sm flex items-center justify-center shadow-xs">
+                  04
+                </span>
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  Fleksibel
+                </span>
+              </div>
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl">
+                💵
+              </div>
+              <h3 className="font-extrabold text-base sm:text-lg text-slate-900 leading-snug">
+                Pantau & Tarik Tunai
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Nikmati kemudahan mengakses dan mencairkan uang tabungan sampah Anda:
+              </p>
+              <ul className="space-y-1.5 text-xs text-slate-600 pt-1">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <span>Cek saldo mandiri kapan saja lewat HP Anda di menu <strong>"Cek Saldo Warga"</strong>.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <span>Cairkan uang tunai sewaktu-waktu ke pengurus pos untuk belanja dapur / uang jajan anak.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <span>Bisa ditarik sebagian atau ditarik seluruhnya (*Tarik Semua*).</span>
+                </li>
+              </ul>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-purple-700">
+              💡 Saldo tabungan adalah uang tunai murni milik nasabah.
+            </div>
+          </div>
+        </div>
+
+        {/* Tanya Jawab Populer Calon Nasabah (FAQ Accordion) */}
+        <div className="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200/90 shadow-sm space-y-4">
+          <div className="border-b border-slate-100 pb-3">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 block">
+              Pertanyaan yang Sering Diajukan Warga
+            </span>
+            <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
+              Tanya Jawab Seputar Bank Sampah Desa Mekarjaya
+            </h3>
+          </div>
+
+          <div className="space-y-2.5 pt-1">
+            {[
+              {
+                q: 'Apakah pendaftaran nasabah dikenakan biaya admin?',
+                a: 'Sama sekali TIDAK ADA biaya pendaftaran maupun potongan administrasi bulanan (100% Gratis). Setiap rupiah dari hasil penimbangan sampah adalah hak murni nasabah.'
+              },
+              {
+                q: 'Kapan jadwal penimbangan sampah dibuka?',
+                a: 'Penimbangan dibuka berkala di masing-masing pos dusun (Dusun Cimenang, Dusun Ciganda, Dusun Cimuda) yang dikoordinir oleh pengurus pos & kader pemuda desa.'
+              },
+              {
+                q: 'Apakah sampah harus disetor setiap hari?',
+                a: 'Tidak harus setiap hari. Untuk sampah anorganik (kardus, botol, kaleng) Anda bisa menyimpannya dulu di rumah dan membawanya saat sudah terkumpul banyak. Untuk sampah organik sisa dapur dianjurkan disetor rutin agar tetap segar untuk pakan larva maggot.'
+              },
+              {
+                q: 'Berapa minimal saldo yang bisa ditarik?',
+                a: 'Sangat fleksibel! Anda bisa menarik saldo mulai dari nominal kecil (seperti Rp 5.000 atau Rp 10.000) hingga mencairkan seluruh saldo yang ada di buku rekening Anda.'
+              },
+              {
+                q: 'Bagaimana cara mengecek saldo jika saya lupa nomor rekening?',
+                a: 'Sangat mudah! Buka menu "Cek Saldo Warga" di website ini, lalu cukup masukkan 16 Digit NIK KTP Anda. Sistem akan langsung menampilkan data buku tabungan, nomor rekening, dan riwayat setoran Anda.'
+              },
+              {
+                q: 'Mengapa sampah organik dapur sangat berharga di Desa Mekarjaya?',
+                a: 'Karena sampah organik Anda langsung disalurkan ke Biopond Maggot BSF. Larva maggot memakan sampah organik dan dipanen sebagai pakan protein tinggi (~40%) untuk bebek petelur BUMDes Mekarjaya, sehingga desa mampu menghasilkan telur bebek berkualitas tinggi dengan biaya pakan hemat ~45%!'
+              }
+            ].map((faq, fIdx) => {
+              const isOpen = openFaqIndex === fIdx;
+              return (
+                <div key={fIdx} className="border border-slate-200/80 rounded-2xl overflow-hidden transition-all">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaqIndex(isOpen ? null : fIdx)}
+                    className="w-full text-left px-4 py-3.5 sm:px-5 sm:py-4 flex items-center justify-between gap-3 bg-slate-50/70 hover:bg-slate-100 transition"
+                  >
+                    <span className="font-bold text-xs sm:text-sm text-slate-800">
+                      {faq.q}
+                    </span>
+                    <span className={`w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center flex-shrink-0 text-slate-500 transition-transform ${isOpen ? 'rotate-180 text-emerald-600' : ''}`}>
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div className="px-4 py-3.5 sm:px-5 sm:py-4 bg-white text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 animate-fade-in">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* Popular Waste Pricing Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
@@ -288,6 +548,35 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* Interactive Educational Game Banner */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2.5 max-w-2xl relative z-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-300 text-[11px] sm:text-xs font-bold border border-emerald-400/30">
+              <Gamepad2 className="w-3.5 h-3.5" />
+              Game Edukasi Interaktif Warga
+            </span>
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
+              Ayo Uji Ketangkasan: Game Pilah Sampah Mekarjaya!
+            </h3>
+            <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed">
+              Pelajari cara memilah sampah organik dapur, plastik daur ulang, kertas kardus, dan kaleng logam ke tong sampah yang tepat secara menyenangkan. Main langsung di browser!
+            </p>
+          </div>
+
+          <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-shrink-0">
+            <button
+              onClick={() => onNavigate('game-edukasi')}
+              className="px-6 py-3.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 group"
+            >
+              <Gamepad2 className="w-4 h-4 text-emerald-900 group-hover:scale-110 transition-transform" />
+              <span>Mainkan Game Sekarang</span>
+              <ArrowRight className="w-4 h-4 text-emerald-900 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
         </div>
       </section>
 

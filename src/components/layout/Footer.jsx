@@ -1,8 +1,8 @@
 import React from 'react';
-import { MapPin, Heart, BookOpen, Shield, ArrowRight, ExternalLink } from 'lucide-react';
+import { MapPin, Leaf, Recycle, BookOpen, Shield, ArrowRight, ExternalLink } from 'lucide-react';
 import { MAGGOT_MONITORING_URL } from '../../lib/utils';
 
-export const Footer = ({ onOpenLogin }) => {
+export const Footer = ({ onOpenLogin, onNavigate }) => {
   return (
     <footer className="bg-slate-900 text-slate-300 pt-10 sm:pt-14 pb-6 sm:pb-8 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,6 +51,11 @@ export const Footer = ({ onOpenLogin }) => {
               <li>
                 • Mitra: <a href={MAGGOT_MONITORING_URL} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 underline font-semibold">Web Monitoring Maggot ↗</a>
               </li>
+              {onNavigate && (
+                <li>
+                  • Edukasi: <button onClick={() => onNavigate('game-edukasi')} className="text-emerald-400 hover:text-emerald-300 underline font-semibold">🎮 Game Pilah Sampah</button>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -73,10 +78,11 @@ export const Footer = ({ onOpenLogin }) => {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-6 sm:pt-8 mt-6 sm:mt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-[11px] sm:text-xs text-slate-500 text-center sm:text-left">
+        <div className="pt-6 sm:pt-8 mt-6 sm:mt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-[11px] sm:text-xs text-slate-400 text-center sm:text-left">
           <p>© 2026 KKM Informatika UMC • Desa Mekarjaya, Ciawigebang, Kuningan.</p>
-          <p className="flex items-center justify-center gap-1">
-            Dibuat dengan <Heart className="w-3 h-3 text-rose-500 fill-rose-500" /> untuk Kemandirian Lingkungan & Ekonomi Warga
+          <p className="flex items-center justify-center gap-1.5 text-emerald-400 font-medium">
+            <Leaf className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+            <span>Pilah Sampah dari Rumah, Jaga Kebersihan Desa untuk Lingkungan Sehat & Asri</span>
           </p>
         </div>
       </div>
