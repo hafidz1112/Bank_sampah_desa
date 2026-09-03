@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, UserPlus, Save, AlertCircle } from 'lucide-react';
+import { X, UserPlus, Save, AlertCircle, Lock } from 'lucide-react';
 import { DUSUN_LIST, generateNoRekening } from '../../lib/utils';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { Select } from '../ui/Select';
@@ -40,7 +40,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
       setFormData({
         nama: '',
         nik: '',
-        no_rekening: generateNoRekening(nasabahList.length),
+        no_rekening: generateNoRekening(nasabahList),
         dusun: 'Dusun Cimenang',
         rw: '01',
         rt: '01',
@@ -48,7 +48,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
       });
     }
     setErrorMsg('');
-  }, [editingNasabah, isOpen, nasabahList.length]);
+  }, [editingNasabah, isOpen, nasabahList]);
 
   if (!isOpen) return null;
 
@@ -127,16 +127,26 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Nomor Rekening Nasabah
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-700">
+                  Nomor Rekening
+                </label>
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.5 rounded-md">
+                  <Lock className="w-2.5 h-2.5" /> Otomatis
+                </span>
+              </div>
               <input
                 type="text"
                 required
+                readOnly
+                tabIndex="-1"
                 value={formData.no_rekening}
-                onChange={(e) => setFormData({ ...formData, no_rekening: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50"
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono font-bold text-slate-600 bg-slate-100/90 cursor-not-allowed select-none focus:outline-none"
+                title="Nomor rekening digenerate otomatis oleh sistem dan tidak dapat diubah manual."
               />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                Nomor unik terdaftar otomatis
+              </span>
             </div>
 
             <div>

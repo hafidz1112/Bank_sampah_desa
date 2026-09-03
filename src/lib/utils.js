@@ -46,9 +46,36 @@ export const generateTxCode = (type = 'SETOR') => {
   return `${prefix}-${y}${m}${d}-${random}`;
 };
 
-// Generate new Account Number for Nasabah: BSDES-MJ-XXX
-export const generateNoRekening = (existingCount = 0) => {
-  const num = String(existingCount + 1).padStart(3, '0');
+// Generate new unique Account Number for Nasabah: BSDES-MJ-XXX
+export const generateNoRekening = (nasabahListOrCount = 0) => {
+  if (Array.isArray(nasabahListOrCount)) {
+    let maxNum = 0;
+    const existingSet = new Set();
+
+    nasabahListOrCount.forEach(n => {
+      if (!n || !n.no_rekening) return;
+      const cleanRek = String(n.no_rekening).trim().toUpperCase();
+      existingSet.add(cleanRek);
+
+      const match = cleanRek.match(/BSDES-MJ-(\d+)/i);
+      if (match) {
+        const parsed = parseInt(match[1], 10);
+        if (!isNaN(parsed) && parsed > maxNum) {
+          maxNum = parsed;
+        }
+      }
+    });
+
+    let nextNum = Math.max(maxNum + 1, nasabahListOrCount.length + 1);
+    while (existingSet.has(`BSDES-MJ-${String(nextNum).padStart(3, '0')}`)) {
+      nextNum++;
+    }
+
+    return `BSDES-MJ-${String(nextNum).padStart(3, '0')}`;
+  }
+
+  const count = typeof nasabahListOrCount === 'number' ? nasabahListOrCount : 0;
+  const num = String(count + 1).padStart(3, '0');
   return `BSDES-MJ-${num}`;
 };
 

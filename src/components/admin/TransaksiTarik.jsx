@@ -96,7 +96,7 @@ export const TransaksiTarik = () => {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} noValidate className="space-y-6">
         {errorMsg && (
           <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2 animate-shake">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -152,8 +152,8 @@ export const TransaksiTarik = () => {
               </span>
               <input
                 type="number"
-                min="1000"
-                step="500"
+                min="1"
+                step="any"
                 required
                 value={nominal}
                 onChange={(e) => setNominal(e.target.value)}
@@ -178,7 +178,7 @@ export const TransaksiTarik = () => {
             <div className="space-y-1.5 pt-1">
               <span className="text-[11px] font-semibold text-slate-500">Pilihan Cepat Nominal:</span>
               <div className="flex flex-wrap gap-2">
-                {[10000, 25000, 50000, 100000].map(amt => (
+                {[5000, 10000, 25000, 50000, 100000].map(amt => (
                   <button
                     key={amt}
                     type="button"

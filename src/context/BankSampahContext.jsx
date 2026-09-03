@@ -121,9 +121,13 @@ export const BankSampahProvider = ({ children }) => {
   // --- NASABAH ACTIONS ---
   const addNasabah = async (nasabahData) => {
     try {
-      const generatedRek = generateNoRekening(nasabahList.length);
+      let finalNoRekening = nasabahData.no_rekening?.trim();
+      if (!finalNoRekening || nasabahList.some(n => n.no_rekening?.toUpperCase() === finalNoRekening.toUpperCase())) {
+        finalNoRekening = generateNoRekening(nasabahList);
+      }
+
       const dbPayload = {
-        no_rekening: nasabahData.no_rekening || generatedRek,
+        no_rekening: finalNoRekening,
         nik: nasabahData.nik,
         nama: nasabahData.nama,
         dusun: nasabahData.dusun,
@@ -341,16 +345,16 @@ export const BankSampahProvider = ({ children }) => {
             nama_kategori: katalogList.find(k => k.id === it.kategori_id)?.nama_kategori || 'Sampah'
           }))
         };
-
-        // Update local nasabah balance
-        const updatedNasabahList = nasabahList.map(n => {
-          if (n.id === Number(nasabahId)) {
-            return { ...n, saldo_aktif: (parseFloat(n.saldo_aktif) || 0) + totalNominal };
-          }
-          return n;
-        });
-        syncLocalNasabah(updatedNasabahList);
       }
+
+      // Update nasabah balance in React state
+      const updatedNasabahList = nasabahList.map(n => {
+        if (n.id === Number(nasabahId)) {
+          return { ...n, saldo_aktif: (parseFloat(n.saldo_aktif) || 0) + totalNominal };
+        }
+        return n;
+      });
+      syncLocalNasabah(updatedNasabahList);
 
       syncLocalTransaksi([createdTx, ...transaksiList]);
       triggerConfetti();
@@ -414,15 +418,16 @@ export const BankSampahProvider = ({ children }) => {
           created_at: now,
           items: []
         };
-
-        const updatedNasabahList = nasabahList.map(n => {
-          if (n.id === Number(nasabahId)) {
-            return { ...n, saldo_aktif: (parseFloat(n.saldo_aktif) || 0) - withdrawAmount };
-          }
-          return n;
-        });
-        syncLocalNasabah(updatedNasabahList);
       }
+
+      // Update nasabah balance in React state
+      const updatedNasabahList = nasabahList.map(n => {
+        if (n.id === Number(nasabahId)) {
+          return { ...n, saldo_aktif: (parseFloat(n.saldo_aktif) || 0) - withdrawAmount };
+        }
+        return n;
+      });
+      syncLocalNasabah(updatedNasabahList);
 
       syncLocalTransaksi([createdTx, ...transaksiList]);
       showToast(`Penarikan ${kodeTransaksi} sebesar Rp ${withdrawAmount.toLocaleString('id-ID')} berhasil!`, 'success');
