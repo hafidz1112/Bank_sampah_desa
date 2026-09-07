@@ -6,14 +6,20 @@ import { exportSingleReceiptPDF } from '../../lib/exportUtils';
 export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
   if (!isOpen || !transaksi) return null;
 
-  const isSetor = transaksi.jenis === 'setor';
+  const isPenjualan = transaksi.jenis === 'penjualan' || transaksi.jenis === 'setor';
+  const targetRt = nasabah || transaksi.rt || {};
+  const rtName = targetRt.nama_rt || targetRt.nama || transaksi.rt_nama || transaksi.nasabah_nama || 'Unit RT Mekarjaya';
+  const rtKode = targetRt.kode_rt || targetRt.no_rekening || transaksi.rt_kode || transaksi.nasabah_no_rekening || '-';
+  const dusun = targetRt.dusun || '';
+  const ketua = targetRt.ketua_rt || '';
+  const saldoKas = targetRt.saldo_kas ?? targetRt.saldo_aktif;
 
   const handlePrint = () => {
     window.print();
   };
 
   const handleDownloadPDF = () => {
-    exportSingleReceiptPDF(transaksi, nasabah, transaksi.items || []);
+    exportSingleReceiptPDF(transaksi, targetRt, transaksi.items || []);
   };
 
   return (
@@ -22,11 +28,11 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
         {/* Top Action Bar (hidden on print) */}
         <div className="no-print bg-slate-50 px-6 py-3.5 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-slate-700">Nota Bukti Transaksi</span>
+            <span className="text-sm font-semibold text-slate-700">Bukti Transaksi Kas RT</span>
             <span className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase ${
-              isSetor ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+              isPenjualan ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
             }`}>
-              {transaksi.jenis}
+              {isPenjualan ? 'Penjualan' : 'Penyaluran'}
             </span>
           </div>
           <button
@@ -43,10 +49,10 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
           <div className="text-center space-y-1 pb-3 border-b border-dashed border-slate-300">
             <div className="flex items-center justify-center gap-1.5 font-bold text-base text-emerald-800 font-sans">
               <Recycle className="w-5 h-5 text-emerald-600 inline" />
-              SI-BSDes MEKARJAYA
+              BANK SAMPAH DESA MEKARJAYA
             </div>
             <div className="text-[11px] font-sans text-slate-600">
-              Bank Sampah Desa Terintegrasi
+              Pos Pemilahan 4 Wadah di RA & Kas RT
             </div>
             <div className="text-[10px] text-slate-500 font-sans">
               Desa Mekarjaya, Ciawigebang, Kuningan
@@ -67,27 +73,33 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
               <span>{formatDate(transaksi.created_at, true)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500">Nasabah:</span>
-              <span className="font-semibold">{nasabah ? nasabah.nama : transaksi.nasabah_nama}</span>
+              <span className="text-slate-500">Alokasi Unit RT:</span>
+              <span className="font-semibold">{rtName}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500">No. Rekening:</span>
-              <span className="font-mono">{nasabah ? nasabah.no_rekening : transaksi.nasabah_no_rekening}</span>
+              <span className="text-slate-500">Kode RT:</span>
+              <span className="font-mono">{rtKode}</span>
             </div>
-            {nasabah?.dusun && (
+            {dusun && (
               <div className="flex justify-between">
-                <span className="text-slate-500">Dusun:</span>
-                <span>{nasabah.dusun} (RT {nasabah.rt}/RW {nasabah.rw})</span>
+                <span className="text-slate-500">Wilayah Dusun:</span>
+                <span>{dusun}</span>
+              </div>
+            )}
+            {ketua && (
+              <div className="flex justify-between">
+                <span className="text-slate-500">Ketua RT:</span>
+                <span>{ketua}</span>
               </div>
             )}
           </div>
 
           {/* Details Table */}
           <div className="border-t border-b border-dashed border-slate-300 py-2.5">
-            {isSetor && transaksi.items && transaksi.items.length > 0 ? (
+            {isPenjualan && transaksi.items && transaksi.items.length > 0 ? (
               <div className="space-y-2">
                 <div className="grid grid-cols-12 font-bold text-[10px] text-slate-600 uppercase">
-                  <div className="col-span-6">Kategori</div>
+                  <div className="col-span-6">Wadah Sampah RA</div>
                   <div className="col-span-3 text-right">Berat / Tarif</div>
                   <div className="col-span-3 text-right">Subtotal</div>
                 </div>
@@ -103,7 +115,7 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
                   </div>
                 ))}
                 <div className="pt-2 border-t border-slate-100 flex justify-between text-slate-600 text-[11px]">
-                  <span>Total Berat:</span>
+                  <span>Total Berat Terjual:</span>
                   <span className="font-bold">{formatWeight(transaksi.total_berat_kg)}</span>
                 </div>
               </div>
@@ -111,11 +123,11 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
               <div className="space-y-1.5 py-1">
                 <div className="flex justify-between">
                   <span className="text-slate-500">Jenis Transaksi:</span>
-                  <span className="font-bold text-amber-700">PENARIKAN TUNAI</span>
+                  <span className="font-bold text-amber-700">PENYALURAN DANA KAS RT</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Keterangan:</span>
-                  <span className="text-slate-700">{transaksi.keterangan || 'Penarikan saldo'}</span>
+                  <span className="text-slate-500">Peruntukan:</span>
+                  <span className="text-slate-700">{transaksi.keterangan || 'Kegiatan warga RT'}</span>
                 </div>
               </div>
             )}
@@ -124,16 +136,16 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
           {/* Grand Total */}
           <div className="space-y-1 pt-1">
             <div className="flex justify-between items-center text-sm font-bold font-sans">
-              <span className="text-slate-700">TOTAL {isSetor ? 'DITERIMA' : 'DITARIK'}:</span>
-              <span className={`text-base ${isSetor ? 'text-emerald-700' : 'text-amber-700'}`}>
+              <span className="text-slate-700">TOTAL {isPenjualan ? 'HASIL PENJUALAN' : 'DANA DISALURKAN'}:</span>
+              <span className={`text-base font-extrabold ${isPenjualan ? 'text-emerald-700' : 'text-amber-700'}`}>
                 {formatRupiah(transaksi.total_nominal)}
               </span>
             </div>
 
-            {nasabah?.saldo_aktif !== undefined && (
+            {saldoKas !== undefined && (
               <div className="flex justify-between items-center text-xs text-slate-600 pt-1 border-t border-slate-100">
-                <span>Saldo Tabungan Terkini:</span>
-                <span className="font-bold text-emerald-800">{formatRupiah(nasabah.saldo_aktif)}</span>
+                <span>Saldo Kas RT Terkini:</span>
+                <span className="font-bold text-emerald-800 font-sans">{formatRupiah(saldoKas)}</span>
               </div>
             )}
           </div>
@@ -144,7 +156,7 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
               *|||||||||||| {transaksi.kode_transaksi} ||||||||||||*
             </div>
             <p className="text-[10px] text-slate-500 font-sans italic leading-tight">
-              Terima kasih telah berpartisipasi menjaga kebersihan dan lingkungan asri Desa Mekarjaya!
+              Sampah terpilah 4 wadah di RA dimanfaatkan menjadi dana kas kemaslahatan warga RT Desa Mekarjaya.
             </p>
           </div>
         </div>

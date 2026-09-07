@@ -8,13 +8,13 @@ export const AdminHeader = ({ onToggleSidebar, activeTab }) => {
   const { user } = useAuth();
 
   const tabTitles = {
-    dashboard: 'Ringkasan & Statistik Desa',
-    setor: 'Form Transaksi Penimbangan Setoran Sampah',
-    tarik: 'Form Transaksi Penarikan Saldo Warga',
-    nasabah: 'Manajemen Data Nasabah Desa Mekarjaya',
-    transaksi: 'Buku Jurnal Mutasi & Transaksi Lengkap',
-    katalog: 'Manajemen Katalog Kategori & Tarif Sampah',
-    laporan: 'Laporan Rekapitulasi & Ekspor Dokumen',
+    dashboard: 'Ringkasan Statistik & Kas RT',
+    setor: 'Form Penimbangan & Penjualan Sampah RA',
+    tarik: 'Form Penyaluran / Pengeluaran Kas RT',
+    nasabah: 'Manajemen Data RT & Tabungan Warga',
+    transaksi: 'Buku Jurnal Mutasi Kas RT',
+    katalog: 'Katalog 4 Wadah Sampah Terpilah',
+    laporan: 'Laporan Rekapitulasi & Ekspor Data',
   };
 
   return (
@@ -31,7 +31,7 @@ export const AdminHeader = ({ onToggleSidebar, activeTab }) => {
             {tabTitles[activeTab] || 'Dashboard Pengurus'}
           </h1>
           <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
-            SI-BSDes Mekarjaya • Kec. Ciawigebang, Kab. Kuningan
+            Bank Sampah Desa Mekarjaya • Pos Pemilahan 4 Wadah di RA & Kas Warga RT
           </p>
         </div>
       </div>
@@ -54,7 +54,7 @@ export const AdminHeader = ({ onToggleSidebar, activeTab }) => {
           </div>
           <div className="hidden md:block text-left">
             <div className="text-xs font-bold text-slate-800">
-              {user?.user_metadata?.full_name || 'Operator Desa'}
+              {user?.user_metadata?.full_name || 'Operator RA'}
             </div>
             <div className="text-[10px] text-slate-400">Pengurus Bank Sampah</div>
           </div>

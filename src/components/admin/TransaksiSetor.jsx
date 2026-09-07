@@ -4,14 +4,14 @@ import {
   Plus, 
   Trash2, 
   Calculator, 
-  UserCheck, 
-  Search, 
+  Home, 
   Save, 
   Printer, 
   Sparkles, 
   AlertCircle,
   Coins,
-  CheckCircle2
+  CheckCircle2,
+  PackageCheck
 } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah, formatWeight } from '../../lib/utils';
@@ -19,45 +19,37 @@ import { ReceiptModal } from '../common/ReceiptModal';
 import { Select } from '../ui/Select';
 
 export const TransaksiSetor = () => {
-  const { nasabahList, katalogList, processSetoran } = useBankSampah();
+  const { rtList, katalogList, processPenjualan } = useBankSampah();
 
-  const [selectedNasabahId, setSelectedNasabahId] = useState('');
-  const [searchNasabahQuery, setSearchNasabahQuery] = useState('');
+  const [selectedRtId, setSelectedRtId] = useState('');
   const [items, setItems] = useState([
     { id: 1, kategori_id: katalogList[0]?.id || 1, berat_kg: '', harga_per_kg: katalogList[0]?.harga_per_kg || 2500, subtotal: 0 }
   ]);
-  const [keterangan, setKeterangan] = useState('Setoran sampah rutin');
+  const [keterangan, setKeterangan] = useState('Penjualan sampah 4 wadah RA Mekarjaya ke pengepul');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   // Receipt Modal state
   const [completedTx, setCompletedTx] = useState(null);
-  const [completedNasabah, setCompletedNasabah] = useState(null);
+  const [completedRt, setCompletedRt] = useState(null);
 
-  // Active Catalog
+  // Active Catalog (4 categories)
   const activeKatalog = katalogList.filter(k => k.is_active);
 
-  // Selected Nasabah object
-  const selectedNasabah = nasabahList.find(n => n.id === Number(selectedNasabahId));
+  // Selected RT object
+  const selectedRt = rtList.find(r => r.id === Number(selectedRtId));
 
-  // Filtered Nasabah dropdown
-  const filteredNasabah = nasabahList.filter(n =>
-    n.nama.toLowerCase().includes(searchNasabahQuery.toLowerCase()) ||
-    n.nik.includes(searchNasabahQuery) ||
-    n.no_rekening.toLowerCase().includes(searchNasabahQuery.toLowerCase())
-  );
-
-  const nasabahOptions = nasabahList.map(n => ({
-    value: n.id,
-    label: `${n.nama} [${n.no_rekening}]`,
-    sublabel: `${n.dusun} • Saldo Aktif: ${formatRupiah(n.saldo_aktif)}`,
-    searchValue: `${n.nama} ${n.no_rekening} ${n.nik} ${n.dusun}`
+  const rtOptions = rtList.map(r => ({
+    value: r.id,
+    label: `${r.nama_rt} [${r.kode_rt}]`,
+    sublabel: `${r.dusun} • Ketua: ${r.ketua_rt} • Saldo Kas: ${formatRupiah(r.saldo_kas)}`,
+    searchValue: `${r.nama_rt} ${r.kode_rt} ${r.dusun} ${r.ketua_rt}`
   }));
 
   const kategoriOptions = activeKatalog.map(k => ({
     value: k.id,
     label: `${k.nama_kategori} (${formatRupiah(k.harga_per_kg)}/kg)`,
-    badge: k.tipe.toUpperCase(),
+    badge: k.tipe ? k.tipe.toUpperCase() : 'WADAH',
     sublabel: k.deskripsi || ''
   }));
 
@@ -112,14 +104,14 @@ export const TransaksiSetor = () => {
   // Calculations
   const totalBerat = items.reduce((acc, curr) => acc + (parseFloat(curr.berat_kg) || 0), 0);
   const totalNominal = items.reduce((acc, curr) => acc + (parseFloat(curr.subtotal) || 0), 0);
-  const projectedSaldo = selectedNasabah ? (parseFloat(selectedNasabah.saldo_aktif) || 0) + totalNominal : totalNominal;
+  const projectedSaldo = selectedRt ? (parseFloat(selectedRt.saldo_kas) || 0) + totalNominal : totalNominal;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
-    if (!selectedNasabahId) {
-      setErrorMsg('Pilih nasabah penyetor terlebih dahulu.');
+    if (!selectedRtId) {
+      setErrorMsg('Pilih RT alokasi tabungan warga terlebih dahulu.');
       return;
     }
 
@@ -130,8 +122,8 @@ export const TransaksiSetor = () => {
     }
 
     setLoading(true);
-    const res = await processSetoran({
-      nasabahId: selectedNasabahId,
+    const res = await processPenjualan({
+      rtId: selectedRtId,
       items: validItems,
       keterangan
     });
@@ -139,12 +131,12 @@ export const TransaksiSetor = () => {
 
     if (res.success) {
       setCompletedTx(res.transaksi);
-      setCompletedNasabah(res.nasabah);
+      setCompletedRt(res.rt);
       // Reset form
       setItems([{ id: Date.now(), kategori_id: activeKatalog[0]?.id || 1, berat_kg: '', harga_per_kg: activeKatalog[0]?.harga_per_kg || 2500, subtotal: 0 }]);
-      setKeterangan('Setoran sampah rutin');
+      setKeterangan('Penjualan sampah 4 wadah RA Mekarjaya ke pengepul');
     } else {
-      setErrorMsg(res.error || 'Gagal memproses setoran.');
+      setErrorMsg(res.error || 'Gagal memproses penjualan.');
     }
   };
 
@@ -153,10 +145,10 @@ export const TransaksiSetor = () => {
       {/* Header */}
       <div>
         <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-          Form Penimbangan & Setoran Sampah
+          Timbang & Jual Sampah dari RA ke Pengepul
         </h2>
         <p className="text-xs text-slate-500 mt-0.5">
-          Timbang sampah warga secara realtime, hitung subtotal otomatis, dan tambahkan saldo nasabah seketika
+          Timbang muatan sampah terpilah dari 4 wadah di RA, hitung penerimaan tunai dari pengepul, dan alokasikan langsung ke Kas Tabungan Warga RT.
         </p>
       </div>
 
@@ -168,60 +160,69 @@ export const TransaksiSetor = () => {
           </div>
         )}
 
-        {/* Section 1: Pilih Nasabah */}
+        {/* Section 1: Pilih Alokasi RT */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-700">
-            <UserCheck className="w-4 h-4" />
-            Langkah 1: Identifikasi Nasabah Warga
+            <Home className="w-4 h-4" />
+            Langkah 1: Tentukan Alokasi Tabungan Kas RT Warga
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                Cari / Pilih Nasabah Desa *
+                Pilih Wilayah RT / Dusun Penerima Alokasi *
               </label>
               <Select
-                value={selectedNasabahId}
-                onChange={(val) => setSelectedNasabahId(val)}
-                options={nasabahOptions}
-                placeholder="-- Pilih Nama Warga / No Rekening --"
+                value={selectedRtId}
+                onChange={(val) => setSelectedRtId(val)}
+                options={rtOptions}
+                placeholder="-- Pilih Unit RT / Dusun --"
                 searchable={true}
-                searchPlaceholder="Ketik nama, dusun, atau no rekening..."
+                searchPlaceholder="Ketik nomor RT, dusun, atau nama ketua RT..."
                 size="md"
               />
+              <p className="text-[11px] text-slate-400 mt-1">
+                Sampah dibuang warga secara mandiri ke 4 wadah di RA. Hasil penjualan dikreditkan ke kas RT terpilih.
+              </p>
             </div>
 
-            {/* Quick Nasabah Preview Card */}
-            {selectedNasabah ? (
-              <div className="p-3.5 bg-emerald-50/70 rounded-2xl border border-emerald-200 flex items-center justify-between text-xs animate-fade-in">
+            {/* Quick RT Preview Card */}
+            {selectedRt ? (
+              <div className="p-4 bg-emerald-50/80 rounded-2xl border border-emerald-200 flex items-center justify-between text-xs animate-fade-in">
                 <div>
-                  <div className="font-extrabold text-sm text-emerald-950">{selectedNasabah.nama}</div>
+                  <div className="font-extrabold text-sm text-emerald-950">{selectedRt.nama_rt}</div>
                   <div className="text-[11px] text-emerald-700">
-                    {selectedNasabah.dusun} • RT {selectedNasabah.rt}/RW {selectedNasabah.rw}
+                    {selectedRt.dusun} • RW {selectedRt.rw}
                   </div>
-                  <div className="font-mono text-[10px] text-slate-500">NIK: {selectedNasabah.nik}</div>
+                  <div className="text-[11px] text-slate-600 mt-1">
+                    Ketua RT: <strong className="text-slate-800">{selectedRt.ketua_rt}</strong> ({selectedRt.no_telepon})
+                  </div>
+                  <div className="font-mono text-[10px] text-slate-500 mt-0.5">Kode: {selectedRt.kode_rt}</div>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] text-emerald-600 block">Saldo Saat Ini:</span>
-                  <span className="text-base font-extrabold text-emerald-800 font-sans">
-                    {formatRupiah(selectedNasabah.saldo_aktif)}
+                  <span className="text-[10px] text-emerald-600 font-bold block">Saldo Kas Saat Ini:</span>
+                  <span className="text-base font-extrabold text-emerald-800 font-sans block">
+                    {formatRupiah(selectedRt.saldo_kas)}
+                  </span>
+                  <span className="text-[10px] text-slate-500 mt-1 block">
+                    Total Sampah: {formatWeight(selectedRt.total_sampah_terkumpul_kg || 0)}
                   </span>
                 </div>
               </div>
             ) : (
-              <div className="p-3.5 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-xs text-slate-400 flex items-center justify-center">
-                Pilih nasabah di atas untuk melihat saldo dan wilayah dusun
+              <div className="p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-xs text-slate-400 flex items-center justify-center text-center">
+                Pilih unit RT di samping untuk melihat profil kas dan penanggung jawab
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 2: Penimbangan Multi-Item */}
+        {/* Section 2: Penimbangan 4 Kategori Wadah RA */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-700">
               <Scale className="w-4 h-4" />
-              Langkah 2: Penimbangan Sampah per Kategori
+              Langkah 2: Penimbangan Sampah Terpilah (4 Wadah RA)
             </div>
             <button
               type="button"
@@ -229,32 +230,27 @@ export const TransaksiSetor = () => {
               className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition flex items-center gap-1 border border-emerald-200"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>+ Tambah Baris Sampah</span>
+              <span>+ Tambah Baris Kategori</span>
             </button>
           </div>
 
           <div className="space-y-3">
             {items.map((row, idx) => {
-              const selectedKat = katalogList.find(k => k.id === Number(row.kategori_id));
-              const isOrganik = selectedKat?.tipe === 'organik';
-
               return (
                 <div
                   key={row.id || idx}
-                  className={`p-4 rounded-2xl border transition grid grid-cols-1 sm:grid-cols-12 gap-3 items-center ${
-                    isOrganik ? 'bg-emerald-50/40 border-emerald-200' : 'bg-slate-50/60 border-slate-200'
-                  }`}
+                  className="p-4 rounded-2xl border bg-slate-50/70 border-slate-200 transition grid grid-cols-1 sm:grid-cols-12 gap-3 items-center hover:bg-emerald-50/20"
                 >
                   {/* Category Selector (5 cols) */}
                   <div className="sm:col-span-5">
                     <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                      Kategori Sampah #{idx + 1}
+                      Kategori Wadah #{idx + 1}
                     </label>
                     <Select
                       value={row.kategori_id}
                       onChange={(val) => handleKategoriChange(idx, val)}
                       options={kategoriOptions}
-                      placeholder="Pilih Kategori Sampah..."
+                      placeholder="Pilih Wadah Sampah..."
                       size="sm"
                     />
                   </div>
@@ -283,7 +279,7 @@ export const TransaksiSetor = () => {
 
                   {/* Subtotal (3 cols) */}
                   <div className="sm:col-span-3 text-right">
-                    <span className="block text-[10px] text-slate-400 font-semibold">Subtotal</span>
+                    <span className="block text-[10px] text-slate-400 font-semibold">Subtotal Penjualan</span>
                     <span className="text-base font-extrabold text-slate-900 font-sans">
                       {formatRupiah(row.subtotal)}
                     </span>
@@ -296,6 +292,7 @@ export const TransaksiSetor = () => {
                       disabled={items.length <= 1}
                       onClick={() => handleRemoveItem(idx)}
                       className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition disabled:opacity-30"
+                      title="Hapus baris"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -307,13 +304,13 @@ export const TransaksiSetor = () => {
 
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Catatan / Keterangan Transaksi
+              Catatan / Keterangan Penjualan
             </label>
             <input
               type="text"
               value={keterangan}
               onChange={(e) => setKeterangan(e.target.value)}
-              placeholder="Contoh: Setoran kardus warung & sayur sisa dapur"
+              placeholder="Contoh: Penjualan botol PET & kardus ke Pengepul Jaya Santosa"
               className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
@@ -323,22 +320,22 @@ export const TransaksiSetor = () => {
         <div className="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-6 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-1">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
-              Ringkasan Kalkulasi Realtime
+              Ringkasan Penerimaan Hasil Penjualan
             </span>
             <div className="flex items-baseline gap-4">
               <div>
-                <span className="text-[11px] text-emerald-200 block">Total Berat:</span>
+                <span className="text-[11px] text-emerald-200 block">Total Berat Terjual:</span>
                 <span className="text-2xl font-extrabold font-sans text-white">{formatWeight(totalBerat)}</span>
               </div>
               <div className="h-8 w-px bg-white/20" />
               <div>
-                <span className="text-[11px] text-emerald-200 block">Total Nominal:</span>
+                <span className="text-[11px] text-emerald-200 block">Total Uang Masuk Kas:</span>
                 <span className="text-3xl font-black font-sans text-emerald-300">{formatRupiah(totalNominal)}</span>
               </div>
             </div>
-            {selectedNasabah && (
+            {selectedRt && (
               <p className="text-xs text-emerald-100 pt-1">
-                Estimasi Saldo Akhir {selectedNasabah.nama}: <strong>{formatRupiah(projectedSaldo)}</strong>
+                Estimasi Saldo Kas Akhir {selectedRt.nama_rt}: <strong>{formatRupiah(projectedSaldo)}</strong>
               </p>
             )}
           </div>
@@ -350,7 +347,7 @@ export const TransaksiSetor = () => {
               className="w-full md:w-auto px-8 py-4 rounded-2xl bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-black text-sm shadow-xl transition flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Save className="w-5 h-5" />
-              <span>{loading ? 'Memproses...' : 'Simpan & Cetak Nota'}</span>
+              <span>{loading ? 'Memproses...' : 'Simpan & Cetak Bukti'}</span>
             </button>
           </div>
         </div>
@@ -361,7 +358,7 @@ export const TransaksiSetor = () => {
         isOpen={Boolean(completedTx)}
         onClose={() => setCompletedTx(null)}
         transaksi={completedTx}
-        nasabah={completedNasabah}
+        nasabah={completedRt}
       />
     </div>
   );

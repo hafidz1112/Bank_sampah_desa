@@ -46,7 +46,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
           </div>
           <h2 className="text-lg font-bold text-white tracking-tight">Portal Pengurus & Operator</h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            Bank Sampah Desa Mekarjaya • Karang Taruna / BUMDes
+            Bank Sampah Desa Mekarjaya • Pengurus & Operator
           </p>
         </div>
 

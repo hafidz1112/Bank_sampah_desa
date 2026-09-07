@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { X, UserPlus, Save, AlertCircle, Lock } from 'lucide-react';
-import { DUSUN_LIST, generateNoRekening } from '../../lib/utils';
+import { X, Building2, Save, AlertCircle, Lock } from 'lucide-react';
+import { DUSUN_LIST, generateKodeRt } from '../../lib/utils';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { Select } from '../ui/Select';
 
 export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
-  const { addNasabah, updateNasabah, nasabahList } = useBankSampah();
+  const { addRt, updateRt, rtList } = useBankSampah();
 
   const [formData, setFormData] = useState({
-    nama: '',
-    nik: '',
-    no_rekening: '',
+    nama_rt: '',
+    kode_rt: '',
     dusun: 'Dusun Cimenang',
     rw: '01',
     rt: '01',
-    no_hp: '',
+    ketua_rt: '',
+    no_telepon: '',
+    saldo_kas: 0
   });
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,67 +29,102 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
       else if (rawDusun.toLowerCase().includes('cimenang')) selectedDusun = 'Dusun Cimenang';
 
       setFormData({
-        nama: editingNasabah.nama || '',
-        nik: editingNasabah.nik || '',
-        no_rekening: editingNasabah.no_rekening || '',
+        nama_rt: editingNasabah.nama_rt || editingNasabah.nama || '',
+        kode_rt: editingNasabah.kode_rt || '',
         dusun: selectedDusun,
         rw: editingNasabah.rw || '01',
         rt: editingNasabah.rt || '01',
-        no_hp: editingNasabah.no_hp || '',
+        ketua_rt: editingNasabah.ketua_rt || '',
+        no_telepon: editingNasabah.no_telepon || editingNasabah.no_hp || '',
+        saldo_kas: editingNasabah.saldo_kas ?? 0
       });
     } else {
+      const defaultDusun = 'Dusun Cimenang';
+      const defaultRt = '01';
       setFormData({
-        nama: '',
-        nik: '',
-        no_rekening: generateNoRekening(nasabahList),
-        dusun: 'Dusun Cimenang',
+        nama_rt: `RT ${defaultRt} Cimenang`,
+        kode_rt: generateKodeRt(defaultDusun, defaultRt),
+        dusun: defaultDusun,
         rw: '01',
-        rt: '01',
-        no_hp: '',
+        rt: defaultRt,
+        ketua_rt: '',
+        no_telepon: '',
+        saldo_kas: 0
       });
     }
     setErrorMsg('');
-  }, [editingNasabah, isOpen, nasabahList]);
+  }, [editingNasabah, isOpen]);
 
   if (!isOpen) return null;
+
+  const handleDusunChange = (dusun) => {
+    const dusunLabel = dusun.replace('Dusun ', '');
+    const newKode = generateKodeRt(dusun, formData.rt);
+    setFormData(prev => ({
+      ...prev,
+      dusun,
+      nama_rt: prev.nama_rt.startsWith('RT ') ? `RT ${prev.rt} ${dusunLabel}` : prev.nama_rt,
+      kode_rt: newKode
+    }));
+  };
+
+  const handleRtNumChange = (rtNum) => {
+    const dusunLabel = formData.dusun.replace('Dusun ', '');
+    const newKode = generateKodeRt(formData.dusun, rtNum);
+    setFormData(prev => ({
+      ...prev,
+      rt: rtNum,
+      nama_rt: `RT ${rtNum} ${dusunLabel}`,
+      kode_rt: newKode
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
     // Validations
-    if (!formData.nama.trim()) {
-      setErrorMsg('Nama nasabah wajib diisi.');
+    if (!formData.nama_rt.trim()) {
+      setErrorMsg('Nama unit RT wajib diisi.');
       return;
     }
 
-    if (!formData.nik || formData.nik.trim().length !== 16) {
-      setErrorMsg('NIK harus terdiri dari 16 digit angka.');
+    if (!formData.kode_rt.trim()) {
+      setErrorMsg('Kode RT wajib diisi.');
       return;
     }
 
-    // Check duplicate NIK (except when editing same record)
-    const duplicateNik = nasabahList.find(
-      n => n.nik === formData.nik.trim() && (!editingNasabah || n.id !== editingNasabah.id)
+    // Check duplicate kode_rt (except when editing same record)
+    const duplicate = rtList.find(
+      r => r.kode_rt.toLowerCase() === formData.kode_rt.trim().toLowerCase() && 
+           (!editingNasabah || r.id !== editingNasabah.id)
     );
-    if (duplicateNik) {
-      setErrorMsg(`NIK ${formData.nik} sudah terdaftar atas nama ${duplicateNik.nama}.`);
+    if (duplicate) {
+      setErrorMsg(`Kode RT ${formData.kode_rt} sudah digunakan oleh ${duplicate.nama_rt}.`);
       return;
     }
 
     setLoading(true);
     let res;
     if (editingNasabah) {
-      res = await updateNasabah(editingNasabah.id, formData);
+      res = await updateRt(editingNasabah.id, {
+        ...formData,
+        nama: formData.nama_rt, // alias
+        saldo_kas: parseFloat(formData.saldo_kas) || 0
+      });
     } else {
-      res = await addNasabah(formData);
+      res = await addRt({
+        ...formData,
+        nama: formData.nama_rt, // alias
+        saldo_kas: parseFloat(formData.saldo_kas) || 0
+      });
     }
     setLoading(false);
 
     if (res.success) {
       onClose();
     } else {
-      setErrorMsg(res.error || 'Gagal menyimpan nasabah.');
+      setErrorMsg(res.error || 'Gagal menyimpan data RT.');
     }
   };
 
@@ -99,13 +135,13 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
         <div className="bg-gradient-to-r from-emerald-800 to-teal-900 px-6 py-4 text-white flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-emerald-500/30 flex items-center justify-center">
-              <UserPlus className="w-4 h-4 text-emerald-300" />
+              <Building2 className="w-4 h-4 text-emerald-300" />
             </div>
             <div>
               <h3 className="font-extrabold text-base">
-                {editingNasabah ? 'Edit Data Nasabah' : 'Pendaftaran Nasabah Baru'}
+                {editingNasabah ? 'Edit Data Unit RT' : 'Tambah Unit RT Baru'}
               </h3>
-              <p className="text-[10px] text-emerald-200">Desa Mekarjaya, Kec. Ciawigebang</p>
+              <p className="text-[10px] text-emerald-200">Bank Sampah 4 Wadah RA Mekarjaya, Ciawigebang</p>
             </div>
           </div>
           <button
@@ -129,7 +165,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
             <div>
               <div className="flex items-center justify-between mb-1">
                 <label className="block text-xs font-bold text-slate-700">
-                  Nomor Rekening
+                  Kode RT
                 </label>
                 <span className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.5 rounded-md">
                   <Lock className="w-2.5 h-2.5" /> Otomatis
@@ -138,45 +174,26 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
               <input
                 type="text"
                 required
-                readOnly
-                tabIndex="-1"
-                value={formData.no_rekening}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono font-bold text-slate-600 bg-slate-100/90 cursor-not-allowed select-none focus:outline-none"
-                title="Nomor rekening digenerate otomatis oleh sistem dan tidak dapat diubah manual."
+                value={formData.kode_rt}
+                onChange={(e) => setFormData({ ...formData, kode_rt: e.target.value.toUpperCase() })}
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono font-bold text-slate-700 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                placeholder="RT01-CMN"
               />
-              <span className="text-[10px] text-slate-400 mt-1 block">
-                Nomor unik terdaftar otomatis
-              </span>
             </div>
 
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                NIK Kependudukan (16 Digit) *
+                Nama Unit RT *
               </label>
               <input
                 type="text"
-                maxLength="16"
                 required
-                value={formData.nik}
-                onChange={(e) => setFormData({ ...formData, nik: e.target.value.replace(/\D/g, '') })}
-                placeholder="320805xxxxxxxxxx"
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                value={formData.nama_rt}
+                onChange={(e) => setFormData({ ...formData, nama_rt: e.target.value })}
+                placeholder="Contoh: RT 01 Cimenang"
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
-              Nama Lengkap Nasabah / Kepala Keluarga *
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.nama}
-              onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-              placeholder="Contoh: Bapak Suryana / Ibu Maryati"
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -186,7 +203,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
               </label>
               <Select
                 value={formData.dusun}
-                onChange={(val) => setFormData({ ...formData, dusun: val })}
+                onChange={handleDusunChange}
                 options={DUSUN_LIST.map((d) => ({ value: d, label: d }))}
                 size="sm"
               />
@@ -214,24 +231,55 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
                 type="text"
                 maxLength="3"
                 value={formData.rt}
-                onChange={(e) => setFormData({ ...formData, rt: e.target.value })}
-                placeholder="02"
+                onChange={(e) => handleRtNumChange(e.target.value)}
+                placeholder="01"
                 className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Nama Ketua RT / Koordinator
+              </label>
+              <input
+                type="text"
+                value={formData.ketua_rt}
+                onChange={(e) => setFormData({ ...formData, ketua_rt: e.target.value })}
+                placeholder="Contoh: Bpk. Suryana"
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                No. WhatsApp / Kontak Ketua RT
+              </label>
+              <input
+                type="text"
+                value={formData.no_telepon}
+                onChange={(e) => setFormData({ ...formData, no_telepon: e.target.value })}
+                placeholder="0812xxxxxxxx"
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
           </div>
 
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Nomor WhatsApp / HP (Opsional)
+              Saldo Kas Awal (Rp)
             </label>
             <input
-              type="text"
-              value={formData.no_hp}
-              onChange={(e) => setFormData({ ...formData, no_hp: e.target.value })}
-              placeholder="0812xxxxxxxx"
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              type="number"
+              min="0"
+              value={formData.saldo_kas}
+              onChange={(e) => setFormData({ ...formData, saldo_kas: e.target.value })}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
+            <span className="text-[10px] text-slate-400 mt-1 block">
+              Saldo kas akan bertambah otomatis setiap kali hasil penjualan sampah RA dialokasikan ke RT ini.
+            </span>
           </div>
 
           <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
@@ -248,7 +296,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
               className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/30 transition flex items-center gap-1.5 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              <span>{loading ? 'Menyimpan...' : editingNasabah ? 'Perbarui Data' : 'Simpan Nasabah'}</span>
+              <span>{loading ? 'Menyimpan...' : editingNasabah ? 'Perbarui Data RT' : 'Simpan Data RT'}</span>
             </button>
           </div>
         </form>

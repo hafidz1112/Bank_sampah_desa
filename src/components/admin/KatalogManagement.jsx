@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tag, Plus, Edit, Trash2, CheckCircle2, XCircle, Search, DollarSign, X, AlertCircle } from 'lucide-react';
+import { Tag, Plus, Edit, Trash2, CheckCircle2, XCircle, Search, DollarSign, X, AlertCircle, Sparkles } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah } from '../../lib/utils';
 import { Select } from '../ui/Select';
@@ -8,13 +8,12 @@ export const KatalogManagement = () => {
   const { katalogList, addKategori, updateKategori, deleteKategori, toggleKategoriActive } = useBankSampah();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
 
   const [formData, setFormData] = useState({
     nama_kategori: '',
-    tipe: 'anorganik',
+    tipe: 'botol_plastik',
     harga_per_kg: '',
     deskripsi: '',
     is_active: true
@@ -25,7 +24,7 @@ export const KatalogManagement = () => {
     setEditingItem(null);
     setFormData({
       nama_kategori: '',
-      tipe: 'anorganik',
+      tipe: 'botol_plastik',
       harga_per_kg: '',
       deskripsi: '',
       is_active: true
@@ -38,7 +37,7 @@ export const KatalogManagement = () => {
     setEditingItem(item);
     setFormData({
       nama_kategori: item.nama_kategori || '',
-      tipe: item.tipe || 'anorganik',
+      tipe: item.tipe || 'botol_plastik',
       harga_per_kg: item.harga_per_kg || '',
       deskripsi: item.deskripsi || '',
       is_active: item.is_active ?? true
@@ -55,7 +54,7 @@ export const KatalogManagement = () => {
     }
     const hargaNum = parseFloat(formData.harga_per_kg);
     if (isNaN(hargaNum) || hargaNum < 0) {
-      setErrorMsg('Harga per kg harus berupa angka positif.');
+      setErrorMsg('Tarif harga per kg harus berupa angka positif.');
       return;
     }
 
@@ -85,9 +84,8 @@ export const KatalogManagement = () => {
   };
 
   const filtered = katalogList.filter(k => {
-    const matchSearch = k.nama_kategori.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchType = selectedType === 'all' || k.tipe === selectedType;
-    return matchSearch && matchType;
+    return k.nama_kategori.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           (k.deskripsi && k.deskripsi.toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
   return (
@@ -95,10 +93,10 @@ export const KatalogManagement = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-            Katalog Sampah & Tarif per Kilogram
+            Katalog 4 Wadah Sampah RA & Tarif Pengepul
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Kelola harga beli sampah anorganik dan organik untuk seluruh warga Desa Mekarjaya
+            Kelola estimasi harga jual ke pengepul untuk 4 jenis wadah sampah terpilah di RA Mekarjaya
           </p>
         </div>
 
@@ -111,7 +109,7 @@ export const KatalogManagement = () => {
         </button>
       </div>
 
-      {/* Filter bar */}
+      {/* Search bar */}
       <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs flex flex-col md:flex-row gap-3 items-center justify-between">
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -119,36 +117,12 @@ export const KatalogManagement = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari kategori sampah..."
+            placeholder="Cari jenis wadah sampah..."
             className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
           />
         </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setSelectedType('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-              selectedType === 'all' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            Semua ({katalogList.length})
-          </button>
-          <button
-            onClick={() => setSelectedType('anorganik')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-              selectedType === 'anorganik' ? 'bg-sky-600 text-white' : 'bg-sky-50 text-sky-700 hover:bg-sky-100'
-            }`}
-          >
-            Anorganik ({katalogList.filter(k => k.tipe === 'anorganik').length})
-          </button>
-          <button
-            onClick={() => setSelectedType('organik')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-              selectedType === 'organik' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-            }`}
-          >
-            Organik Maggot ({katalogList.filter(k => k.tipe === 'organik').length})
-          </button>
+        <div className="text-xs text-slate-500 font-medium">
+          Diterapkan di pos pemilahan RA Mekarjaya ({katalogList.length} kategori wadah)
         </div>
       </div>
 
@@ -158,10 +132,10 @@ export const KatalogManagement = () => {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
               <tr>
-                <th className="py-3.5 px-4">Kategori Sampah</th>
-                <th className="py-3.5 px-4">Tipe / Kelompok</th>
-                <th className="py-3.5 px-4">Deskripsi / Kriteria</th>
-                <th className="py-3.5 px-4 text-right">Tarif Beli Warga</th>
+                <th className="py-3.5 px-4">Nama Wadah / Kategori</th>
+                <th className="py-3.5 px-4">Tipe Kode</th>
+                <th className="py-3.5 px-4">Deskripsi & Syarat Kondisi</th>
+                <th className="py-3.5 px-4 text-right">Tarif Jual ke Pengepul</th>
                 <th className="py-3.5 px-4 text-center">Status</th>
                 <th className="py-3.5 px-4 text-center">Aksi</th>
               </tr>
@@ -173,12 +147,8 @@ export const KatalogManagement = () => {
                     {item.nama_kategori}
                   </td>
                   <td className="py-3 px-4">
-                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
-                      item.tipe === 'organik'
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-sky-100 text-sky-800'
-                    }`}>
-                      {item.tipe}
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-emerald-100 text-emerald-800">
+                      {item.tipe || 'WADAH'}
                     </span>
                   </td>
                   <td className="py-3 px-4 text-slate-500 max-w-xs truncate">
@@ -231,7 +201,7 @@ export const KatalogManagement = () => {
           <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 animate-scale-in">
             <div className="bg-gradient-to-r from-emerald-800 to-teal-900 px-6 py-4 text-white flex items-center justify-between">
               <h3 className="font-extrabold text-base">
-                {editingItem ? 'Edit Katalog Sampah' : 'Tambah Kategori Sampah'}
+                {editingItem ? 'Edit Kategori Wadah RA' : 'Tambah Kategori Wadah RA'}
               </h3>
               <button
                 onClick={() => setModalOpen(false)}
@@ -251,14 +221,14 @@ export const KatalogManagement = () => {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Nama Kategori Sampah *
+                  Nama Kategori Wadah *
                 </label>
                 <input
                   type="text"
                   required
                   value={formData.nama_kategori}
                   onChange={(e) => setFormData({ ...formData, nama_kategori: e.target.value })}
-                  placeholder="Contoh: Kardus Bekas / Minyak Jelantah"
+                  placeholder="Contoh: Botol Plastik (PET Bersih)"
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
@@ -266,14 +236,16 @@ export const KatalogManagement = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Tipe Sampah *
+                    Tipe Wadah *
                   </label>
                   <Select
                     value={formData.tipe}
                     onChange={(val) => setFormData({ ...formData, tipe: val })}
                     options={[
-                      { value: 'anorganik', label: 'Anorganik', badge: 'ANORGANIK' },
-                      { value: 'organik', label: 'Organik (Pakan Maggot)', badge: 'ORGANIK' }
+                      { value: 'botol_plastik', label: 'Botol Plastik', badge: 'BOTOL' },
+                      { value: 'plastik', label: 'Plastik Campur', badge: 'PLASTIK' },
+                      { value: 'kardus_kertas', label: 'Kardus & Kertas', badge: 'KERTAS' },
+                      { value: 'besi_kaca', label: 'Besi & Kaca', badge: 'LOGAM' }
                     ]}
                     size="sm"
                   />
@@ -281,7 +253,7 @@ export const KatalogManagement = () => {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Tarif per Kg (Rp) *
+                    Tarif ke Pengepul / Kg (Rp) *
                   </label>
                   <input
                     type="number"
@@ -290,7 +262,7 @@ export const KatalogManagement = () => {
                     required
                     value={formData.harga_per_kg}
                     onChange={(e) => setFormData({ ...formData, harga_per_kg: e.target.value })}
-                    placeholder="Contoh: 2500"
+                    placeholder="Contoh: 3000"
                     className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
@@ -298,13 +270,13 @@ export const KatalogManagement = () => {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Deskripsi / Petunjuk Kebersihan
+                  Deskripsi & Syarat Pemilahan
                 </label>
                 <textarea
                   rows="2"
                   value={formData.deskripsi}
                   onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
-                  placeholder="Contoh: Kering, bersih tanpa staples/tutup"
+                  placeholder="Contoh: Kosongkan cairan, lepaskan tutup, pipihkan jika memungkinkan"
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
@@ -318,7 +290,7 @@ export const KatalogManagement = () => {
                   className="rounded text-emerald-600 focus:ring-emerald-500"
                 />
                 <label htmlFor="is_active_check" className="text-xs font-semibold text-slate-700 cursor-pointer">
-                  Aktifkan kategori ini untuk penimbangan warga
+                  Aktifkan kategori ini untuk penimbangan RA
                 </label>
               </div>
 

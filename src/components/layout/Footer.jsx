@@ -1,6 +1,5 @@
 import React from 'react';
-import { MapPin, Leaf, Recycle, BookOpen, Shield, ArrowRight, ExternalLink } from 'lucide-react';
-import { MAGGOT_MONITORING_URL } from '../../lib/utils';
+import { MapPin, Leaf, Recycle, BookOpen, Shield, ArrowRight } from 'lucide-react';
 
 export const Footer = ({ onOpenLogin, onNavigate }) => {
   return (
@@ -16,14 +15,16 @@ export const Footer = ({ onOpenLogin, onNavigate }) => {
                 className="w-10 h-10 object-contain drop-shadow-sm flex-shrink-0"
               />
               <div>
-                <span className="font-extrabold text-lg sm:text-xl text-white tracking-tight">
-                  SI-BSDes <span className="text-emerald-400">Mekarjaya</span>
+                <span className="font-black text-lg sm:text-xl text-white tracking-tight">
+                  Bank Sampah <span className="text-emerald-400">Desa Mekarjaya</span>
                 </span>
-                <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">Sistem Informasi Bank Sampah Desa Terintegrasi</p>
+                <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">
+                  Sistem Informasi Pemilahan 4 Wadah & Kas Warga RT
+                </p>
               </div>
             </div>
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-md">
-              Platform tata kelola bank sampah digital dan ekosistem ekonomi sirkular terpadu: memadukan penimbangan sampah anorganik berbayar dengan biokonversi sampah organik Maggot BSF guna mendukung efisiensi pakan bebek petelur BUMDes Mekarjaya.
+              Program Bank Sampah Desa Mekarjaya: memilah 4 kategori sampah (Botol Plastik, Plastik, Kardus/Kertas, Besi & Kaca) dengan titik kumpul di pos RA. Hasil penjualan sampah dikonversi menjadi tabungan kas warga per RT.
             </p>
             <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-1 text-[11px] sm:text-xs">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800 text-emerald-300 border border-slate-700">
@@ -47,13 +48,11 @@ export const Footer = ({ onOpenLogin, onNavigate }) => {
             <ul className="space-y-1.5 sm:space-y-2 text-xs text-slate-400">
               <li>• KKM Universitas Muhammadiyah Cirebon 2026</li>
               <li>• Program Studi Teknik Informatika</li>
-              <li>• Lokasi: Desa Mekarjaya, Ciawigebang</li>
-              <li>
-                • Mitra: <a href={MAGGOT_MONITORING_URL} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 underline font-semibold">Web Monitoring Maggot ↗</a>
-              </li>
+              <li>• Lokasi: Desa Mekarjaya, Kec. Ciawigebang</li>
+              <li>• Mitra: RA (Raudhatul Athfal) Mekarjaya</li>
               {onNavigate && (
                 <li>
-                  • Edukasi: <button onClick={() => onNavigate('game-edukasi')} className="text-emerald-400 hover:text-emerald-300 underline font-semibold">🎮 Game Pilah Sampah</button>
+                  • Edukasi: <button onClick={() => onNavigate('game-edukasi')} className="text-emerald-400 hover:text-emerald-300 underline font-semibold">🎮 Game 4 Wadah Pilah</button>
                 </li>
               )}
             </ul>
@@ -70,7 +69,7 @@ export const Footer = ({ onOpenLogin, onNavigate }) => {
                 onClick={onOpenLogin}
                 className="w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 transition text-xs font-semibold min-h-[44px]"
               >
-                <span>Login Karang Taruna / BUMDes</span>
+                <span>Login Operator & Pengurus RA</span>
                 <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
               </button>
             </div>
@@ -82,7 +81,7 @@ export const Footer = ({ onOpenLogin, onNavigate }) => {
           <p>© 2026 KKM Informatika UMC • Desa Mekarjaya, Ciawigebang, Kuningan.</p>
           <p className="flex items-center justify-center gap-1.5 text-emerald-400 font-medium">
             <Leaf className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-            <span>Pilah Sampah dari Rumah, Jaga Kebersihan Desa untuk Lingkungan Sehat & Asri</span>
+            <span>Pilah Sampah di 4 Wadah RA, Jadi Tabungan Bersama Kesejahteraan RT</span>
           </p>
         </div>
       </div>

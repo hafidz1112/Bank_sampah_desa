@@ -61,7 +61,7 @@ const MainApp = () => {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
         <div className="text-center space-y-3">
           <div className="w-8 h-8 border-2 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-slate-500 font-medium">Memuat sistem SI-BSDes...</p>
+          <p className="text-xs text-slate-500 font-medium">Memuat Bank Sampah Desa Mekarjaya...</p>
         </div>
       </div>
     );

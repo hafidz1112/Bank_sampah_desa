@@ -1,51 +1,55 @@
 -- ==============================================================================
--- SISTEM INFORMASI BANK SAMPAH DESA TERINTEGRASI (SI-BSDes) MEKARJAYA
+-- SISTEM INFORMASI BANK SAMPAH DESA TERINTEGRASI (SI-BSDes) RA MEKARJAYA
+-- Penerapan: Tempat Sampah Terpilah 4 Wadah di RA (Raudhatul Athfal) Mekarjaya
+-- Hasil Penjualan Sampah Dikelola sebagai Tabungan/Kas Warga per RT
 -- Lokasi: Desa Mekarjaya, Kec. Ciawigebang, Kab. Kuningan
 -- Dusun: Cimenang, Ciganda, Cimuda
 -- Program Kerja Individu KKM Informatika UMC 2026
 -- ==============================================================================
 
 -- 1. ENUMS
-CREATE TYPE waste_type AS ENUM ('organik', 'anorganik');
-CREATE TYPE tx_type AS ENUM ('setor', 'tarik');
+CREATE TYPE waste_category_type AS ENUM ('botol_plastik', 'plastik', 'kardus_kertas', 'besi_kaca');
+CREATE TYPE tx_flow_type AS ENUM ('penjualan', 'penyaluran');
 
--- 2. TABEL NASABAH
-CREATE TABLE nasabah (
+-- 2. TABEL TABUNGAN / KAS RT DESA MEKARJAYA
+CREATE TABLE tabungan_rt (
     id BIGSERIAL PRIMARY KEY,
-    no_rekening VARCHAR(20) UNIQUE NOT NULL,
-    nik VARCHAR(16) UNIQUE NOT NULL,
-    nama VARCHAR(100) NOT NULL,
-    dusun VARCHAR(50) NOT NULL, -- Cimenang / Ciganda / Cimuda
-    rw VARCHAR(5) NOT NULL,
-    rt VARCHAR(5) NOT NULL,
-    no_hp VARCHAR(20),
-    saldo_aktif NUMERIC(12, 2) DEFAULT 0 CHECK (saldo_aktif >= 0),
+    kode_rt VARCHAR(20) UNIQUE NOT NULL,      -- Contoh: RT-01-CIMENANG
+    nama_rt VARCHAR(100) NOT NULL,            -- Contoh: RT 01 / RW 01
+    dusun VARCHAR(50) NOT NULL,               -- Dusun Cimenang / Dusun Ciganda / Dusun Cimuda
+    rw VARCHAR(5) NOT NULL,                   -- 01 / 02 / 03
+    rt VARCHAR(5) NOT NULL,                   -- 01 / 02 / 03
+    ketua_rt VARCHAR(100) NOT NULL,           -- Nama Ketua RT / Penanggung Jawab
+    kontak VARCHAR(20),                       -- No WhatsApp / Telepon
+    saldo_kas NUMERIC(12, 2) DEFAULT 0 CHECK (saldo_kas >= 0),
+    total_sampah_terkumpul_kg NUMERIC(10, 2) DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. TABEL KATALOG KATEGORI SAMPAH
+-- 3. TABEL 4 KATALOG SAMPAH TERPILAH
 CREATE TABLE kategori_sampah (
     id BIGSERIAL PRIMARY KEY,
     nama_kategori VARCHAR(100) NOT NULL,
-    tipe waste_type NOT NULL,
+    tipe waste_category_type NOT NULL,
     harga_per_kg NUMERIC(10, 2) NOT NULL CHECK (harga_per_kg >= 0),
+    deskripsi TEXT,
     is_active BOOLEAN DEFAULT TRUE,
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. TABEL TRANSAKSI (SETOR / TARIK)
+-- 4. TABEL TRANSAKSI (PENJUALAN SAMPAH KE PENGEPUL & PENYALURAN KAS RT)
 CREATE TABLE transaksi (
     id BIGSERIAL PRIMARY KEY,
-    kode_transaksi VARCHAR(30) UNIQUE NOT NULL,
-    nasabah_id BIGINT REFERENCES nasabah(id) ON DELETE RESTRICT,
-    jenis tx_type NOT NULL,
+    kode_transaksi VARCHAR(30) UNIQUE NOT NULL, -- PJL-YYYYMMDD-XXXX atau SLR-YYYYMMDD-XXXX
+    rt_id BIGINT REFERENCES tabungan_rt(id) ON DELETE RESTRICT,
+    jenis tx_flow_type NOT NULL,
     total_berat_kg NUMERIC(8, 2) DEFAULT 0,
     total_nominal NUMERIC(12, 2) NOT NULL CHECK (total_nominal > 0),
     keterangan TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 5. TABEL DETAIL SETORAN SAMPAH
+-- 5. TABEL DETAIL PENJUALAN SAMPAH DARI 4 TONG RA
 CREATE TABLE detail_setoran (
     id BIGSERIAL PRIMARY KEY,
     transaksi_id BIGINT REFERENCES transaksi(id) ON DELETE CASCADE,
@@ -55,92 +59,74 @@ CREATE TABLE detail_setoran (
     subtotal NUMERIC(12, 2) NOT NULL
 );
 
--- 6. TABEL LOG ALIRAN SAMPAH ORGANIK KE BIOPOND MAGGOT BSF
-CREATE TABLE log_aliran_organik (
-    id BIGSERIAL PRIMARY KEY,
-    tanggal DATE NOT NULL DEFAULT CURRENT_DATE,
-    volume_sampah_organik_kg NUMERIC(8, 2) NOT NULL,
-    tujuan_biopond VARCHAR(50) DEFAULT 'Biopond Maggot Unit 1',
-    est_maggot_panen_kg NUMERIC(8, 2) DEFAULT 0,
-    target_alokasi VARCHAR(100) DEFAULT 'Pakan Bebek Petelur BUMDes',
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- 7. TRIGGER OTOMATIS PEMBARUAN SALDO NASABAH (SECURITY DEFINER)
-CREATE OR REPLACE FUNCTION tr_update_saldo()
+-- 6. TRIGGER OTOMATIS PEMBARUAN SALDO KAS RT & AKUMULASI SAMPAH
+CREATE OR REPLACE FUNCTION tr_update_saldo_rt()
 RETURNS TRIGGER 
 SECURITY DEFINER
 AS $$ 
 BEGIN     
-    IF NEW.jenis = 'setor' THEN         
-        UPDATE nasabah SET saldo_aktif = saldo_aktif + NEW.total_nominal WHERE id = NEW.nasabah_id;     
-    ELSIF NEW.jenis = 'tarik' THEN         
-        IF (SELECT saldo_aktif FROM nasabah WHERE id = NEW.nasabah_id) < NEW.total_nominal THEN             
-            RAISE EXCEPTION 'Saldo tidak mencukupi untuk melakukan penarikan';         
+    IF NEW.jenis = 'penjualan' THEN         
+        UPDATE tabungan_rt 
+        SET saldo_kas = saldo_kas + NEW.total_nominal,
+            total_sampah_terkumpul_kg = total_sampah_terkumpul_kg + COALESCE(NEW.total_berat_kg, 0)
+        WHERE id = NEW.rt_id;     
+    ELSIF NEW.jenis = 'penyaluran' THEN         
+        IF (SELECT saldo_kas FROM tabungan_rt WHERE id = NEW.rt_id) < NEW.total_nominal THEN             
+            RAISE EXCEPTION 'Saldo kas RT tidak mencukupi untuk melakukan penyaluran dana';         
         END IF;         
-        UPDATE nasabah SET saldo_aktif = saldo_aktif - NEW.total_nominal WHERE id = NEW.nasabah_id;     
+        UPDATE tabungan_rt 
+        SET saldo_kas = saldo_kas - NEW.total_nominal 
+        WHERE id = NEW.rt_id;     
     END IF;     
     RETURN NEW; 
 END; 
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER tr_sync_saldo_nasabah
+CREATE TRIGGER tr_sync_saldo_rt
 AFTER INSERT ON transaksi
-FOR EACH ROW EXECUTE FUNCTION tr_update_saldo();
+FOR EACH ROW EXECUTE FUNCTION tr_update_saldo_rt();
 
--- 8. INDEXES UNTUK PERFORMA QUERY CEPAT
-CREATE INDEX idx_nasabah_nik ON nasabah(nik);
-CREATE INDEX idx_nasabah_no_rekening ON nasabah(no_rekening);
-CREATE INDEX idx_nasabah_dusun ON nasabah(dusun);
-CREATE INDEX idx_transaksi_nasabah_id ON transaksi(nasabah_id);
+-- 7. INDEXES UNTUK PERFORMA QUERY CEPAT
+CREATE INDEX idx_tabungan_rt_kode ON tabungan_rt(kode_rt);
+CREATE INDEX idx_tabungan_rt_dusun ON tabungan_rt(dusun);
+CREATE INDEX idx_transaksi_rt_id ON transaksi(rt_id);
 CREATE INDEX idx_transaksi_created_at ON transaksi(created_at);
-CREATE INDEX idx_detail_setoran_tx ON detail_setoran(transaksi_id);
-CREATE INDEX idx_log_organik_tanggal ON log_aliran_organik(tanggal);
+CREATE INDEX idx_detail_tx_id ON detail_setoran(transaksi_id);
 
--- 9. ROW LEVEL SECURITY (RLS) POLICIES
-ALTER TABLE nasabah ENABLE ROW LEVEL SECURITY;
+-- 8. ROW LEVEL SECURITY (RLS) POLICIES
+ALTER TABLE tabungan_rt ENABLE ROW LEVEL SECURITY;
 ALTER TABLE kategori_sampah ENABLE ROW LEVEL SECURITY;
 ALTER TABLE transaksi ENABLE ROW LEVEL SECURITY;
 ALTER TABLE detail_setoran ENABLE ROW LEVEL SECURITY;
-ALTER TABLE log_aliran_organik ENABLE ROW LEVEL SECURITY;
 
+CREATE POLICY "Allow All Tabungan RT" ON tabungan_rt FOR ALL TO public USING (true) WITH CHECK (true);
 CREATE POLICY "Allow All Kategori Sampah" ON kategori_sampah FOR ALL TO public USING (true) WITH CHECK (true);
-CREATE POLICY "Allow All Nasabah" ON nasabah FOR ALL TO public USING (true) WITH CHECK (true);
 CREATE POLICY "Allow All Transaksi" ON transaksi FOR ALL TO public USING (true) WITH CHECK (true);
 CREATE POLICY "Allow All Detail Setoran" ON detail_setoran FOR ALL TO public USING (true) WITH CHECK (true);
-CREATE POLICY "Allow All Log Organik" ON log_aliran_organik FOR ALL TO public USING (true) WITH CHECK (true);
 
 -- ==============================================================================
--- 10. SEED DATA AWAL (KATALOG SAMPAH & NASABAH DESA MEKARJAYA)
+-- 9. SEED DATA AWAL (4 KATEGORI SAMPAH & DATA RT DESA MEKARJAYA)
 -- ==============================================================================
 
--- Kategori Sampah Anorganik & Organik
-INSERT INTO kategori_sampah (nama_kategori, tipe, harga_per_kg, is_active) VALUES
-('Kardus Bekas / Box Karton', 'anorganik', 2500, true),
-('Botol Plastik PET Bening', 'anorganik', 3500, true),
-('Gelas Plastik Bersih (PP/Aqua)', 'anorganik', 4000, true),
-('Plastik Campur / Kresek Bersih', 'anorganik', 1200, true),
-('Kaleng / Seng Logam', 'anorganik', 2000, true),
-('Besi Tua / Scrap Besi', 'anorganik', 4500, true),
-('Kertas HVS / Buku Tulis', 'anorganik', 2200, true),
-('Koran Bekas', 'anorganik', 1800, true),
-('Minyak Jelantah (UCO)', 'anorganik', 6500, true),
-('Sampah Organik Dapur (Sisa Sayur & Nasi)', 'organik', 800, true),
-('Sisa Buah & Sayuran Pasar Desa', 'organik', 600, true),
-('Ampas Tahu & Kelapa', 'organik', 1000, true);
+-- 4 Kategori Tempat Sampah Terpilah di RA Mekarjaya
+INSERT INTO kategori_sampah (nama_kategori, tipe, harga_per_kg, deskripsi, is_active) VALUES
+('Botol Plastik (PET Bening / Bersih)', 'botol_plastik', 3500, 'Botol air mineral bersih, botol teh/jus bening, tutup botol dilepas', true),
+('Plastik (Kresek, Gelas PP & Campur)', 'plastik', 2200, 'Gelas plastik minuman kemasan (PP), kantong kresek kering, kemasan plastik bersih', true),
+('Kardus & Kertas (Karton / Buku / Koran)', 'kardus_kertas', 2500, 'Kardus box gelombang kering, kertas putih HVS, koran, buku tulis bekas', true),
+('Besi & Kaca (Kaleng, Seng, Beling Botol)', 'besi_kaca', 3000, 'Kaleng soda/susu, potongan besi/seng, dan botol kaca/beling sirup/kecap', true);
 
--- Data Nasabah Warga Desa Mekarjaya
-INSERT INTO nasabah (no_rekening, nik, nama, dusun, rw, rt, no_hp, saldo_aktif) VALUES
-('BSDES-MJ-001', '3208051204850001', 'Bapak Suryana', 'Cimenang', '01', '02', '081234567890', 47500.00),
-('BSDES-MJ-002', '3208055508920002', 'Ibu Siti Aminah', 'Ciganda', '02', '01', '085712349988', 82000.00),
-('BSDES-MJ-003', '3208052101780003', 'Pak Dedi Supriadi', 'Cimuda', '03', '03', '087890123456', 25000.00),
-('BSDES-MJ-004', '3208056211900004', 'Ibu Neng Maryati', 'Cimenang', '01', '01', '081399887766', 115000.00),
-('BSDES-MJ-005', '3208051506880005', 'Kang Asep Wahyudin', 'Ciganda', '02', '02', '082144556677', 63000.00),
-('BSDES-MJ-006', '3208054803950006', 'Teh Rina Karlina', 'Cimuda', '03', '01', '085611223344', 38500.00);
+-- Data Kas & Tabungan per RT di Lingkungan Desa Mekarjaya
+INSERT INTO tabungan_rt (kode_rt, nama_rt, dusun, rw, rt, ketua_rt, kontak, saldo_kas, total_sampah_terkumpul_kg) VALUES
+('RT-01-CIMENANG', 'RT 01 / RW 01', 'Dusun Cimenang', '01', '01', 'Bapak Suryana', '081234567890', 145000.00, 48.5),
+('RT-02-CIMENANG', 'RT 02 / RW 01', 'Dusun Cimenang', '01', '02', 'Bapak Koswara', '081399887766', 118000.00, 39.0),
+('RT-01-CIGANDA', 'RT 01 / RW 02', 'Dusun Ciganda', '02', '01', 'Kang Asep Wahyudin', '085712349988', 195000.00, 64.2),
+('RT-02-CIGANDA', 'RT 02 / RW 02', 'Dusun Ciganda', '02', '02', 'Bapak Maman Suherman', '082144556677', 85000.00, 28.0),
+('RT-01-CIMUDA', 'RT 01 / RW 03', 'Dusun Cimuda', '03', '01', 'Pak Dedi Supriadi', '087890123456', 160000.00, 52.5),
+('RT-02-CIMUDA', 'RT 02 / RW 03', 'Dusun Cimuda', '03', '02', 'Bapak Nana Sukarna', '085611223344', 92000.00, 31.0);
 
--- Log Aliran Organik Awal ke Biopond Maggot BSF
-INSERT INTO log_aliran_organik (tanggal, volume_sampah_organik_kg, tujuan_biopond, est_maggot_panen_kg, target_alokasi) VALUES
-(CURRENT_DATE - INTERVAL '6 days', 35.5, 'Biopond Maggot Unit 1 (Kandang Utama)', 7.1, 'Pakan Bebek Petelur BUMDes Mekarjaya'),
-(CURRENT_DATE - INTERVAL '4 days', 42.0, 'Biopond Maggot Unit 2 (Dusun Ciganda)', 8.4, 'Pakan Bebek Petelur BUMDes Mekarjaya'),
-(CURRENT_DATE - INTERVAL '2 days', 50.0, 'Biopond Maggot Unit 1 (Kandang Utama)', 10.0, 'Pakan Bebek Petelur BUMDes Mekarjaya'),
-(CURRENT_DATE, 38.0, 'Biopond Maggot Unit 3 (Dusun Cimenang)', 7.6, 'Pakan Bebek Petelur BUMDes Mekarjaya');
+-- Riwayat Penjualan Sampah Terpilah Awal
+INSERT INTO transaksi (kode_transaksi, rt_id, jenis, total_berat_kg, total_nominal, keterangan) VALUES
+('PJL-20260210-1011', 1, 'penjualan', 25.0, 75000.00, 'Penjualan berkala sampah botol plastik & kardus dari RA untuk RT 01 Cimenang'),
+('PJL-20260215-2022', 3, 'penjualan', 34.0, 110000.00, 'Hasil penjualan kaleng besi dan botol plastik wadah pilah RA'),
+('SLR-20260220-3033', 1, 'penyaluran', 0, 30000.00, 'Penyaluran dana kas tabungan sampah untuk pengadaan tempat sampah jalan RT 01'),
+('PJL-20260225-4044', 5, 'penjualan', 28.5, 87500.00, 'Penjualan botol kaca dan kertas kardus terkumpul di RA');

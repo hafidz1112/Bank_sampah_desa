@@ -9,53 +9,57 @@ export const SqlHelperModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const sqlScript = `-- ==============================================================================
--- SISTEM INFORMASI BANK SAMPAH DESA TERINTEGRASI (SI-BSDes) MEKARJAYA
+-- SISTEM INFORMASI BANK SAMPAH DESA TERINTEGRASI (SI-BSDes) RA MEKARJAYA
+-- Penerapan: Tempat Sampah Terpilah 4 Wadah di RA (Raudhatul Athfal) Mekarjaya
+-- Hasil Penjualan Sampah Dikelola sebagai Tabungan/Kas Warga per RT
 -- Lokasi: Desa Mekarjaya, Kec. Ciawigebang, Kab. Kuningan
 -- Dusun: Cimenang, Ciganda, Cimuda
 -- Program Kerja Individu KKM Informatika UMC 2026
 -- ==============================================================================
 
 -- 1. ENUMS
-CREATE TYPE waste_type AS ENUM ('organik', 'anorganik');
-CREATE TYPE tx_type AS ENUM ('setor', 'tarik');
+CREATE TYPE waste_category_type AS ENUM ('botol_plastik', 'plastik', 'kardus_kertas', 'besi_kaca');
+CREATE TYPE tx_flow_type AS ENUM ('penjualan', 'penyaluran');
 
--- 2. TABEL NASABAH
-CREATE TABLE nasabah (
+-- 2. TABEL TABUNGAN / KAS RT DESA MEKARJAYA
+CREATE TABLE tabungan_rt (
     id BIGSERIAL PRIMARY KEY,
-    no_rekening VARCHAR(20) UNIQUE NOT NULL,
-    nik VARCHAR(16) UNIQUE NOT NULL,
-    nama VARCHAR(100) NOT NULL,
-    dusun VARCHAR(50) NOT NULL, -- Cimenang / Ciganda / Cimuda
-    rw VARCHAR(5) NOT NULL,
-    rt VARCHAR(5) NOT NULL,
-    no_hp VARCHAR(20),
-    saldo_aktif NUMERIC(12, 2) DEFAULT 0 CHECK (saldo_aktif >= 0),
+    kode_rt VARCHAR(20) UNIQUE NOT NULL,      -- Contoh: RT-01-CIMENANG
+    nama_rt VARCHAR(100) NOT NULL,            -- Contoh: RT 01 / RW 01
+    dusun VARCHAR(50) NOT NULL,               -- Dusun Cimenang / Dusun Ciganda / Dusun Cimuda
+    rw VARCHAR(5) NOT NULL,                   -- 01 / 02 / 03
+    rt VARCHAR(5) NOT NULL,                   -- 01 / 02 / 03
+    ketua_rt VARCHAR(100) NOT NULL,           -- Nama Ketua RT / Penanggung Jawab
+    kontak VARCHAR(20),                       -- No WhatsApp / Telepon
+    saldo_kas NUMERIC(12, 2) DEFAULT 0 CHECK (saldo_kas >= 0),
+    total_sampah_terkumpul_kg NUMERIC(10, 2) DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. TABEL KATALOG KATEGORI SAMPAH
+-- 3. TABEL 4 KATALOG SAMPAH TERPILAH
 CREATE TABLE kategori_sampah (
     id BIGSERIAL PRIMARY KEY,
     nama_kategori VARCHAR(100) NOT NULL,
-    tipe waste_type NOT NULL,
+    tipe waste_category_type NOT NULL,
     harga_per_kg NUMERIC(10, 2) NOT NULL CHECK (harga_per_kg >= 0),
+    deskripsi TEXT,
     is_active BOOLEAN DEFAULT TRUE,
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. TABEL TRANSAKSI (SETOR / TARIK)
+-- 4. TABEL TRANSAKSI (PENJUALAN SAMPAH KE PENGEPUL & PENYALURAN KAS RT)
 CREATE TABLE transaksi (
     id BIGSERIAL PRIMARY KEY,
-    kode_transaksi VARCHAR(30) UNIQUE NOT NULL,
-    nasabah_id BIGINT REFERENCES nasabah(id) ON DELETE RESTRICT,
-    jenis tx_type NOT NULL,
+    kode_transaksi VARCHAR(30) UNIQUE NOT NULL, -- PJL-YYYYMMDD-XXXX atau SLR-YYYYMMDD-XXXX
+    rt_id BIGINT REFERENCES tabungan_rt(id) ON DELETE RESTRICT,
+    jenis tx_flow_type NOT NULL,
     total_berat_kg NUMERIC(8, 2) DEFAULT 0,
     total_nominal NUMERIC(12, 2) NOT NULL CHECK (total_nominal > 0),
     keterangan TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 5. TABEL DETAIL SETORAN SAMPAH
+-- 5. TABEL DETAIL PENJUALAN SAMPAH DARI 4 TONG RA
 CREATE TABLE detail_setoran (
     id BIGSERIAL PRIMARY KEY,
     transaksi_id BIGINT REFERENCES transaksi(id) ON DELETE CASCADE,
@@ -65,67 +69,65 @@ CREATE TABLE detail_setoran (
     subtotal NUMERIC(12, 2) NOT NULL
 );
 
--- 6. TABEL LOG ALIRAN SAMPAH ORGANIK KE BIOPOND MAGGOT BSF
-CREATE TABLE log_aliran_organik (
-    id BIGSERIAL PRIMARY KEY,
-    tanggal DATE NOT NULL DEFAULT CURRENT_DATE,
-    volume_sampah_organik_kg NUMERIC(8, 2) NOT NULL,
-    tujuan_biopond VARCHAR(50) DEFAULT 'Biopond Maggot Unit 1',
-    est_maggot_panen_kg NUMERIC(8, 2) DEFAULT 0,
-    target_alokasi VARCHAR(100) DEFAULT 'Pakan Bebek Petelur BUMDes',
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- 7. TRIGGER OTOMATIS PEMBARUAN SALDO NASABAH
-CREATE OR REPLACE FUNCTION tr_update_saldo()
-RETURNS TRIGGER AS $$ 
+-- 6. TRIGGER OTOMATIS PEMBARUAN SALDO KAS RT & AKUMULASI SAMPAH
+CREATE OR REPLACE FUNCTION tr_update_saldo_rt()
+RETURNS TRIGGER 
+SECURITY DEFINER
+AS $$ 
 BEGIN     
-    IF NEW.jenis = 'setor' THEN         
-        UPDATE nasabah SET saldo_aktif = saldo_aktif + NEW.total_nominal WHERE id = NEW.nasabah_id;     
-    ELSIF NEW.jenis = 'tarik' THEN         
-        IF (SELECT saldo_aktif FROM nasabah WHERE id = NEW.nasabah_id) < NEW.total_nominal THEN             
-            RAISE EXCEPTION 'Saldo tidak mencukupi untuk melakukan penarikan';         
+    IF NEW.jenis = 'penjualan' THEN         
+        UPDATE tabungan_rt 
+        SET saldo_kas = saldo_kas + NEW.total_nominal,
+            total_sampah_terkumpul_kg = total_sampah_terkumpul_kg + COALESCE(NEW.total_berat_kg, 0)
+        WHERE id = NEW.rt_id;     
+    ELSIF NEW.jenis = 'penyaluran' THEN         
+        IF (SELECT saldo_kas FROM tabungan_rt WHERE id = NEW.rt_id) < NEW.total_nominal THEN             
+            RAISE EXCEPTION 'Saldo kas RT tidak mencukupi untuk melakukan penyaluran dana';         
         END IF;         
-        UPDATE nasabah SET saldo_aktif = saldo_aktif - NEW.total_nominal WHERE id = NEW.nasabah_id;     
+        UPDATE tabungan_rt 
+        SET saldo_kas = saldo_kas - NEW.total_nominal 
+        WHERE id = NEW.rt_id;     
     END IF;     
     RETURN NEW; 
 END; 
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER tr_sync_saldo_nasabah
+CREATE TRIGGER tr_sync_saldo_rt
 AFTER INSERT ON transaksi
-FOR EACH ROW EXECUTE FUNCTION tr_update_saldo();
+FOR EACH ROW EXECUTE FUNCTION tr_update_saldo_rt();
 
--- 8. INDEXES UNTUK PERFORMA QUERY CEPAT
-CREATE INDEX idx_nasabah_nik ON nasabah(nik);
-CREATE INDEX idx_nasabah_no_rekening ON nasabah(no_rekening);
-CREATE INDEX idx_nasabah_dusun ON nasabah(dusun);
-CREATE INDEX idx_transaksi_nasabah_id ON transaksi(nasabah_id);
+-- 7. INDEXES UNTUK PERFORMA QUERY CEPAT
+CREATE INDEX idx_tabungan_rt_kode ON tabungan_rt(kode_rt);
+CREATE INDEX idx_tabungan_rt_dusun ON tabungan_rt(dusun);
+CREATE INDEX idx_transaksi_rt_id ON transaksi(rt_id);
 CREATE INDEX idx_transaksi_created_at ON transaksi(created_at);
-CREATE INDEX idx_detail_setoran_tx ON detail_setoran(transaksi_id);
-CREATE INDEX idx_log_organik_tanggal ON log_aliran_organik(tanggal);
+CREATE INDEX idx_detail_tx_id ON detail_setoran(transaksi_id);
 
--- 9. ROW LEVEL SECURITY (RLS) POLICIES
-ALTER TABLE nasabah ENABLE ROW LEVEL SECURITY;
+-- 8. ROW LEVEL SECURITY (RLS) POLICIES
+ALTER TABLE tabungan_rt ENABLE ROW LEVEL SECURITY;
 ALTER TABLE kategori_sampah ENABLE ROW LEVEL SECURITY;
 ALTER TABLE transaksi ENABLE ROW LEVEL SECURITY;
 ALTER TABLE detail_setoran ENABLE ROW LEVEL SECURITY;
-ALTER TABLE log_aliran_organik ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Public Read Kategori Sampah" ON kategori_sampah FOR SELECT USING (true);
-CREATE POLICY "Admin All Kategori Sampah" ON kategori_sampah FOR ALL TO authenticated USING (true);
+CREATE POLICY "Allow All Tabungan RT" ON tabungan_rt FOR ALL TO public USING (true) WITH CHECK (true);
+CREATE POLICY "Allow All Kategori Sampah" ON kategori_sampah FOR ALL TO public USING (true) WITH CHECK (true);
+CREATE POLICY "Allow All Transaksi" ON transaksi FOR ALL TO public USING (true) WITH CHECK (true);
+CREATE POLICY "Allow All Detail Setoran" ON detail_setoran FOR ALL TO public USING (true) WITH CHECK (true);
 
-CREATE POLICY "Public Read Nasabah" ON nasabah FOR SELECT USING (true);
-CREATE POLICY "Admin All Nasabah" ON nasabah FOR ALL TO authenticated USING (true);
+-- 9. SEED DATA AWAL (4 KATEGORI SAMPAH & DATA RT)
+INSERT INTO kategori_sampah (nama_kategori, tipe, harga_per_kg, deskripsi, is_active) VALUES
+('Botol Plastik (PET Bening / Bersih)', 'botol_plastik', 3500, 'Botol air mineral bersih, botol teh/jus bening, tutup botol dilepas', true),
+('Plastik (Kresek, Gelas PP & Campur)', 'plastik', 2200, 'Gelas plastik minuman kemasan (PP), kantong kresek kering, kemasan plastik bersih', true),
+('Kardus & Kertas (Karton / Buku / Koran)', 'kardus_kertas', 2500, 'Kardus box gelombang kering, kertas putih HVS, koran, buku tulis bekas', true),
+('Besi & Kaca (Kaleng, Seng, Beling Botol)', 'besi_kaca', 3000, 'Kaleng soda/susu, potongan besi/seng, dan botol kaca/beling sirup/kecap', true);
 
-CREATE POLICY "Public Read Transaksi" ON transaksi FOR SELECT USING (true);
-CREATE POLICY "Admin All Transaksi" ON transaksi FOR ALL TO authenticated USING (true);
-
-CREATE POLICY "Public Read Detail Setoran" ON detail_setoran FOR SELECT USING (true);
-CREATE POLICY "Admin All Detail Setoran" ON detail_setoran FOR ALL TO authenticated USING (true);
-
-CREATE POLICY "Public Read Log Organik" ON log_aliran_organik FOR SELECT USING (true);
-CREATE POLICY "Admin All Log Organik" ON log_aliran_organik FOR ALL TO authenticated USING (true);`;
+INSERT INTO tabungan_rt (kode_rt, nama_rt, dusun, rw, rt, ketua_rt, kontak, saldo_kas, total_sampah_terkumpul_kg) VALUES
+('RT-01-CIMENANG', 'RT 01 / RW 01', 'Dusun Cimenang', '01', '01', 'Bapak Suryana', '081234567890', 145000.00, 48.5),
+('RT-02-CIMENANG', 'RT 02 / RW 01', 'Dusun Cimenang', '01', '02', 'Bapak Koswara', '081399887766', 118000.00, 39.0),
+('RT-01-CIGANDA', 'RT 01 / RW 02', 'Dusun Ciganda', '02', '01', 'Kang Asep Wahyudin', '085712349988', 195000.00, 64.2),
+('RT-02-CIGANDA', 'RT 02 / RW 02', 'Dusun Ciganda', '02', '02', 'Bapak Maman Suherman', '082144556677', 85000.00, 28.0),
+('RT-01-CIMUDA', 'RT 01 / RW 03', 'Dusun Cimuda', '03', '01', 'Pak Dedi Supriadi', '087890123456', 160000.00, 52.5),
+('RT-02-CIMUDA', 'RT 02 / RW 03', 'Dusun Cimuda', '03', '02', 'Bapak Nana Sukarna', '085611223344', 92000.00, 31.0);`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(sqlScript);
@@ -139,7 +141,7 @@ CREATE POLICY "Admin All Log Organik" ON log_aliran_organik FOR ALL TO authentic
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'schema_si_bsdes_mekarjaya.sql';
+    link.download = 'schema_si_bsdes_ra_mekarjaya.sql';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -156,7 +158,7 @@ CREATE POLICY "Admin All Log Organik" ON log_aliran_organik FOR ALL TO authentic
             </div>
             <div>
               <h3 className="font-extrabold text-base">Skrip SQL PostgreSQL & DDL Supabase</h3>
-              <p className="text-[10px] text-slate-400">Database Schema, Auto Trigger Saldo & RLS Policies</p>
+              <p className="text-[10px] text-slate-400">Database Schema 4 Wadah RA, Auto Trigger Kas RT & RLS Policies</p>
             </div>
           </div>
           <button
@@ -170,7 +172,7 @@ CREATE POLICY "Admin All Log Organik" ON log_aliran_organik FOR ALL TO authentic
         {/* Action bar */}
         <div className="bg-slate-800 px-6 py-2.5 flex items-center justify-between border-b border-slate-700">
           <span className="text-xs text-slate-300 font-mono">
-            supabase/schema.sql • 5 Tabel, 2 Enums, 1 Trigger
+            supabase/schema.sql • 4 Tabel, 2 Enums, 1 Trigger Kas RT
           </span>
           <div className="flex items-center gap-2">
             <button

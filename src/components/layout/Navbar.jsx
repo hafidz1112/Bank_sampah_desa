@@ -8,9 +8,8 @@ import {
   ChevronDown, 
   Sparkles, 
   Scale, 
-  Search, 
-  Layers,
-  GraduationCap
+  Wallet,
+  Building2
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -20,7 +19,6 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
   const edukasiDropdownRef = useRef(null);
   const { user } = useAuth();
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (edukasiDropdownRef.current && !edukasiDropdownRef.current.contains(e.target)) {
@@ -68,16 +66,16 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
               className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-xs group-hover:scale-105 transition-transform flex-shrink-0"
             />
             <div className="flex flex-col justify-center min-w-0">
-              <div className="text-sm sm:text-base lg:text-lg font-bold text-slate-950 tracking-tight leading-tight group-hover:text-emerald-700 transition-colors truncate">
-                SI-BSDes Mekarjaya
+              <div className="text-sm sm:text-base lg:text-lg font-black text-slate-950 tracking-tight leading-tight group-hover:text-emerald-700 transition-colors truncate">
+                Bank Sampah Desa
               </div>
-              <div className="text-[10px] sm:text-[11px] text-slate-500 font-normal tracking-tight sm:tracking-wide truncate">
-                Bank Sampah Desa Terintegrasi
+              <div className="text-[10px] sm:text-[11px] text-slate-500 font-medium tracking-tight sm:tracking-wide truncate">
+                Desa Mekarjaya • Tabungan Kas RT
               </div>
             </div>
           </div>
 
-          {/* Desktop Navigation Links (Rapi & Ringkas dengan Dropdown Edukasi) */}
+          {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
             <button
               onClick={() => handleNavClick('landing')}
@@ -98,7 +96,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
-              Katalog & Tarif
+              Katalog 4 Wadah
             </button>
 
             <button
@@ -109,10 +107,10 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
-              Cek Saldo Warga
+              Transparansi Kas RT
             </button>
 
-            {/* Dropdown Edukasi & Inovasi (Minimalis, Rapi, & Tidak Numpuk) */}
+            {/* Dropdown Edukasi */}
             <div className="relative" ref={edukasiDropdownRef}>
               <button
                 type="button"
@@ -135,7 +133,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
                     className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-emerald-900 flex items-center gap-2.5 transition"
                   >
                     <BookOpen className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>Panduan Warga</span>
+                    <span>Panduan Ringkas</span>
                   </button>
 
                   <button
@@ -146,12 +144,12 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
                     }}
                     className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-2.5 ${
                       activeTab === 'sirkular'
-                        ? 'bg-amber-50 text-amber-900 font-bold'
-                        : 'text-slate-700 hover:bg-slate-50 hover:text-amber-900'
+                        ? 'bg-emerald-50 text-emerald-900 font-bold'
+                        : 'text-slate-700 hover:bg-slate-50 hover:text-emerald-900'
                     }`}
                   >
-                    <Sparkles className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                    <span>Sirkular Maggot</span>
+                    <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                    <span>4 Wadah Pilah RA</span>
                   </button>
 
                   <div className="my-1 border-t border-slate-100" />
@@ -170,7 +168,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
                   >
                     <span className="flex items-center gap-2.5">
                       <Gamepad2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                      <span>Game Pilah</span>
+                      <span>Game Pilah Sampah</span>
                     </span>
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
                       Game
@@ -204,13 +202,13 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
             )}
           </div>
 
-          {/* Mobile Actions: Quick Saldo Button + Clean Hamburger */}
+          {/* Mobile Actions */}
           <div className="flex items-center md:hidden gap-1.5">
             <button
               onClick={() => handleNavClick('portal-nasabah')}
               className="px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200/70 active:scale-95 transition-transform"
             >
-              Cek Saldo
+              Cek Kas RT
             </button>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -223,7 +221,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
         </div>
       </div>
 
-      {/* Mobile Drawer (Clean, Flat, Ringkas) */}
+      {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="md:hidden border-t border-slate-200/80 bg-white px-4 py-3 space-y-1 shadow-xl animate-fade-in">
           <button
@@ -246,7 +244,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
                 : 'text-slate-700 hover:bg-slate-50'
             }`}
           >
-            <span>Katalog & Tarif</span>
+            <span>Katalog 4 Wadah</span>
             {activeTab === 'katalog-public' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />}
           </button>
 
@@ -258,7 +256,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
                 : 'text-slate-700 hover:bg-slate-50'
             }`}
           >
-            <span>Cek Saldo Warga</span>
+            <span>Transparansi Kas RT</span>
             {activeTab === 'portal-nasabah' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />}
           </button>
 
@@ -271,20 +269,20 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
             className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
           >
             <BookOpen className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-            <span>Panduan Alur Warga</span>
+            <span>Panduan Pemilahan di RA</span>
           </button>
 
           <button
             onClick={() => handleNavClick('sirkular')}
             className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
-              activeTab === 'sirkular' ? 'bg-amber-50 text-amber-950 font-bold' : 'text-slate-700 hover:bg-slate-50'
+              activeTab === 'sirkular' ? 'bg-emerald-50 text-emerald-950 font-bold' : 'text-slate-700 hover:bg-slate-50'
             }`}
           >
             <span className="flex items-center gap-2.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-              <span>Sirkular Maggot BSF</span>
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+              <span>Detail 4 Wadah Pilah RA</span>
             </span>
-            {activeTab === 'sirkular' && <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />}
+            {activeTab === 'sirkular' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />}
           </button>
 
           <button
@@ -295,7 +293,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
           >
             <span className="flex items-center gap-2.5">
               <Gamepad2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-              <span>Game Pilah Sampah</span>
+              <span>Game 4 Wadah Pilah</span>
             </span>
             <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
               Game

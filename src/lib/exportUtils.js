@@ -32,18 +32,18 @@ export const exportToCSV = (filename, rows, headers) => {
   document.body.removeChild(link);
 };
 
-// Export Nasabah Table to PDF
-export const exportNasabahPDF = (nasabahList) => {
+// Export RT Savings Summary Table to PDF
+export const exportRtPDF = (rtList) => {
   const doc = new jsPDF();
 
   // Header Desa Mekarjaya
   doc.setFontSize(16);
   doc.setTextColor(22, 101, 52); // Brand green
-  doc.text('SI-BSDes MEKARJAYA', 14, 15);
+  doc.text('BANK SAMPAH DESA MEKARJAYA', 14, 15);
   doc.setFontSize(10);
   doc.setTextColor(71, 85, 105);
-  doc.text('Bank Sampah Desa Terintegrasi - Kec. Ciawigebang, Kab. Kuningan', 14, 21);
-  doc.text('Program Kerja Individu KKM Informatika UMC 2026', 14, 26);
+  doc.text('Program Bank Sampah Desa Mekarjaya • Pos Pemilahan 4 Wadah di RA & Kas RT', 14, 21);
+  doc.text('Program Kerja Individu KKM Informatika UMC 2026 - Kec. Ciawigebang, Kuningan', 14, 26);
   doc.setLineWidth(0.5);
   doc.setDrawColor(203, 213, 225);
   doc.line(14, 29, 196, 29);
@@ -51,36 +51,37 @@ export const exportNasabahPDF = (nasabahList) => {
   // Title
   doc.setFontSize(12);
   doc.setTextColor(15, 23, 42);
-  doc.text('REKAPITULASI DATA NASABAH BANK SAMPAH', 14, 37);
+  doc.text('REKAPITULASI TABUNGAN & KAS RT DARI PENJUALAN SAMPAH', 14, 37);
   doc.setFontSize(8);
   doc.setTextColor(100, 116, 139);
   doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 42);
 
-  const tableData = nasabahList.map((n, i) => [
+  const tableData = rtList.map((r, i) => [
     i + 1,
-    n.no_rekening,
-    n.nik,
-    n.nama,
-    n.dusun,
-    `RT ${n.rt} / RW ${n.rw}`,
-    n.no_hp || '-',
-    formatRupiah(n.saldo_aktif)
+    r.kode_rt,
+    r.nama_rt,
+    r.dusun,
+    r.ketua_rt || '-',
+    r.kontak || '-',
+    formatWeight(r.total_sampah_terkumpul_kg || 0),
+    formatRupiah(r.saldo_kas)
   ]);
 
   autoTable(doc, {
     startY: 46,
-    head: [['No', 'No Rekening', 'NIK', 'Nama Nasabah', 'Dusun', 'RT/RW', 'No HP', 'Saldo Aktif']],
+    head: [['No', 'Kode RT', 'Nama RT', 'Dusun', 'Ketua RT / Pengurus', 'Kontak', 'Sampah Terkumpul', 'Saldo Kas RT']],
     body: tableData,
     theme: 'grid',
     headStyles: { fillColor: [22, 163, 74], textColor: 255, fontStyle: 'bold' },
     styles: { fontSize: 8, cellPadding: 2 },
     columnStyles: {
       0: { cellWidth: 10, halign: 'center' },
+      6: { halign: 'right' },
       7: { halign: 'right', fontStyle: 'bold' }
     }
   });
 
-  doc.save(`Rekap_Nasabah_BSDes_Mekarjaya_${new Date().toISOString().slice(0, 10)}.pdf`);
+  doc.save(`Rekap_Kas_RT_BSDes_RA_Mekarjaya_${new Date().toISOString().slice(0, 10)}.pdf`);
 };
 
 // Export Transaksi Ledger to PDF
@@ -89,11 +90,11 @@ export const exportTransaksiPDF = (transaksiList, filterInfo = 'Semua Periode') 
 
   doc.setFontSize(16);
   doc.setTextColor(22, 101, 52);
-  doc.text('SI-BSDes MEKARJAYA', 14, 15);
+  doc.text('BANK SAMPAH DESA MEKARJAYA', 14, 15);
   doc.setFontSize(10);
   doc.setTextColor(71, 85, 105);
-  doc.text('Bank Sampah Desa Terintegrasi - Kec. Ciawigebang, Kab. Kuningan', 14, 21);
-  doc.text('Program Kerja Individu KKM Informatika UMC 2026', 14, 26);
+  doc.text('Program Bank Sampah Desa Mekarjaya • Pos Pemilahan 4 Wadah di RA & Kas RT', 14, 21);
+  doc.text('Program Kerja Individu KKM Informatika UMC 2026 - Kec. Ciawigebang, Kuningan', 14, 26);
   doc.line(14, 29, 196, 29);
 
   doc.setFontSize(12);
@@ -107,16 +108,16 @@ export const exportTransaksiPDF = (transaksiList, filterInfo = 'Semua Periode') 
     i + 1,
     t.kode_transaksi,
     formatDate(t.created_at, true),
-    t.nasabah_nama,
-    t.jenis.toUpperCase(),
-    t.jenis === 'setor' ? formatWeight(t.total_berat_kg) : '-',
+    t.rt_nama || t.nasabah_nama || '-',
+    t.jenis === 'penjualan' ? 'PENJUALAN (+)' : 'PENYALURAN (-)',
+    t.jenis === 'penjualan' ? formatWeight(t.total_berat_kg) : '-',
     formatRupiah(t.total_nominal),
     t.keterangan || '-'
   ]);
 
   autoTable(doc, {
     startY: 46,
-    head: [['No', 'Kode TRX', 'Waktu', 'Nasabah', 'Jenis', 'Berat', 'Nominal', 'Keterangan']],
+    head: [['No', 'Kode TRX', 'Waktu', 'Alokasi RT', 'Jenis Mutasi', 'Berat Sampah', 'Nominal', 'Keterangan']],
     body: tableData,
     theme: 'grid',
     headStyles: { fillColor: [22, 163, 74], textColor: 255, fontStyle: 'bold' },
@@ -129,57 +130,11 @@ export const exportTransaksiPDF = (transaksiList, filterInfo = 'Semua Periode') 
     }
   });
 
-  doc.save(`Laporan_Transaksi_BSDes_Mekarjaya_${new Date().toISOString().slice(0, 10)}.pdf`);
-};
-
-// Export Maggot Circular Organic Log to PDF
-export const exportLogMaggotPDF = (logList) => {
-  const doc = new jsPDF();
-
-  doc.setFontSize(16);
-  doc.setTextColor(180, 83, 9); // Maggot amber color
-  doc.text('SI-BSDes MEKARJAYA - SIRKULAR BIOPOND MAGGOT BSF', 14, 15);
-  doc.setFontSize(10);
-  doc.setTextColor(71, 85, 105);
-  doc.text('Integrasi Sampah Organik Desa & Pakan Bebek Petelur BUMDes Mekarjaya', 14, 21);
-  doc.line(14, 27, 196, 27);
-
-  doc.setFontSize(12);
-  doc.setTextColor(15, 23, 42);
-  doc.text('LOG ALIRAN SAMPAH ORGANIK KE BIOPOND MAGGOT BSF', 14, 35);
-  doc.setFontSize(8);
-  doc.setTextColor(100, 116, 139);
-  doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 40);
-
-  const tableData = logList.map((l, i) => [
-    i + 1,
-    formatDate(l.tanggal, false),
-    formatWeight(l.volume_sampah_organik_kg),
-    l.tujuan_biopond,
-    formatWeight(l.est_maggot_panen_kg),
-    l.target_alokasi,
-    l.keterangan || '-'
-  ]);
-
-  autoTable(doc, {
-    startY: 44,
-    head: [['No', 'Tanggal', 'Sampah Organik', 'Unit Biopond', 'Est. Panen Maggot', 'Alokasi Pakan', 'Catatan']],
-    body: tableData,
-    theme: 'grid',
-    headStyles: { fillColor: [217, 119, 6], textColor: 255, fontStyle: 'bold' },
-    styles: { fontSize: 8, cellPadding: 2 },
-    columnStyles: {
-      0: { cellWidth: 8, halign: 'center' },
-      2: { halign: 'right', fontStyle: 'bold' },
-      4: { halign: 'right', fontStyle: 'bold' }
-    }
-  });
-
-  doc.save(`Log_Sirkular_Maggot_BSF_Mekarjaya_${new Date().toISOString().slice(0, 10)}.pdf`);
+  doc.save(`Laporan_Transaksi_Kas_RT_Mekarjaya_${new Date().toISOString().slice(0, 10)}.pdf`);
 };
 
 // Generate Single Digital Receipt PDF
-export const exportSingleReceiptPDF = (tx, nasabah, items = []) => {
+export const exportSingleReceiptPDF = (tx, rt, items = []) => {
   const doc = new jsPDF({
     unit: 'mm',
     format: [80, 160] // Thermal receipt dimensions 80mm
@@ -191,32 +146,35 @@ export const exportSingleReceiptPDF = (tx, nasabah, items = []) => {
   
   doc.setFontSize(7);
   doc.setTextColor(100, 116, 139);
-  doc.text('Kec. Ciawigebang, Kab. Kuningan', 40, 12, { align: 'center' });
-  doc.text('KKM Informatika UMC 2026', 40, 15, { align: 'center' });
+  doc.text('Pos Pemilahan 4 Wadah di RA', 40, 12, { align: 'center' });
+  doc.text('Tabungan Kas Warga RT • KKM UMC 2026', 40, 15, { align: 'center' });
   doc.line(4, 18, 76, 18);
 
   doc.setFontSize(8);
   doc.setTextColor(15, 23, 42);
   doc.text(`Kode: ${tx.kode_transaksi}`, 4, 23);
   doc.text(`Waktu: ${formatDate(tx.created_at, true)}`, 4, 27);
-  doc.text(`Nasabah: ${nasabah ? nasabah.nama : tx.nasabah_nama}`, 4, 31);
-  doc.text(`No. Rek: ${nasabah ? nasabah.no_rekening : tx.nasabah_no_rekening}`, 4, 35);
-  doc.text(`Jenis: ${tx.jenis.toUpperCase() === 'SETOR' ? 'SETORAN SAMPAH' : 'PENARIKAN TABUNGAN'}`, 4, 39);
+  doc.text(`Alokasi RT: ${rt ? rt.nama_rt : tx.rt_nama}`, 4, 31);
+  if (rt?.dusun) {
+    doc.text(`Dusun: ${rt.dusun}`, 4, 35);
+  }
+  const isPenjualan = tx.jenis === 'penjualan' || tx.jenis === 'setor';
+  doc.text(`Jenis: ${isPenjualan ? 'HASIL PENJUALAN SAMPAH' : 'PENYALURAN DANA KAS RT'}`, 4, 39);
   doc.line(4, 41, 76, 41);
 
   let currentY = 46;
 
-  if (tx.jenis === 'setor' && items && items.length > 0) {
+  if (isPenjualan && items && items.length > 0) {
     doc.setFontSize(7);
-    doc.text('Item', 4, currentY);
+    doc.text('Kategori', 4, currentY);
     doc.text('Kg x Tarif', 40, currentY);
     doc.text('Subtotal', 76, currentY, { align: 'right' });
     currentY += 4;
     doc.line(4, currentY - 1, 76, currentY - 1);
 
     items.forEach(item => {
-      doc.text(item.nama_kategori.substring(0, 18), 4, currentY);
-      doc.text(`${item.berat_kg}kg @${item.harga_per_kg}`, 40, currentY);
+      doc.text(String(item.nama_kategori || '').substring(0, 18), 4, currentY);
+      doc.text(`${item.berat_kg}kg @${(item.harga_per_kg || 0).toLocaleString()}`, 40, currentY);
       doc.text(formatRupiah(item.subtotal), 76, currentY, { align: 'right' });
       currentY += 4;
     });
@@ -229,14 +187,14 @@ export const exportSingleReceiptPDF = (tx, nasabah, items = []) => {
   }
 
   doc.setFontSize(9);
-  doc.text('TOTAL NOMINAL:', 4, currentY);
+  doc.text(isPenjualan ? 'DANA MASUK KAS:' : 'TOTAL DANA DISALURKAN:', 4, currentY);
   doc.text(formatRupiah(tx.total_nominal), 76, currentY, { align: 'right' });
   currentY += 6;
 
-  if (nasabah && nasabah.saldo_aktif !== undefined) {
+  if (rt && rt.saldo_kas !== undefined) {
     doc.setFontSize(8);
-    doc.text('Saldo Akhir:', 4, currentY);
-    doc.text(formatRupiah(nasabah.saldo_aktif), 76, currentY, { align: 'right' });
+    doc.text('Saldo Kas RT Terkini:', 4, currentY);
+    doc.text(formatRupiah(rt.saldo_kas), 76, currentY, { align: 'right' });
     currentY += 5;
   }
 
@@ -244,8 +202,8 @@ export const exportSingleReceiptPDF = (tx, nasabah, items = []) => {
   currentY += 4;
   doc.setFontSize(7);
   doc.setTextColor(100, 116, 139);
-  doc.text('Terima kasih atas kontribusi Anda', 40, currentY, { align: 'center' });
-  doc.text('mewujudkan Desa Mekarjaya Bersih & Mandiri!', 40, currentY + 3.5, { align: 'center' });
+  doc.text('Pilah Sampahmu di 4 Wadah RA Mekarjaya', 40, currentY, { align: 'center' });
+  doc.text('Menjadi Tabungan Nyata Kesejahteraan Warga RT!', 40, currentY + 3.5, { align: 'center' });
 
   doc.save(`Struk_${tx.kode_transaksi}.pdf`);
 };

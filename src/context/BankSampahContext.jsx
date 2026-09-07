@@ -3,11 +3,10 @@ import confetti from 'canvas-confetti';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import {
   INITIAL_KATALOG,
-  INITIAL_NASABAH,
-  INITIAL_TRANSAKSI,
-  INITIAL_LOG_ORGANIK
+  INITIAL_RT,
+  INITIAL_TRANSAKSI
 } from '../data/initialData';
-import { generateTxCode, generateNoRekening } from '../lib/utils';
+import { generateTxCode, generateKodeRt } from '../lib/utils';
 
 const BankSampahContext = createContext();
 
@@ -16,10 +15,9 @@ export const BankSampahProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // Core Data States
-  const [nasabahList, setNasabahList] = useState([]);
+  const [rtList, setRtList] = useState([]);
   const [katalogList, setKatalogList] = useState([]);
   const [transaksiList, setTransaksiList] = useState([]);
-  const [logOrganikList, setLogOrganikList] = useState([]);
 
   // Toast / Alert State
   const [toast, setToast] = useState(null);
@@ -37,7 +35,7 @@ export const BankSampahProvider = ({ children }) => {
         particleCount: 80,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#22c55e', '#16a34a', '#eab308', '#3b82f6']
+        colors: ['#22c55e', '#16a34a', '#0284c7', '#eab308']
       });
     } catch (e) {
       console.log('Confetti error:', e);
@@ -53,26 +51,29 @@ export const BankSampahProvider = ({ children }) => {
     setLoading(true);
     if (isSupabaseConfigured() && supabase) {
       try {
-        // Fetch from Supabase
-        const [nasabahRes, katalogRes, txRes, logRes] = await Promise.all([
-          supabase.from('nasabah').select('*').order('id', { ascending: false }),
+        const [rtRes, katalogRes, txRes] = await Promise.all([
+          supabase.from('tabungan_rt').select('*').order('id', { ascending: true }),
           supabase.from('kategori_sampah').select('*').order('id', { ascending: true }),
-          supabase.from('transaksi').select('*, detail_setoran(*), nasabah(*)').order('created_at', { ascending: false }),
-          supabase.from('log_aliran_organik').select('*').order('tanggal', { ascending: false })
+          supabase.from('transaksi').select('*, detail_setoran(*), tabungan_rt(*)').order('created_at', { ascending: false })
         ]);
 
-        if (nasabahRes.data) setNasabahList(nasabahRes.data);
-        if (katalogRes.data) setKatalogList(katalogRes.data);
-        if (txRes.data) {
+        if (rtRes.data && rtRes.data.length > 0) setRtList(rtRes.data);
+        else setRtList(INITIAL_RT);
+
+        if (katalogRes.data && katalogRes.data.length > 0) setKatalogList(katalogRes.data);
+        else setKatalogList(INITIAL_KATALOG);
+
+        if (txRes.data && txRes.data.length > 0) {
           const formattedTx = txRes.data.map(t => ({
             ...t,
-            nasabah_nama: t.nasabah?.nama || 'Nasabah',
-            nasabah_no_rekening: t.nasabah?.no_rekening || '-',
+            rt_nama: t.tabungan_rt ? `${t.tabungan_rt.nama_rt} (${t.tabungan_rt.dusun})` : (t.rt_nama || 'Kas RT'),
+            rt_kode: t.tabungan_rt?.kode_rt || '-',
             items: t.detail_setoran || []
           }));
           setTransaksiList(formattedTx);
+        } else {
+          setTransaksiList(INITIAL_TRANSAKSI);
         }
-        if (logRes.data) setLogOrganikList(logRes.data);
         setIsSupabase(true);
       } catch (err) {
         console.warn('Error fetching Supabase data, falling back to local:', err);
@@ -86,21 +87,19 @@ export const BankSampahProvider = ({ children }) => {
 
   const loadLocalData = () => {
     setIsSupabase(false);
-    const savedNasabah = localStorage.getItem('SI_BSDES_NASABAH');
+    const savedRt = localStorage.getItem('SI_BSDES_RT');
     const savedKatalog = localStorage.getItem('SI_BSDES_KATALOG');
     const savedTransaksi = localStorage.getItem('SI_BSDES_TRANSAKSI');
-    const savedLog = localStorage.getItem('SI_BSDES_LOG_ORGANIK');
 
-    setNasabahList(savedNasabah ? JSON.parse(savedNasabah) : INITIAL_NASABAH);
+    setRtList(savedRt ? JSON.parse(savedRt) : INITIAL_RT);
     setKatalogList(savedKatalog ? JSON.parse(savedKatalog) : INITIAL_KATALOG);
     setTransaksiList(savedTransaksi ? JSON.parse(savedTransaksi) : INITIAL_TRANSAKSI);
-    setLogOrganikList(savedLog ? JSON.parse(savedLog) : INITIAL_LOG_ORGANIK);
   };
 
   // Sync to local storage if in local mode
-  const syncLocalNasabah = (data) => {
-    setNasabahList(data);
-    localStorage.setItem('SI_BSDES_NASABAH', JSON.stringify(data));
+  const syncLocalRt = (data) => {
+    setRtList(data);
+    localStorage.setItem('SI_BSDES_RT', JSON.stringify(data));
   };
 
   const syncLocalKatalog = (data) => {
@@ -113,96 +112,90 @@ export const BankSampahProvider = ({ children }) => {
     localStorage.setItem('SI_BSDES_TRANSAKSI', JSON.stringify(data));
   };
 
-  const syncLocalLogOrganik = (data) => {
-    setLogOrganikList(data);
-    localStorage.setItem('SI_BSDES_LOG_ORGANIK', JSON.stringify(data));
-  };
-
-  // --- NASABAH ACTIONS ---
-  const addNasabah = async (nasabahData) => {
+  // --- RT & TABUNGAN ACTIONS ---
+  const addRt = async (rtData) => {
     try {
-      let finalNoRekening = nasabahData.no_rekening?.trim();
-      if (!finalNoRekening || nasabahList.some(n => n.no_rekening?.toUpperCase() === finalNoRekening.toUpperCase())) {
-        finalNoRekening = generateNoRekening(nasabahList);
-      }
-
+      const kode = rtData.kode_rt?.trim() || generateKodeRt(rtData.rt, rtData.rw, rtData.dusun);
       const dbPayload = {
-        no_rekening: finalNoRekening,
-        nik: nasabahData.nik,
-        nama: nasabahData.nama,
-        dusun: nasabahData.dusun,
-        rw: nasabahData.rw,
-        rt: nasabahData.rt,
-        no_hp: nasabahData.no_hp || null,
-        saldo_aktif: parseFloat(nasabahData.saldo_aktif) || 0,
+        kode_rt: kode,
+        nama_rt: rtData.nama_rt || `RT ${rtData.rt} / RW ${rtData.rw}`,
+        dusun: rtData.dusun,
+        rw: rtData.rw,
+        rt: rtData.rt,
+        ketua_rt: rtData.ketua_rt || 'Pengurus RT',
+        kontak: rtData.kontak || null,
+        saldo_kas: parseFloat(rtData.saldo_kas) || 0,
+        total_sampah_terkumpul_kg: parseFloat(rtData.total_sampah_terkumpul_kg) || 0,
         created_at: new Date().toISOString()
       };
 
       if (isSupabase && supabase) {
-        const { data, error } = await supabase.from('nasabah').insert([dbPayload]).select().single();
+        const { data, error } = await supabase.from('tabungan_rt').insert([dbPayload]).select().single();
         if (error) throw error;
-        setNasabahList(prev => [data, ...prev]);
+        setRtList(prev => [...prev, data]);
       } else {
         const itemWithId = { ...dbPayload, id: Date.now() };
-        syncLocalNasabah([itemWithId, ...nasabahList]);
+        syncLocalRt([...rtList, itemWithId]);
       }
-      showToast(`Nasabah "${nasabahData.nama}" berhasil didaftarkan!`, 'success');
+      showToast(`Data "${dbPayload.nama_rt}" berhasil ditambahkan!`, 'success');
       return { success: true };
     } catch (err) {
-      showToast(`Gagal menambah nasabah: ${err.message}`, 'error');
+      showToast(`Gagal menambah data RT: ${err.message}`, 'error');
       return { success: false, error: err.message };
     }
   };
 
-  const updateNasabah = async (id, updatedData) => {
+  const updateRt = async (id, updatedData) => {
     try {
       const dbPayload = {};
-      if (updatedData.no_rekening !== undefined) dbPayload.no_rekening = updatedData.no_rekening;
-      if (updatedData.nik !== undefined) dbPayload.nik = updatedData.nik;
-      if (updatedData.nama !== undefined) dbPayload.nama = updatedData.nama;
+      if (updatedData.nama_rt !== undefined) dbPayload.nama_rt = updatedData.nama_rt;
+      if (updatedData.kode_rt !== undefined) dbPayload.kode_rt = updatedData.kode_rt;
       if (updatedData.dusun !== undefined) dbPayload.dusun = updatedData.dusun;
       if (updatedData.rw !== undefined) dbPayload.rw = updatedData.rw;
       if (updatedData.rt !== undefined) dbPayload.rt = updatedData.rt;
-      if (updatedData.no_hp !== undefined) dbPayload.no_hp = updatedData.no_hp;
-      if (updatedData.saldo_aktif !== undefined) dbPayload.saldo_aktif = parseFloat(updatedData.saldo_aktif);
+      if (updatedData.ketua_rt !== undefined) dbPayload.ketua_rt = updatedData.ketua_rt;
+      if (updatedData.kontak !== undefined) dbPayload.kontak = updatedData.kontak;
+      if (updatedData.saldo_kas !== undefined) dbPayload.saldo_kas = parseFloat(updatedData.saldo_kas);
+      if (updatedData.total_sampah_terkumpul_kg !== undefined) dbPayload.total_sampah_terkumpul_kg = parseFloat(updatedData.total_sampah_terkumpul_kg);
 
       if (isSupabase && supabase) {
-        const { error } = await supabase.from('nasabah').update(dbPayload).eq('id', id);
+        const { error } = await supabase.from('tabungan_rt').update(dbPayload).eq('id', id);
         if (error) throw error;
       }
-      const updatedList = nasabahList.map(n => n.id === id ? { ...n, ...dbPayload } : n);
-      syncLocalNasabah(updatedList);
-      showToast('Data nasabah berhasil diperbarui!', 'success');
+      const updated = rtList.map(r => r.id === id ? { ...r, ...dbPayload } : r);
+      syncLocalRt(updated);
+      showToast('Data RT & Tabungan berhasil diperbarui!', 'success');
       return { success: true };
     } catch (err) {
-      showToast(`Gagal update nasabah: ${err.message}`, 'error');
+      showToast(`Gagal update RT: ${err.message}`, 'error');
       return { success: false, error: err.message };
     }
   };
 
-  const deleteNasabah = async (id) => {
+  const deleteRt = async (id) => {
     try {
       if (isSupabase && supabase) {
-        const { error } = await supabase.from('nasabah').delete().eq('id', id);
+        const { error } = await supabase.from('tabungan_rt').delete().eq('id', id);
         if (error) throw error;
       }
-      const updatedList = nasabahList.filter(n => n.id !== id);
-      syncLocalNasabah(updatedList);
-      showToast('Nasabah berhasil dihapus.', 'info');
+      const updated = rtList.filter(r => r.id !== id);
+      syncLocalRt(updated);
+      showToast('Data RT berhasil dihapus.', 'info');
       return { success: true };
     } catch (err) {
-      showToast(`Gagal menghapus nasabah: ${err.message}`, 'error');
+      showToast(`Gagal menghapus data RT: ${err.message}`, 'error');
       return { success: false, error: err.message };
     }
   };
 
-  // Find Nasabah by NIK or No Rekening (for Public Portal)
-  const findNasabahByNikOrRekening = (identifier) => {
+  // Find RT by ID or Code
+  const findRtByIdOrKode = (identifier) => {
     if (!identifier) return null;
-    const clean = identifier.trim().toLowerCase();
-    return nasabahList.find(
-      n => (n.nik && n.nik.toLowerCase() === clean) ||
-           (n.no_rekening && n.no_rekening.toLowerCase() === clean)
+    const clean = String(identifier).trim().toLowerCase();
+    return rtList.find(
+      r => String(r.id) === clean ||
+           (r.kode_rt && r.kode_rt.toLowerCase() === clean) ||
+           (r.nama_rt && r.nama_rt.toLowerCase().includes(clean))
     ) || null;
   };
 
@@ -213,6 +206,7 @@ export const BankSampahProvider = ({ children }) => {
         nama_kategori: kategoriData.nama_kategori,
         tipe: kategoriData.tipe,
         harga_per_kg: parseFloat(kategoriData.harga_per_kg),
+        deskripsi: kategoriData.deskripsi || '',
         is_active: kategoriData.is_active ?? true,
         updated_at: new Date().toISOString()
       };
@@ -239,6 +233,7 @@ export const BankSampahProvider = ({ children }) => {
       if (updatedData.nama_kategori !== undefined) dbPayload.nama_kategori = updatedData.nama_kategori;
       if (updatedData.tipe !== undefined) dbPayload.tipe = updatedData.tipe;
       if (updatedData.harga_per_kg !== undefined) dbPayload.harga_per_kg = parseFloat(updatedData.harga_per_kg);
+      if (updatedData.deskripsi !== undefined) dbPayload.deskripsi = updatedData.deskripsi;
       if (updatedData.is_active !== undefined) dbPayload.is_active = updatedData.is_active;
       dbPayload.updated_at = new Date().toISOString();
 
@@ -278,35 +273,34 @@ export const BankSampahProvider = ({ children }) => {
     }
   };
 
-  // --- TRANSAKSI SETORAN SAMPAH ---
-  const processSetoran = async ({ nasabahId, items, keterangan }) => {
+  // --- TRANSAKSI PENJUALAN SAMPAH DARI 4 TONG RA KE PENGEPUL ---
+  const processPenjualan = async ({ rtId, nasabahId, items, keterangan }) => {
     try {
-      const nasabah = nasabahList.find(n => n.id === Number(nasabahId));
-      if (!nasabah) throw new Error('Nasabah tidak ditemukan.');
+      const targetId = rtId || nasabahId;
+      const rt = rtList.find(r => r.id === Number(targetId));
+      if (!rt) throw new Error('Pilih RT alokasi tabungan terlebih dahulu.');
       if (!items || items.length === 0) throw new Error('Minimal harus ada 1 item sampah.');
 
       const totalBerat = items.reduce((acc, curr) => acc + (parseFloat(curr.berat_kg) || 0), 0);
       const totalNominal = items.reduce((acc, curr) => acc + (parseFloat(curr.subtotal) || 0), 0);
-      const kodeTransaksi = generateTxCode('SETOR');
+      const kodeTransaksi = generateTxCode('PENJUALAN');
       const now = new Date().toISOString();
 
       let createdTx = null;
 
       if (isSupabase && supabase) {
-        // 1. Insert into transaksi
         const { data: txRecord, error: txErr } = await supabase.from('transaksi').insert([{
           kode_transaksi: kodeTransaksi,
-          nasabah_id: Number(nasabahId),
-          jenis: 'setor',
+          rt_id: Number(rtId),
+          jenis: 'penjualan',
           total_berat_kg: totalBerat,
           total_nominal: totalNominal,
-          keterangan: keterangan || 'Setoran sampah bank sampah',
+          keterangan: keterangan || 'Hasil penjualan sampah terpilah RA',
           created_at: now
         }]).select().single();
 
         if (txErr) throw txErr;
 
-        // 2. Insert detail_setoran
         const detailRecords = items.map(it => ({
           transaksi_id: txRecord.id,
           kategori_id: it.kategori_id,
@@ -320,25 +314,24 @@ export const BankSampahProvider = ({ children }) => {
 
         createdTx = {
           ...txRecord,
-          nasabah_nama: nasabah.nama,
-          nasabah_no_rekening: nasabah.no_rekening,
+          rt_nama: `${rt.nama_rt} (${rt.dusun})`,
+          rt_kode: rt.kode_rt,
           items: items.map(it => ({
             ...it,
             nama_kategori: katalogList.find(k => k.id === it.kategori_id)?.nama_kategori || 'Sampah'
           }))
         };
       } else {
-        // Local mode
         createdTx = {
           id: Date.now(),
           kode_transaksi: kodeTransaksi,
-          nasabah_id: Number(nasabahId),
-          nasabah_nama: nasabah.nama,
-          nasabah_no_rekening: nasabah.no_rekening,
-          jenis: 'setor',
+          rt_id: Number(rtId),
+          rt_nama: `${rt.nama_rt} (${rt.dusun})`,
+          rt_kode: rt.kode_rt,
+          jenis: 'penjualan',
           total_berat_kg: totalBerat,
           total_nominal: totalNominal,
-          keterangan: keterangan || 'Setoran sampah bank sampah',
+          keterangan: keterangan || 'Hasil penjualan sampah terpilah RA',
           created_at: now,
           items: items.map(it => ({
             ...it,
@@ -347,52 +340,68 @@ export const BankSampahProvider = ({ children }) => {
         };
       }
 
-      // Update nasabah balance in React state
-      const updatedNasabahList = nasabahList.map(n => {
-        if (n.id === Number(nasabahId)) {
-          return { ...n, saldo_aktif: (parseFloat(n.saldo_aktif) || 0) + totalNominal };
+      // Update RT balance in local state
+      const updatedRtList = rtList.map(r => {
+        if (r.id === Number(rtId)) {
+          return {
+            ...r,
+            saldo_kas: (parseFloat(r.saldo_kas) || 0) + totalNominal,
+            total_sampah_terkumpul_kg: (parseFloat(r.total_sampah_terkumpul_kg) || 0) + totalBerat
+          };
         }
-        return n;
+        return r;
       });
-      syncLocalNasabah(updatedNasabahList);
-
+      syncLocalRt(updatedRtList);
       syncLocalTransaksi([createdTx, ...transaksiList]);
+
       triggerConfetti();
-      showToast(`Setoran ${kodeTransaksi} berhasil dicatat! Saldo ${nasabah.nama} bertambah.`, 'success');
-      return { success: true, transaksi: createdTx, nasabah: { ...nasabah, saldo_aktif: (parseFloat(nasabah.saldo_aktif) || 0) + totalNominal } };
+      showToast(`Penjualan ${kodeTransaksi} berhasil dicatat! Kas ${rt.nama_rt} bertambah ${formatRupiah(totalNominal)}.`, 'success');
+      const updatedRtObj = {
+        ...rt,
+        saldo_kas: (parseFloat(rt.saldo_kas) || 0) + totalNominal,
+        saldo_aktif: (parseFloat(rt.saldo_kas) || 0) + totalNominal,
+        total_sampah_terkumpul_kg: (parseFloat(rt.total_sampah_terkumpul_kg) || 0) + totalBerat
+      };
+      return {
+        success: true,
+        transaksi: createdTx,
+        rt: updatedRtObj,
+        nasabah: updatedRtObj
+      };
     } catch (err) {
-      showToast(`Gagal memproses setoran: ${err.message}`, 'error');
+      showToast(`Gagal memproses penjualan: ${err.message}`, 'error');
       return { success: false, error: err.message };
     }
   };
 
-  // --- TRANSAKSI PENARIKAN SALDO ---
-  const processPenarikan = async ({ nasabahId, nominal, keterangan }) => {
+  // --- TRANSAKSI PENYALURAN / PENGELUARAN KAS TABUNGAN RT ---
+  const processPenyaluran = async ({ rtId, nasabahId, nominal, keterangan }) => {
     try {
-      const nasabah = nasabahList.find(n => n.id === Number(nasabahId));
-      if (!nasabah) throw new Error('Nasabah tidak ditemukan.');
+      const targetId = rtId || nasabahId;
+      const rt = rtList.find(r => r.id === Number(targetId));
+      if (!rt) throw new Error('Data RT tidak ditemukan.');
 
       const withdrawAmount = parseFloat(nominal);
       if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
-        throw new Error('Nominal penarikan harus lebih dari Rp 0.');
+        throw new Error('Nominal pengeluaran harus lebih dari Rp 0.');
       }
 
-      if (nasabah.saldo_aktif < withdrawAmount) {
-        throw new Error(`Saldo tidak mencukupi. Saldo aktif nasabah saat ini adalah Rp ${nasabah.saldo_aktif.toLocaleString('id-ID')}`);
+      if (rt.saldo_kas < withdrawAmount) {
+        throw new Error(`Saldo kas RT tidak mencukupi. Saldo saat ini adalah ${formatRupiah(rt.saldo_kas)}`);
       }
 
-      const kodeTransaksi = generateTxCode('TARIK');
+      const kodeTransaksi = generateTxCode('PENYALURAN');
       const now = new Date().toISOString();
       let createdTx = null;
 
       if (isSupabase && supabase) {
         const { data: txRecord, error: txErr } = await supabase.from('transaksi').insert([{
           kode_transaksi: kodeTransaksi,
-          nasabah_id: Number(nasabahId),
-          jenis: 'tarik',
+          rt_id: Number(targetId),
+          jenis: 'penyaluran',
           total_berat_kg: 0,
           total_nominal: withdrawAmount,
-          keterangan: keterangan || 'Penarikan tabungan saldo nasabah',
+          keterangan: keterangan || 'Penyaluran dana kas tabungan RT',
           created_at: now
         }]).select().single();
 
@@ -400,135 +409,97 @@ export const BankSampahProvider = ({ children }) => {
 
         createdTx = {
           ...txRecord,
-          nasabah_nama: nasabah.nama,
-          nasabah_no_rekening: nasabah.no_rekening,
+          rt_nama: `${rt.nama_rt} (${rt.dusun})`,
+          rt_kode: rt.kode_rt,
           items: []
         };
       } else {
         createdTx = {
           id: Date.now(),
           kode_transaksi: kodeTransaksi,
-          nasabah_id: Number(nasabahId),
-          nasabah_nama: nasabah.nama,
-          nasabah_no_rekening: nasabah.no_rekening,
-          jenis: 'tarik',
+          rt_id: Number(targetId),
+          rt_nama: `${rt.nama_rt} (${rt.dusun})`,
+          rt_kode: rt.kode_rt,
+          jenis: 'penyaluran',
           total_berat_kg: 0,
           total_nominal: withdrawAmount,
-          keterangan: keterangan || 'Penarikan tabungan saldo nasabah',
+          keterangan: keterangan || 'Penyaluran dana kas tabungan RT',
           created_at: now,
           items: []
         };
       }
 
-      // Update nasabah balance in React state
-      const updatedNasabahList = nasabahList.map(n => {
-        if (n.id === Number(nasabahId)) {
-          return { ...n, saldo_aktif: (parseFloat(n.saldo_aktif) || 0) - withdrawAmount };
+      // Update RT balance in local state
+      const updatedRtList = rtList.map(r => {
+        if (r.id === Number(targetId)) {
+          return {
+            ...r,
+            saldo_kas: (parseFloat(r.saldo_kas) || 0) - withdrawAmount,
+            saldo_aktif: (parseFloat(r.saldo_kas) || 0) - withdrawAmount
+          };
         }
-        return n;
+        return r;
       });
-      syncLocalNasabah(updatedNasabahList);
-
+      syncLocalRt(updatedRtList);
       syncLocalTransaksi([createdTx, ...transaksiList]);
-      showToast(`Penarikan ${kodeTransaksi} sebesar Rp ${withdrawAmount.toLocaleString('id-ID')} berhasil!`, 'success');
-      return { success: true, transaksi: createdTx, nasabah: { ...nasabah, saldo_aktif: (parseFloat(nasabah.saldo_aktif) || 0) - withdrawAmount } };
-    } catch (err) {
-      showToast(`Gagal memproses penarikan: ${err.message}`, 'error');
-      return { success: false, error: err.message };
-    }
-  };
 
-  // --- LOG ALIRAN ORGANIK MAGGOT BSF ---
-  const addLogOrganik = async (logData, notify = true) => {
-    try {
-      const dbPayload = {
-        tanggal: logData.tanggal || new Date().toISOString().slice(0, 10),
-        volume_sampah_organik_kg: parseFloat(logData.volume_sampah_organik_kg) || 0,
-        tujuan_biopond: logData.tujuan_biopond || 'Biopond Maggot Unit 1',
-        est_maggot_panen_kg: parseFloat(logData.est_maggot_panen_kg) || (parseFloat(logData.volume_sampah_organik_kg) * 0.2),
-        target_alokasi: logData.target_alokasi || 'Pakan Bebek Petelur BUMDes',
-        created_at: new Date().toISOString()
+      showToast(`Penyaluran dana kas ${rt.nama_rt} sebesar ${formatRupiah(withdrawAmount)} berhasil dicatat!`, 'success');
+      const updatedRtObj = { 
+        ...rt, 
+        saldo_kas: (parseFloat(rt.saldo_kas) || 0) - withdrawAmount,
+        saldo_aktif: (parseFloat(rt.saldo_kas) || 0) - withdrawAmount
       };
-
-      if (isSupabase && supabase) {
-        const { data, error } = await supabase.from('log_aliran_organik').insert([dbPayload]).select().single();
-        if (error) throw error;
-        setLogOrganikList(prev => [data, ...prev]);
-      } else {
-        const itemWithId = { ...dbPayload, id: Date.now() };
-        syncLocalLogOrganik([itemWithId, ...logOrganikList]);
-      }
-      if (notify) showToast('Log aliran sampah organik ke Biopond Maggot berhasil dicatat!', 'success');
-      return { success: true };
+      return {
+        success: true,
+        transaksi: createdTx,
+        rt: updatedRtObj,
+        nasabah: updatedRtObj
+      };
     } catch (err) {
-      if (notify) showToast(`Gagal mencatat log organik: ${err.message}`, 'error');
-      return { success: false, error: err.message };
-    }
-  };
-
-  const deleteLogOrganik = async (id) => {
-    try {
-      if (isSupabase && supabase) {
-        const { error } = await supabase.from('log_aliran_organik').delete().eq('id', id);
-        if (error) throw error;
-      }
-      const updated = logOrganikList.filter(l => l.id !== id);
-      syncLocalLogOrganik(updated);
-      showToast('Log biopond maggot berhasil dihapus.', 'info');
-      return { success: true };
-    } catch (err) {
-      showToast(`Gagal menghapus log: ${err.message}`, 'error');
+      showToast(`Gagal memproses penyaluran: ${err.message}`, 'error');
       return { success: false, error: err.message };
     }
   };
 
   // Reset database back to default initial seed data
   const resetToSampleData = () => {
-    syncLocalNasabah(INITIAL_NASABAH);
+    syncLocalRt(INITIAL_RT);
     syncLocalKatalog(INITIAL_KATALOG);
     syncLocalTransaksi(INITIAL_TRANSAKSI);
-    syncLocalLogOrganik(INITIAL_LOG_ORGANIK);
     showToast('Data berhasil di-reset ke data bawaan Desa Mekarjaya.', 'info');
   };
 
-  // Agregated Statistics
+  // Aggregated Statistics
   const getStats = () => {
-    const totalNasabah = nasabahList.length;
-    const totalSaldoAktif = nasabahList.reduce((acc, n) => acc + (parseFloat(n.saldo_aktif) || 0), 0);
+    const totalRt = rtList.length;
+    const totalSaldoKas = rtList.reduce((acc, r) => acc + (parseFloat(r.saldo_kas) || 0), 0);
 
-    const totalSetoranTx = transaksiList.filter(t => t.jenis === 'setor');
-    const totalPenarikanTx = transaksiList.filter(t => t.jenis === 'tarik');
+    const totalPenjualanTx = transaksiList.filter(t => t.jenis === 'penjualan' || t.jenis === 'setor');
+    const totalPenyaluranTx = transaksiList.filter(t => t.jenis === 'penyaluran' || t.jenis === 'tarik');
 
-    const totalUangSetor = totalSetoranTx.reduce((acc, t) => acc + (parseFloat(t.total_nominal) || 0), 0);
-    const totalUangTarik = totalPenarikanTx.reduce((acc, t) => acc + (parseFloat(t.total_nominal) || 0), 0);
-    const totalBeratSampahKg = totalSetoranTx.reduce((acc, t) => acc + (parseFloat(t.total_berat_kg) || 0), 0);
+    const totalUangPenjualan = totalPenjualanTx.reduce((acc, t) => acc + (parseFloat(t.total_nominal) || 0), 0);
+    const totalUangPenyaluran = totalPenyaluranTx.reduce((acc, t) => acc + (parseFloat(t.total_nominal) || 0), 0);
+    const totalBeratSampahKg = totalPenjualanTx.reduce((acc, t) => acc + (parseFloat(t.total_berat_kg) || 0), 0);
 
-    // Calculate organic vs anorganic waste from setoran transactions
-    let totalSampahOrganikKg = 0;
-    let totalSampahAnorganikKg = 0;
+    // Breakdown per 4 Category
+    const categoryStats = {
+      botol_plastik: 0,
+      plastik: 0,
+      kardus_kertas: 0,
+      besi_kaca: 0
+    };
 
-    totalSetoranTx.forEach(t => {
-      if (t.items && Array.isArray(t.items) && t.items.length > 0) {
+    totalPenjualanTx.forEach(t => {
+      if (t.items && Array.isArray(t.items)) {
         t.items.forEach(it => {
           const kat = katalogList.find(k => k.id === it.kategori_id);
           const w = parseFloat(it.berat_kg) || 0;
-          if (kat && kat.tipe === 'organik') {
-            totalSampahOrganikKg += w;
-          } else {
-            totalSampahAnorganikKg += w;
+          if (kat?.tipe && categoryStats[kat.tipe] !== undefined) {
+            categoryStats[kat.tipe] += w;
           }
         });
       }
     });
-
-    // Fallback if detail items not populated in legacy data:
-    if (totalSampahOrganikKg === 0 && totalSampahAnorganikKg === 0 && totalBeratSampahKg > 0) {
-      totalSampahOrganikKg = totalBeratSampahKg * 0.35;
-      totalSampahAnorganikKg = totalBeratSampahKg * 0.65;
-    }
-
-    // Estimated maggot conversion (~20% standard bioconversion factor) for educational insight
-    const totalEstMaggotKg = totalSampahOrganikKg * 0.20;
 
     // Dusun distribution
     const dusunStats = {
@@ -546,36 +517,27 @@ export const BankSampahProvider = ({ children }) => {
       return clean.startsWith('dusun ') ? val : `Dusun ${val}`;
     };
 
-    nasabahList.forEach(n => {
-      const targetKey = normalizeDusunName(n.dusun);
+    rtList.forEach(r => {
+      const targetKey = normalizeDusunName(r.dusun);
       if (dusunStats[targetKey]) {
         dusunStats[targetKey].count += 1;
-        dusunStats[targetKey].saldo += (parseFloat(n.saldo_aktif) || 0);
-      }
-    });
-
-    // Compute setoran weight per dusun
-    totalSetoranTx.forEach(t => {
-      const foundNasabah = nasabahList.find(n => n.id === t.nasabah_id);
-      if (foundNasabah) {
-        const targetKey = normalizeDusunName(foundNasabah.dusun);
-        if (dusunStats[targetKey]) {
-          dusunStats[targetKey].weight += (parseFloat(t.total_berat_kg) || 0);
-        }
+        dusunStats[targetKey].saldo += (parseFloat(r.saldo_kas) || 0);
+        dusunStats[targetKey].weight += (parseFloat(r.total_sampah_terkumpul_kg) || 0);
       }
     });
 
     return {
-      totalNasabah,
-      totalSaldoAktif,
-      totalUangSetor,
-      totalUangTarik,
+      totalRt,
+      totalNasabah: totalRt, // Backward compatibility
+      totalSaldoKas,
+      totalSaldoAktif: totalSaldoKas, // Backward compatibility
+      totalUangPenjualan,
+      totalUangSetor: totalUangPenjualan, // Backward compatibility
+      totalUangPenyaluran,
+      totalUangTarik: totalUangPenyaluran, // Backward compatibility
       totalBeratSampahKg,
-      totalSampahOrganikKg,
-      totalSampahAnorganikKg,
-      totalSampahOrganikLogKg: totalSampahOrganikKg, // Alias for backward compatibility
-      totalEstMaggotKg,
       totalTransaksiCount: transaksiList.length,
+      categoryStats,
       dusunStats
     };
   };
@@ -586,31 +548,33 @@ export const BankSampahProvider = ({ children }) => {
         isSupabase,
         setIsSupabase,
         loading,
-        nasabahList,
+        rtList,
+        nasabahList: rtList, // Alias for backward compatibility
         katalogList,
         transaksiList,
-        logOrganikList,
         toast,
         showToast,
         triggerConfetti,
         loadData,
         resetToSampleData,
-        // Nasabah
-        addNasabah,
-        updateNasabah,
-        deleteNasabah,
-        findNasabahByNikOrRekening,
-        // Katalog
+        // RT Actions
+        addRt,
+        addNasabah: addRt,
+        updateRt,
+        updateNasabah: updateRt,
+        deleteRt,
+        deleteNasabah: deleteRt,
+        findRtByIdOrKode,
+        // Katalog Actions
         addKategori,
         updateKategori,
         toggleKategoriActive,
         deleteKategori,
-        // Transaksi
-        processSetoran,
-        processPenarikan,
-        // Maggot
-        addLogOrganik,
-        deleteLogOrganik,
+        // Transaksi Actions
+        processPenjualan,
+        processSetoran: processPenjualan, // Alias
+        processPenyaluran,
+        processPenarikan: processPenyaluran, // Alias
         // Stats
         getStats
       }}

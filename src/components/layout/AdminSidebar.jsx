@@ -1,34 +1,33 @@
 import React from 'react';
 import { 
   LayoutDashboard, 
-  Users, 
+  Building2, 
   Scale, 
   Wallet, 
   Receipt, 
   Tag, 
   FileSpreadsheet, 
   LogOut,
-  ExternalLink
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { MAGGOT_MONITORING_URL } from '../../lib/utils';
 
 export const AdminSidebar = ({ activeTab, setActiveTab }) => {
   const { logout, user } = useAuth();
 
   const menuItems = [
-    { id: 'dashboard', label: 'Ringkasan & Statistik', icon: LayoutDashboard },
-    { id: 'setor', label: 'Penimbangan Setoran', icon: Scale, highlight: true },
-    { id: 'tarik', label: 'Penarikan Saldo Warga', icon: Wallet },
-    { id: 'nasabah', label: 'Data Nasabah Desa', icon: Users },
+    { id: 'dashboard', label: 'Ringkasan & Kas RT', icon: LayoutDashboard },
+    { id: 'setor', label: 'Timbang & Jual Sampah', icon: Scale, highlight: true },
+    { id: 'tarik', label: 'Penyaluran Dana Kas', icon: Wallet },
+    { id: 'nasabah', label: 'Data RT & Tabungan', icon: Building2 },
     { id: 'transaksi', label: 'Buku Jurnal Mutasi', icon: Receipt },
-    { id: 'katalog', label: 'Katalog & Tarif Sampah', icon: Tag },
+    { id: 'katalog', label: 'Katalog 4 Wadah', icon: Tag },
     { id: 'laporan', label: 'Laporan & Ekspor Data', icon: FileSpreadsheet },
   ];
 
   return (
     <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 h-full border-r border-slate-800 select-none">
-      {/* Sidebar Header (Fixed at top with Logo Kabupaten Kuningan) */}
+      {/* Sidebar Header */}
       <div className="p-4 sm:p-5 border-b border-slate-800 flex-shrink-0">
         <div className="flex items-center gap-3">
           <img 
@@ -37,15 +36,15 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
             className="w-9 h-9 object-contain drop-shadow-sm flex-shrink-0"
           />
           <div>
-            <h2 className="text-sm font-extrabold text-white tracking-tight leading-none">
-              SI-BSDes <span className="text-emerald-400">Admin</span>
+            <h2 className="text-sm font-black text-white tracking-tight leading-none">
+              Bank Sampah <span className="text-emerald-400">Desa</span>
             </h2>
-            <p className="text-[10px] text-slate-400 mt-1">Desa Mekarjaya, Kuningan</p>
+            <p className="text-[10px] text-slate-400 mt-1">Desa Mekarjaya • Operator</p>
           </div>
         </div>
       </div>
 
-      {/* Navigation List (Scrolls independently if needed) */}
+      {/* Navigation List */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto custom-scrollbar">
         <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 pb-2">
           Menu Operasional
@@ -69,45 +68,35 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
                 <Icon className={`w-4 h-4 ${isActive ? 'text-white' : item.highlight ? 'text-emerald-400' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
               </div>
-              {item.badge && (
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  {item.badge}
-                </span>
-              )}
             </button>
           );
         })}
 
-        {/* Sinergi Mitra KKM - Web Rekan */}
+        {/* Info RA Section */}
         <div className="pt-4 mt-3 border-t border-slate-800">
           <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 pb-2">
-            Sinergi KKM UMC 2026
+            Pos Wadah Pilah
           </div>
-          <a
-            href={MAGGOT_MONITORING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-amber-300 hover:text-white bg-amber-950/20 hover:bg-amber-900/40 border border-amber-500/20 transition group"
-          >
-            <div className="flex items-center gap-2.5">
-              <ExternalLink className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
-              <span>Web Monitoring Maggot</span>
+          <div className="px-3 py-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60 text-xs text-emerald-300">
+            <div className="font-bold flex items-center gap-1.5 text-[11px]">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Lokasi: Pos RA Mekarjaya</span>
             </div>
-            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300">
-              Mitra
-            </span>
-          </a>
+            <p className="text-[10px] text-slate-400 mt-0.5">
+              4 Wadah: Botol PET, Plastik, Kardus, Besi & Kaca
+            </p>
+          </div>
         </div>
       </nav>
 
-      {/* User Info & Logout Button (Pinned at bottom) */}
+      {/* User Info & Logout Button */}
       <div className="p-3 border-t border-slate-800 space-y-2 flex-shrink-0 bg-slate-900">
         <div className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/50 flex items-center justify-between text-xs">
           <div className="truncate pr-2">
             <div className="font-bold text-white truncate text-[11px]">
-              {user?.user_metadata?.full_name || user?.email || 'Operator Karang Taruna'}
+              {user?.user_metadata?.full_name || user?.email || 'Pengurus RA Mekarjaya'}
             </div>
-            <div className="text-[10px] text-emerald-400 font-medium">Pengurus Terotorisasi</div>
+            <div className="text-[10px] text-emerald-400 font-medium">Operator Bank Sampah</div>
           </div>
         </div>
 
@@ -116,7 +105,7 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
           className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/40 text-xs font-semibold transition"
         >
           <LogOut className="w-4 h-4" />
-          <span>Keluar dari Dashboard</span>
+          <span>Keluar Dashboard</span>
         </button>
       </div>
     </aside>

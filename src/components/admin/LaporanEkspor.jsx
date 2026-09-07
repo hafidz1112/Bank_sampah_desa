@@ -6,25 +6,27 @@ import {
   Calendar, 
   CheckCircle2, 
   FileText, 
-  Users, 
+  Building2, 
   Receipt, 
   Tag,
   BookOpen,
   Award,
-  Layers
+  Layers,
+  Coins,
+  Scale
 } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah, formatWeight } from '../../lib/utils';
-import { exportNasabahPDF, exportTransaksiPDF, exportToCSV } from '../../lib/exportUtils';
+import { exportRtPDF, exportTransaksiPDF, exportToCSV } from '../../lib/exportUtils';
 
 export const LaporanEkspor = () => {
-  const { nasabahList, transaksiList, katalogList, getStats } = useBankSampah();
+  const { rtList, transaksiList, katalogList, getStats } = useBankSampah();
   const stats = getStats();
 
   const handleExportAllPDF = () => {
-    exportTransaksiPDF(transaksiList, 'Laporan Lengkap Transaksi KKM UMC 2026');
+    exportTransaksiPDF(transaksiList, 'Laporan Lengkap Mutasi Kas RT KKM UMC 2026');
     setTimeout(() => {
-      exportNasabahPDF(nasabahList);
+      exportRtPDF(rtList);
     }, 600);
   };
 
@@ -36,7 +38,7 @@ export const LaporanEkspor = () => {
           Laporan Rekapitulasi & Ekspor Dokumen
         </h2>
         <p className="text-xs text-slate-500 mt-0.5">
-          Generate dokumen PDF & CSV resmi untuk pertanggungjawaban Program Kerja KKM Informatika UMC 2026 dan Arsip Pemerintah Desa Mekarjaya
+          Generate dokumen PDF & CSV resmi untuk pertanggungjawaban Program Kerja KKM Informatika UMC 2026 dan Arsip Kas Warga RT Desa Mekarjaya
         </p>
       </div>
 
@@ -49,10 +51,10 @@ export const LaporanEkspor = () => {
               Laporan Eksekutif Program Kerja KKM UMC 2026
             </span>
             <h3 className="text-2xl font-black">
-              Bank Sampah Desa Mekarjaya Terintegrasi
+              Bank Sampah Desa Mekarjaya
             </h3>
             <p className="text-xs text-emerald-100">
-              Kec. Ciawigebang, Kab. Kuningan • Dusun Cimenang, Ciganda, Cimuda
+              Kec. Ciawigebang, Kab. Kuningan • Pos Pemilahan 4 Wadah di RA & Kas RT Dusun Cimenang, Ciganda, Cimuda
             </p>
           </div>
 
@@ -68,57 +70,57 @@ export const LaporanEkspor = () => {
         {/* Aggregate KPI Grid in Report */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Total Nasabah</span>
-            <div className="text-xl font-extrabold text-white mt-1">{stats.totalNasabah} Warga</div>
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Unit RT Terdaftar</span>
+            <div className="text-xl font-extrabold text-white mt-1">{stats.totalRt || rtList.length} RT</div>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Sampah Terkelola</span>
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Sampah RA Terjual</span>
             <div className="text-xl font-extrabold text-white mt-1">{formatWeight(stats.totalBeratSampahKg)}</div>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Tabungan Beredar</span>
-            <div className="text-xl font-extrabold text-emerald-300 mt-1">{formatRupiah(stats.totalSaldoAktif)}</div>
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Total Saldo Kas RT</span>
+            <div className="text-xl font-extrabold text-emerald-300 mt-1">{formatRupiah(stats.totalSaldoKas)}</div>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Suplai Sampah Organik</span>
-            <div className="text-xl font-extrabold text-amber-300 mt-1">{formatWeight(stats.totalSampahOrganikKg || 0)}</div>
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Kas Disalurkan</span>
+            <div className="text-xl font-extrabold text-amber-300 mt-1">{formatRupiah(stats.totalUangPenyaluran)}</div>
           </div>
         </div>
       </div>
 
       {/* 3 Report Download Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Report 1: Nasabah */}
+        {/* Report 1: RT Savings */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition">
           <div className="space-y-2">
-            <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
-              <Users className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">
+              <Building2 className="w-5 h-5" />
             </div>
             <h4 className="font-extrabold text-base text-slate-900">
-              Rekap Data Nasabah
+              Rekap Kas & Tabungan RT
             </h4>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Daftar seluruh nasabah warga Dusun Cimenang, Ciganda, Cimuda lengkap dengan NIK, nomor rekening, dan saldo tabungan aktif.
+              Daftar seluruh unit RT di Dusun Cimenang, Ciganda, dan Cimuda dengan rincian ketua RT, kontak, total sampah, dan saldo kas tabungan warga.
             </p>
           </div>
 
           <div className="space-y-2 pt-2 border-t border-slate-100">
             <button
-              onClick={() => exportNasabahPDF(nasabahList)}
-              className="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5"
+              onClick={() => exportRtPDF(rtList)}
+              className="w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" />
-              Unduh PDF Nasabah
+              Unduh PDF Rekap Kas RT
             </button>
             <button
               onClick={() => {
-                const headers = ['No Rekening', 'NIK', 'Nama Lengkap', 'Dusun', 'RW', 'RT', 'Saldo Aktif'];
-                const rows = nasabahList.map(n => [n.no_rekening, n.nik, n.nama, n.dusun, n.rw, n.rt, n.saldo_aktif]);
-                exportToCSV('Rekap_Nasabah_Mekarjaya', rows, headers);
+                const headers = ['Kode RT', 'Nama RT', 'Dusun', 'RW', 'RT', 'Ketua RT', 'Kontak HP', 'Total Sampah (kg)', 'Saldo Kas (Rp)'];
+                const rows = rtList.map(r => [r.kode_rt, r.nama_rt, r.dusun, r.rw, r.rt, r.ketua_rt || '', r.no_telepon || '', r.total_sampah_terkumpul_kg || 0, r.saldo_kas]);
+                exportToCSV('Rekap_Kas_RT_Mekarjaya', rows, headers);
               }}
               className="w-full py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold text-xs transition flex items-center justify-center gap-1.5"
             >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-purple-600" />
+              <FileSpreadsheet className="w-3.5 h-3.5 text-teal-600" />
               Unduh Format Excel (CSV)
             </button>
           </div>
@@ -131,10 +133,10 @@ export const LaporanEkspor = () => {
               <Receipt className="w-5 h-5" />
             </div>
             <h4 className="font-extrabold text-base text-slate-900">
-              Buku Jurnal Transaksi
+              Buku Jurnal Mutasi Kas
             </h4>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Arsip mutasi transaksi penimbangan setoran dan pencairan penarikan saldo nasabah dari awal beroperasi.
+              Arsip mutasi transaksi penjualan sampah ke pengepul (pemasukan) dan penyaluran dana kas RT (pengeluaran) untuk transparansi warga.
             </p>
           </div>
 
@@ -144,13 +146,13 @@ export const LaporanEkspor = () => {
               className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" />
-              Unduh PDF Jurnal
+              Unduh PDF Jurnal Mutasi
             </button>
             <button
               onClick={() => {
-                const headers = ['Kode TRX', 'Waktu', 'Nasabah', 'No Rekening', 'Jenis', 'Berat (Kg)', 'Nominal (Rp)', 'Keterangan'];
-                const rows = transaksiList.map(t => [t.kode_transaksi, t.created_at, t.nasabah_nama, t.nasabah_no_rekening, t.jenis, t.total_berat_kg, t.total_nominal, t.keterangan]);
-                exportToCSV('Jurnal_Transaksi_Mekarjaya', rows, headers);
+                const headers = ['Kode TRX', 'Waktu', 'Unit RT', 'Jenis', 'Berat (Kg)', 'Nominal (Rp)', 'Keterangan'];
+                const rows = transaksiList.map(t => [t.kode_transaksi, t.created_at, t.rt_nama || t.nasabah_nama || '', t.jenis, t.total_berat_kg, t.total_nominal, t.keterangan]);
+                exportToCSV('Jurnal_Mutasi_Kas_RT_Mekarjaya', rows, headers);
               }}
               className="w-full py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold text-xs transition flex items-center justify-center gap-1.5"
             >
@@ -160,34 +162,34 @@ export const LaporanEkspor = () => {
           </div>
         </div>
 
-        {/* Report 3: Katalog & Tarif Sampah */}
+        {/* Report 3: Katalog 4 Wadah RA */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition">
           <div className="space-y-2">
             <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
               <Tag className="w-5 h-5 text-amber-600" />
             </div>
             <h4 className="font-extrabold text-base text-slate-900">
-              Katalog & Tarif Sampah Resmi
+              Katalog 4 Wadah RA & Tarif
             </h4>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Daftar tarif beli sampah anorganik dan organik per kilogram sebagai acuan timbangan resmi warga Desa Mekarjaya.
+              Daftar tarif acuan harga jual 4 wadah sampah terpilah di RA Mekarjaya ke pengepul (Botol Plastik, Plastik, Kardus/Kertas, Besi & Kaca).
             </p>
           </div>
 
           <div className="space-y-2 pt-2 border-t border-slate-100">
             <button
               onClick={() => {
-                const headers = ['Nama Kategori', 'Tipe Sampah', 'Tarif per Kg (Rp)', 'Status', 'Petunjuk Pilah'];
-                const rows = katalogList.map(k => [k.nama_kategori, k.tipe.toUpperCase(), k.harga_per_kg, k.is_active ? 'Aktif' : 'Nonaktif', k.deskripsi || '-']);
-                exportToCSV('Katalog_Tarif_Sampah_Mekarjaya', rows, headers);
+                const headers = ['Nama Kategori Wadah', 'Tipe Kode', 'Tarif ke Pengepul / Kg (Rp)', 'Status', 'Deskripsi Pemilahan'];
+                const rows = katalogList.map(k => [k.nama_kategori, k.tipe || 'WADAH', k.harga_per_kg, k.is_active ? 'Aktif' : 'Nonaktif', k.deskripsi || '-']);
+                exportToCSV('Katalog_4_Wadah_RA_Mekarjaya', rows, headers);
               }}
               className="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" />
-              Unduh Katalog & Tarif (CSV)
+              Unduh Katalog 4 Wadah (CSV)
             </button>
             <div className="p-2 rounded-xl bg-slate-50 text-[11px] text-slate-500 text-center font-medium border border-slate-100">
-              {katalogList.length} Jenis Kategori Terdaftar
+              {katalogList.length} Kategori Wadah Terpilah
             </div>
           </div>
         </div>

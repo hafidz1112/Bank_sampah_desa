@@ -1,5 +1,6 @@
 /**
- * Formatting and utility helpers for SI-BSDes Mekarjaya
+ * Formatting and utility helpers for SI-BSDes RA Mekarjaya
+ * Bank Sampah Terpilah 4 Wadah di RA Mekarjaya & Tabungan Kas RT
  */
 
 // Format number to IDR currency
@@ -35,9 +36,10 @@ export const formatDate = (dateString, includeTime = true) => {
   return date.toLocaleDateString('id-ID', options);
 };
 
-// Generate unique transaction code: TRX-YYYYMMDD-XXXX
-export const generateTxCode = (type = 'SETOR') => {
-  const prefix = type.toUpperCase() === 'TARIK' ? 'TRK' : 'STR';
+// Generate unique transaction code: PJL-YYYYMMDD-XXXX or SLR-YYYYMMDD-XXXX
+export const generateTxCode = (type = 'PENJUALAN') => {
+  const isPenyaluran = type.toUpperCase() === 'PENYALURAN' || type.toUpperCase() === 'TARIK';
+  const prefix = isPenyaluran ? 'SLR' : 'PJL';
   const date = new Date();
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -46,37 +48,11 @@ export const generateTxCode = (type = 'SETOR') => {
   return `${prefix}-${y}${m}${d}-${random}`;
 };
 
-// Generate new unique Account Number for Nasabah: BSDES-MJ-XXX
-export const generateNoRekening = (nasabahListOrCount = 0) => {
-  if (Array.isArray(nasabahListOrCount)) {
-    let maxNum = 0;
-    const existingSet = new Set();
-
-    nasabahListOrCount.forEach(n => {
-      if (!n || !n.no_rekening) return;
-      const cleanRek = String(n.no_rekening).trim().toUpperCase();
-      existingSet.add(cleanRek);
-
-      const match = cleanRek.match(/BSDES-MJ-(\d+)/i);
-      if (match) {
-        const parsed = parseInt(match[1], 10);
-        if (!isNaN(parsed) && parsed > maxNum) {
-          maxNum = parsed;
-        }
-      }
-    });
-
-    let nextNum = Math.max(maxNum + 1, nasabahListOrCount.length + 1);
-    while (existingSet.has(`BSDES-MJ-${String(nextNum).padStart(3, '0')}`)) {
-      nextNum++;
-    }
-
-    return `BSDES-MJ-${String(nextNum).padStart(3, '0')}`;
-  }
-
-  const count = typeof nasabahListOrCount === 'number' ? nasabahListOrCount : 0;
-  const num = String(count + 1).padStart(3, '0');
-  return `BSDES-MJ-${num}`;
+// Generate unique RT Code: RT-0X-DUSUN
+export const generateKodeRt = (rtNum, rwNum, dusun) => {
+  const cleanDusun = String(dusun || 'CIMENANG').replace(/dusun /i, '').toUpperCase().trim();
+  const rtFormatted = String(rtNum || '01').padStart(2, '0');
+  return `RT-${rtFormatted}-${cleanDusun}`;
 };
 
 // Dusun list in Desa Mekarjaya
@@ -86,14 +62,34 @@ export const DUSUN_LIST = [
   'Dusun Cimuda'
 ];
 
-// Biopond list
-export const BIOPOND_UNITS = [
-  'Biopond Maggot Unit 1 (Kandang Utama)',
-  'Biopond Maggot Unit 2 (Dusun Ciganda)',
-  'Biopond Maggot Unit 3 (Dusun Cimenang)',
-  'Biopond Maggot Unit 4 (Dusun Cimuda)'
+// 4 Kategori Sampah Resmi Wadah Pilah RA Mekarjaya
+export const KATEGORI_SAMPAH_4 = [
+  {
+    id: 'botol_plastik',
+    label: 'Botol Plastik',
+    sublabel: 'PET Bening, Botol Air Mineral & Minuman Bersih',
+    color: '#0284c7',
+    icon: '🧴'
+  },
+  {
+    id: 'plastik',
+    label: 'Plastik',
+    sublabel: 'Gelas Plastik PP, Kantong Kresek & Lembaran Bersih',
+    color: '#0ea5e9',
+    icon: '🥤'
+  },
+  {
+    id: 'kardus_kertas',
+    label: 'Kardus & Kertas',
+    sublabel: 'Box Karton Gelombang, HVS, Koran, Buku Bekas',
+    color: '#eab308',
+    icon: '📦'
+  },
+  {
+    id: 'besi_kaca',
+    label: 'Besi & Kaca',
+    sublabel: 'Kaleng Soda/Susu, Besi Seng, dan Botol Beling/Kaca',
+    color: '#e11d48',
+    icon: '🥫'
+  }
 ];
-
-// URL Website Rekan KKM untuk Monitoring Budidaya Maggot BSF
-export const MAGGOT_MONITORING_URL = 'https://monitoring-maggot-mekarjaya.vercel.app';
-
