@@ -23,11 +23,17 @@ export const BankSampahProvider = ({ children }) => {
   const [toast, setToast] = useState(null);
 
   const showToast = (message, type = 'success') => {
+    if (!message) {
+      setToast(null);
+      return;
+    }
     setToast({ message, type, id: Date.now() });
     setTimeout(() => {
       setToast(null);
     }, 4000);
   };
+
+  const hideToast = () => setToast(null);
 
   const triggerConfetti = () => {
     try {
@@ -57,8 +63,23 @@ export const BankSampahProvider = ({ children }) => {
           supabase.from('transaksi').select('*, detail_setoran(*), tabungan_rt(*)').order('created_at', { ascending: false })
         ]);
 
-        if (rtRes.data && rtRes.data.length > 0) setRtList(rtRes.data);
-        else setRtList(INITIAL_RT);
+        // If tabungan_rt table does not exist or error in Supabase, fall back safely to local data
+        if (rtRes.error) {
+          console.warn('Supabase tabungan_rt note:', rtRes.error.message);
+          loadLocalData();
+          setLoading(false);
+          return;
+        }
+
+        if (rtRes.data && rtRes.data.length > 0) {
+          const formattedRt = rtRes.data.map(r => ({
+            ...r,
+            no_telepon: r.kontak || r.no_telepon || ''
+          }));
+          setRtList(formattedRt);
+        } else {
+          setRtList(INITIAL_RT);
+        }
 
         if (katalogRes.data && katalogRes.data.length > 0) setKatalogList(katalogRes.data);
         else setKatalogList(INITIAL_KATALOG);
@@ -116,6 +137,7 @@ export const BankSampahProvider = ({ children }) => {
   const addRt = async (rtData) => {
     try {
       const kode = rtData.kode_rt?.trim() || generateKodeRt(rtData.rt, rtData.rw, rtData.dusun);
+      const kontakVal = rtData.kontak || rtData.no_telepon || rtData.no_hp || null;
       const dbPayload = {
         kode_rt: kode,
         nama_rt: rtData.nama_rt || `RT ${rtData.rt} / RW ${rtData.rw}`,
@@ -123,18 +145,25 @@ export const BankSampahProvider = ({ children }) => {
         rw: rtData.rw,
         rt: rtData.rt,
         ketua_rt: rtData.ketua_rt || 'Pengurus RT',
-        kontak: rtData.kontak || null,
+        kontak: kontakVal,
         saldo_kas: parseFloat(rtData.saldo_kas) || 0,
         total_sampah_terkumpul_kg: parseFloat(rtData.total_sampah_terkumpul_kg) || 0,
         created_at: new Date().toISOString()
       };
 
       if (isSupabase && supabase) {
-        const { data, error } = await supabase.from('tabungan_rt').insert([dbPayload]).select().single();
-        if (error) throw error;
-        setRtList(prev => [...prev, data]);
+        try {
+          const { data, error } = await supabase.from('tabungan_rt').insert([dbPayload]).select().single();
+          if (error) throw error;
+          const fullData = { ...data, no_telepon: data.kontak || '' };
+          setRtList(prev => [...prev, fullData]);
+        } catch (dbErr) {
+          console.warn('Supabase insert note, saving locally:', dbErr.message);
+          const itemWithId = { ...dbPayload, id: Date.now(), no_telepon: kontakVal || '' };
+          syncLocalRt([...rtList, itemWithId]);
+        }
       } else {
-        const itemWithId = { ...dbPayload, id: Date.now() };
+        const itemWithId = { ...dbPayload, id: Date.now(), no_telepon: kontakVal || '' };
         syncLocalRt([...rtList, itemWithId]);
       }
       showToast(`Data "${dbPayload.nama_rt}" berhasil ditambahkan!`, 'success');
@@ -154,15 +183,21 @@ export const BankSampahProvider = ({ children }) => {
       if (updatedData.rw !== undefined) dbPayload.rw = updatedData.rw;
       if (updatedData.rt !== undefined) dbPayload.rt = updatedData.rt;
       if (updatedData.ketua_rt !== undefined) dbPayload.ketua_rt = updatedData.ketua_rt;
-      if (updatedData.kontak !== undefined) dbPayload.kontak = updatedData.kontak;
+      if (updatedData.kontak !== undefined || updatedData.no_telepon !== undefined) {
+        dbPayload.kontak = updatedData.kontak || updatedData.no_telepon || null;
+      }
       if (updatedData.saldo_kas !== undefined) dbPayload.saldo_kas = parseFloat(updatedData.saldo_kas);
       if (updatedData.total_sampah_terkumpul_kg !== undefined) dbPayload.total_sampah_terkumpul_kg = parseFloat(updatedData.total_sampah_terkumpul_kg);
 
       if (isSupabase && supabase) {
-        const { error } = await supabase.from('tabungan_rt').update(dbPayload).eq('id', id);
-        if (error) throw error;
+        try {
+          const { error } = await supabase.from('tabungan_rt').update(dbPayload).eq('id', id);
+          if (error) throw error;
+        } catch (dbErr) {
+          console.warn('Supabase update note, saving locally:', dbErr.message);
+        }
       }
-      const updated = rtList.map(r => r.id === id ? { ...r, ...dbPayload } : r);
+      const updated = rtList.map(r => r.id === id ? { ...r, ...dbPayload, no_telepon: dbPayload.kontak !== undefined ? dbPayload.kontak : r.no_telepon } : r);
       syncLocalRt(updated);
       showToast('Data RT & Tabungan berhasil diperbarui!', 'success');
       return { success: true };
@@ -273,7 +308,7 @@ export const BankSampahProvider = ({ children }) => {
     }
   };
 
-  // --- TRANSAKSI PENJUALAN SAMPAH DARI 4 TONG RA KE PENGEPUL ---
+  // --- TRANSAKSI PENJUALAN 4 WADAH SAMPAH TERPILAH KE PENGEPUL ---
   const processPenjualan = async ({ rtId, nasabahId, items, keterangan }) => {
     try {
       const targetId = rtId || nasabahId;
@@ -289,49 +324,69 @@ export const BankSampahProvider = ({ children }) => {
       let createdTx = null;
 
       if (isSupabase && supabase) {
-        const { data: txRecord, error: txErr } = await supabase.from('transaksi').insert([{
-          kode_transaksi: kodeTransaksi,
-          rt_id: Number(rtId),
-          jenis: 'penjualan',
-          total_berat_kg: totalBerat,
-          total_nominal: totalNominal,
-          keterangan: keterangan || 'Hasil penjualan sampah terpilah RA',
-          created_at: now
-        }]).select().single();
+        try {
+          const { data: txRecord, error: txErr } = await supabase.from('transaksi').insert([{
+            kode_transaksi: kodeTransaksi,
+            rt_id: Number(targetId),
+            jenis: 'penjualan',
+            total_berat_kg: totalBerat,
+            total_nominal: totalNominal,
+            keterangan: keterangan || 'Hasil penjualan sampah terpilah Bank Sampah Aktif',
+            created_at: now
+          }]).select().single();
 
-        if (txErr) throw txErr;
+          if (txErr) throw txErr;
 
-        const detailRecords = items.map(it => ({
-          transaksi_id: txRecord.id,
-          kategori_id: it.kategori_id,
-          berat_kg: parseFloat(it.berat_kg),
-          harga_per_kg: parseFloat(it.harga_per_kg),
-          subtotal: parseFloat(it.subtotal)
-        }));
+          const detailRecords = items.map(it => ({
+            transaksi_id: txRecord.id,
+            kategori_id: it.kategori_id,
+            berat_kg: parseFloat(it.berat_kg),
+            harga_per_kg: parseFloat(it.harga_per_kg),
+            subtotal: parseFloat(it.subtotal)
+          }));
 
-        const { error: detailErr } = await supabase.from('detail_setoran').insert(detailRecords);
-        if (detailErr) console.warn('Detail insert note:', detailErr);
+          const { error: detailErr } = await supabase.from('detail_setoran').insert(detailRecords);
+          if (detailErr) console.warn('Detail insert note:', detailErr);
 
-        createdTx = {
-          ...txRecord,
-          rt_nama: `${rt.nama_rt} (${rt.dusun})`,
-          rt_kode: rt.kode_rt,
-          items: items.map(it => ({
-            ...it,
-            nama_kategori: katalogList.find(k => k.id === it.kategori_id)?.nama_kategori || 'Sampah'
-          }))
-        };
+          createdTx = {
+            ...txRecord,
+            rt_nama: `${rt.nama_rt} (${rt.dusun})`,
+            rt_kode: rt.kode_rt,
+            items: items.map(it => ({
+              ...it,
+              nama_kategori: katalogList.find(k => k.id === it.kategori_id)?.nama_kategori || 'Sampah'
+            }))
+          };
+        } catch (dbErr) {
+          console.warn('Supabase processPenjualan failed, saving locally:', dbErr.message);
+          createdTx = {
+            id: Date.now(),
+            kode_transaksi: kodeTransaksi,
+            rt_id: Number(targetId),
+            rt_nama: `${rt.nama_rt} (${rt.dusun})`,
+            rt_kode: rt.kode_rt,
+            jenis: 'penjualan',
+            total_berat_kg: totalBerat,
+            total_nominal: totalNominal,
+            keterangan: keterangan || 'Hasil penjualan sampah terpilah Bank Sampah Aktif',
+            created_at: now,
+            items: items.map(it => ({
+              ...it,
+              nama_kategori: katalogList.find(k => k.id === it.kategori_id)?.nama_kategori || 'Sampah'
+            }))
+          };
+        }
       } else {
         createdTx = {
           id: Date.now(),
           kode_transaksi: kodeTransaksi,
-          rt_id: Number(rtId),
+          rt_id: Number(targetId),
           rt_nama: `${rt.nama_rt} (${rt.dusun})`,
           rt_kode: rt.kode_rt,
           jenis: 'penjualan',
           total_berat_kg: totalBerat,
           total_nominal: totalNominal,
-          keterangan: keterangan || 'Hasil penjualan sampah terpilah RA',
+          keterangan: keterangan || 'Hasil penjualan sampah terpilah Bank Sampah Aktif',
           created_at: now,
           items: items.map(it => ({
             ...it,
@@ -342,7 +397,7 @@ export const BankSampahProvider = ({ children }) => {
 
       // Update RT balance in local state
       const updatedRtList = rtList.map(r => {
-        if (r.id === Number(rtId)) {
+        if (r.id === Number(targetId)) {
           return {
             ...r,
             saldo_kas: (parseFloat(r.saldo_kas) || 0) + totalNominal,
@@ -395,24 +450,41 @@ export const BankSampahProvider = ({ children }) => {
       let createdTx = null;
 
       if (isSupabase && supabase) {
-        const { data: txRecord, error: txErr } = await supabase.from('transaksi').insert([{
-          kode_transaksi: kodeTransaksi,
-          rt_id: Number(targetId),
-          jenis: 'penyaluran',
-          total_berat_kg: 0,
-          total_nominal: withdrawAmount,
-          keterangan: keterangan || 'Penyaluran dana kas tabungan RT',
-          created_at: now
-        }]).select().single();
+        try {
+          const { data: txRecord, error: txErr } = await supabase.from('transaksi').insert([{
+            kode_transaksi: kodeTransaksi,
+            rt_id: Number(targetId),
+            jenis: 'penyaluran',
+            total_berat_kg: 0,
+            total_nominal: withdrawAmount,
+            keterangan: keterangan || 'Penyaluran dana kas tabungan RT',
+            created_at: now
+          }]).select().single();
 
-        if (txErr) throw txErr;
+          if (txErr) throw txErr;
 
-        createdTx = {
-          ...txRecord,
-          rt_nama: `${rt.nama_rt} (${rt.dusun})`,
-          rt_kode: rt.kode_rt,
-          items: []
-        };
+          createdTx = {
+            ...txRecord,
+            rt_nama: `${rt.nama_rt} (${rt.dusun})`,
+            rt_kode: rt.kode_rt,
+            items: []
+          };
+        } catch (dbErr) {
+          console.warn('Supabase processPenyaluran failed, saving locally:', dbErr.message);
+          createdTx = {
+            id: Date.now(),
+            kode_transaksi: kodeTransaksi,
+            rt_id: Number(targetId),
+            rt_nama: `${rt.nama_rt} (${rt.dusun})`,
+            rt_kode: rt.kode_rt,
+            jenis: 'penyaluran',
+            total_berat_kg: 0,
+            total_nominal: withdrawAmount,
+            keterangan: keterangan || 'Penyaluran dana kas tabungan RT',
+            created_at: now,
+            items: []
+          };
+        }
       } else {
         createdTx = {
           id: Date.now(),
@@ -554,6 +626,7 @@ export const BankSampahProvider = ({ children }) => {
         transaksiList,
         toast,
         showToast,
+        hideToast,
         triggerConfetti,
         loadData,
         resetToSampleData,

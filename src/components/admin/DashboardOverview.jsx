@@ -28,13 +28,13 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
       <div className="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2 max-w-xl">
           <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
-            Panel Pengurus Bank Sampah Desa Mekarjaya
+            Panel Pengurus Bank Sampah Aktif
           </span>
           <h2 className="text-2xl sm:text-3xl font-black">
-            Selamat Bertugas di Bank Sampah Desa Mekarjaya!
+            Selamat Bertugas di Bank Sampah Aktif Mekarjaya!
           </h2>
           <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-            Kelola penimbangan sampah terpilah dari 4 wadah di pos RA, catat penjualan ke pengepul daur ulang, dan kelola saldo tabungan kas warga per RT.
+            Kelola penimbangan sampah terpilah dari 4 wadah, catat penjualan ke pengepul daur ulang, dan kelola saldo tabungan kas warga per RT.
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sampah Terjual dari RA</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Sampah Terjual</span>
             <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
               <Scale className="w-5 h-5" />
             </div>
@@ -92,7 +92,7 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
             {formatWeight(stats.totalBeratSampahKg)}
           </div>
           <div className="mt-1 text-xs text-sky-600 font-semibold">
-            Dari 4 Wadah Pemilahan RA
+            Dari 4 Wadah Pemilahan Aktif
           </div>
         </div>
 
@@ -216,7 +216,7 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
           </div>
         </div>
 
-        {/* 4 Wadah Sampah RA Breakdown (5 Cols) */}
+        {/* 4 Wadah Sampah Terpilah Breakdown (5 Cols) */}
         <div className="lg:col-span-5 bg-gradient-to-br from-slate-900 to-emerald-950 rounded-3xl p-6 text-white shadow-sm space-y-4 flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -225,8 +225,8 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base text-white">4 Wadah Sampah RA</h3>
-                  <p className="text-xs text-emerald-300">Pusat Pemilahan di RA Mekarjaya</p>
+                  <h3 className="font-bold text-base text-white">4 Wadah Sampah Terpilah</h3>
+                  <p className="text-xs text-emerald-300">Bank Sampah Aktif Mekarjaya</p>
                 </div>
               </div>
             </div>

@@ -85,10 +85,10 @@ export const NasabahPortal = ({ initialSearch = '' }) => {
           <span>Transparansi Kas & Tabungan Warga</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Buku Tabungan Kas RT - Bank Sampah Desa Mekarjaya
+          Buku Tabungan Kas RT - Bank Sampah Aktif Desa Mekarjaya
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-          Inisiatif Bank Sampah Desa Mekarjaya dengan tempat pemilahan diletakkan di pos <strong>RA (Raudhatul Athfal)</strong>. Warga tidak perlu mendaftar buku rekening individu. Hasil penjualan sampah dari 4 wadah di pos RA masuk secara transparan ke kas tabungan RT masing-masing.
+          Inisiatif <strong>Bank Sampah Aktif Desa Mekarjaya</strong>. Warga tidak perlu mendaftar buku rekening individu. Hasil penjualan sampah dari 4 wadah terpilah masuk secara transparan ke kas tabungan RT masing-masing.
         </p>
       </div>
 
@@ -157,7 +157,7 @@ export const NasabahPortal = ({ initialSearch = '' }) => {
                     {showBalance ? formatRupiah(selectedRt.saldo_kas) : 'Rp ••••••••'}
                   </div>
                   <p className="text-xs text-emerald-200 mt-1">
-                    Dana kas murni dari hasil pemilahan & penjualan sampah di RA Mekarjaya
+                    Dana kas murni dari hasil pemilahan & penjualan sampah Bank Sampah Aktif
                   </p>
                 </div>
               </div>
@@ -183,7 +183,7 @@ export const NasabahPortal = ({ initialSearch = '' }) => {
                   </span>
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Terdaftar di RA</span>
+                    <span>Bank Sampah Aktif</span>
                   </span>
                 </div>
 
@@ -232,7 +232,7 @@ export const NasabahPortal = ({ initialSearch = '' }) => {
                   Riwayat Mutasi Kas {selectedRt.nama_rt}
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Catatan transparan uang masuk dari penjualan 4 sampah RA dan penyaluran dana kas warga
+                  Catatan transparan uang masuk dari penjualan 4 sampah terpilah dan penyaluran dana kas warga
                 </p>
               </div>
 
@@ -334,7 +334,7 @@ export const NasabahPortal = ({ initialSearch = '' }) => {
                       {/* Expanded Item Details */}
                       {isExpanded && tx.items && tx.items.length > 0 && (
                         <div className="bg-slate-50 rounded-2xl p-3 text-xs space-y-1.5 border border-slate-100 ml-12">
-                          <div className="font-bold text-[11px] text-slate-700 mb-1">Rincian Timbangan dari 4 Wadah RA:</div>
+                          <div className="font-bold text-[11px] text-slate-700 mb-1">Rincian Timbangan dari 4 Wadah Terpilah:</div>
                           {tx.items.map((it, idx) => (
                             <div key={idx} className="flex items-center justify-between text-slate-600">
                               <span>• {it.nama_kategori} ({formatWeight(it.berat_kg)})</span>

@@ -9,8 +9,8 @@ export const SqlHelperModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const sqlScript = `-- ==============================================================================
--- SISTEM INFORMASI BANK SAMPAH DESA TERINTEGRASI (SI-BSDes) RA MEKARJAYA
--- Penerapan: Tempat Sampah Terpilah 4 Wadah di RA (Raudhatul Athfal) Mekarjaya
+-- SISTEM INFORMASI BANK SAMPAH DESA TERINTEGRASI (SI-BSDes) BANK SAMPAH AKTIF MEKARJAYA
+-- Penerapan: Tempat Sampah Terpilah 4 Wadah Bank Sampah Aktif Mekarjaya
 -- Hasil Penjualan Sampah Dikelola sebagai Tabungan/Kas Warga per RT
 -- Lokasi: Desa Mekarjaya, Kec. Ciawigebang, Kab. Kuningan
 -- Dusun: Cimenang, Ciganda, Cimuda
@@ -59,7 +59,7 @@ CREATE TABLE transaksi (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 5. TABEL DETAIL PENJUALAN SAMPAH DARI 4 TONG RA
+-- 5. TABEL DETAIL PENJUALAN SAMPAH DARI 4 WADAH AKTIF
 CREATE TABLE detail_setoran (
     id BIGSERIAL PRIMARY KEY,
     transaksi_id BIGINT REFERENCES transaksi(id) ON DELETE CASCADE,
@@ -141,7 +141,7 @@ INSERT INTO tabungan_rt (kode_rt, nama_rt, dusun, rw, rt, ketua_rt, kontak, sald
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'schema_si_bsdes_ra_mekarjaya.sql';
+    link.download = 'schema_si_bsdes_bank_sampah_aktif.sql';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -158,7 +158,7 @@ INSERT INTO tabungan_rt (kode_rt, nama_rt, dusun, rw, rt, ketua_rt, kontak, sald
             </div>
             <div>
               <h3 className="font-extrabold text-base">Skrip SQL PostgreSQL & DDL Supabase</h3>
-              <p className="text-[10px] text-slate-400">Database Schema 4 Wadah RA, Auto Trigger Kas RT & RLS Policies</p>
+              <p className="text-[10px] text-slate-400">Database Schema 4 Wadah Bank Sampah Aktif, Auto Trigger Kas RT & RLS Policies</p>
             </div>
           </div>
           <button

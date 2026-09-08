@@ -8,21 +8,21 @@ const supabase = createClient(url, key);
 async function testAll() {
   console.log('🔍 Menguji koneksi database Supabase...');
 
-  const [katRes, nasabahRes, txRes, logRes] = await Promise.all([
+  const [katRes, rtRes, txRes, detailRes] = await Promise.all([
     supabase.from('kategori_sampah').select('*'),
-    supabase.from('nasabah').select('*'),
+    supabase.from('tabungan_rt').select('*'),
     supabase.from('transaksi').select('*'),
-    supabase.from('log_aliran_organik').select('*')
+    supabase.from('detail_setoran').select('*')
   ]);
 
   const report = {
-    kategori: katRes.error ? { status: 'ERROR', msg: katRes.error.message } : { status: 'OK', count: katRes.data.length, sample: katRes.data.slice(0, 3) },
-    nasabah: nasabahRes.error ? { status: 'ERROR', msg: nasabahRes.error.message } : { status: 'OK', count: nasabahRes.data.length, sample: nasabahRes.data.slice(0, 3) },
+    kategori_sampah: katRes.error ? { status: 'ERROR', msg: katRes.error.message } : { status: 'OK', count: katRes.data.length, sample: katRes.data.slice(0, 4) },
+    tabungan_rt: rtRes.error ? { status: 'ERROR', msg: rtRes.error.message } : { status: 'OK', count: rtRes.data.length, sample: rtRes.data.slice(0, 3) },
     transaksi: txRes.error ? { status: 'ERROR', msg: txRes.error.message } : { status: 'OK', count: txRes.data.length },
-    logOrganik: logRes.error ? { status: 'ERROR', msg: logRes.error.message } : { status: 'OK', count: logRes.data.length, sample: logRes.data.slice(0, 2) }
+    detail_setoran: detailRes.error ? { status: 'ERROR', msg: detailRes.error.message } : { status: 'OK', count: detailRes.data.length }
   };
 
-  console.log('Hasil Test:', JSON.stringify(report, null, 2));
+  console.log('Hasil Test Koneksi Supabase:', JSON.stringify(report, null, 2));
 }
 
 testAll();

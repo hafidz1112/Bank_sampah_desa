@@ -93,10 +93,10 @@ export const KatalogManagement = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-            Katalog 4 Wadah Sampah RA & Tarif Pengepul
+            Katalog 4 Wadah Sampah Terpilah & Tarif Pengepul
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Kelola estimasi harga jual ke pengepul untuk 4 jenis wadah sampah terpilah di RA Mekarjaya
+            Kelola estimasi harga jual ke pengepul untuk 4 jenis wadah Bank Sampah Aktif
           </p>
         </div>
 
@@ -122,7 +122,7 @@ export const KatalogManagement = () => {
           />
         </div>
         <div className="text-xs text-slate-500 font-medium">
-          Diterapkan di pos pemilahan RA Mekarjaya ({katalogList.length} kategori wadah)
+          Diterapkan pada Bank Sampah Aktif ({katalogList.length} kategori wadah)
         </div>
       </div>
 
@@ -201,7 +201,7 @@ export const KatalogManagement = () => {
           <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 animate-scale-in">
             <div className="bg-gradient-to-r from-emerald-800 to-teal-900 px-6 py-4 text-white flex items-center justify-between">
               <h3 className="font-extrabold text-base">
-                {editingItem ? 'Edit Kategori Wadah RA' : 'Tambah Kategori Wadah RA'}
+                {editingItem ? 'Edit Kategori Wadah' : 'Tambah Kategori Wadah'}
               </h3>
               <button
                 onClick={() => setModalOpen(false)}
@@ -290,7 +290,7 @@ export const KatalogManagement = () => {
                   className="rounded text-emerald-600 focus:ring-emerald-500"
                 />
                 <label htmlFor="is_active_check" className="text-xs font-semibold text-slate-700 cursor-pointer">
-                  Aktifkan kategori ini untuk penimbangan RA
+                  Aktifkan kategori ini untuk penimbangan Bank Sampah Aktif
                 </label>
               </div>
 

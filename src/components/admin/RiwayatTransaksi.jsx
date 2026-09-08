@@ -98,7 +98,7 @@ export const RiwayatTransaksi = () => {
             Buku Jurnal Mutasi Kas RT
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Rekapitulasi penjualan 4 wadah sampah RA (pemasukan) dan penyaluran dana kas tabungan warga RT (pengeluaran)
+            Rekapitulasi penjualan 4 wadah sampah terpilah (pemasukan) dan penyaluran dana kas tabungan warga RT (pengeluaran)
           </p>
         </div>
 
@@ -127,7 +127,7 @@ export const RiwayatTransaksi = () => {
           <div className="text-xl font-bold text-slate-900 mt-1">{filtered.length} Transaksi</div>
         </div>
         <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs">
-          <span className="text-[11px] font-bold text-slate-400 uppercase">Total Sampah RA Terjual</span>
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Total Sampah Terjual</span>
           <div className="text-xl font-bold text-slate-900 mt-1">{formatWeight(totalBerat)}</div>
         </div>
         <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs">
@@ -282,7 +282,7 @@ export const RiwayatTransaksi = () => {
                         <td colSpan="8" className="py-2.5 px-6 border-y border-emerald-100">
                           <div className="text-[11px] space-y-1">
                             <span className="font-bold text-emerald-900 block uppercase tracking-wider text-[9px]">
-                              Rincian 4 Wadah Sampah RA Terjual:
+                              Rincian 4 Wadah Sampah Terjual:
                             </span>
                             <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
                               {tx.items.map((item, idx) => (

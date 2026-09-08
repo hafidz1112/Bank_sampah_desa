@@ -51,10 +51,10 @@ export const LaporanEkspor = () => {
               Laporan Eksekutif Program Kerja KKM UMC 2026
             </span>
             <h3 className="text-2xl font-black">
-              Bank Sampah Desa Mekarjaya
+              Bank Sampah Aktif Desa Mekarjaya
             </h3>
             <p className="text-xs text-emerald-100">
-              Kec. Ciawigebang, Kab. Kuningan • Pos Pemilahan 4 Wadah di RA & Kas RT Dusun Cimenang, Ciganda, Cimuda
+              Kec. Ciawigebang, Kab. Kuningan • 4 Wadah Terpilah & Kas RT Dusun Cimenang, Ciganda, Cimuda
             </p>
           </div>
 
@@ -74,7 +74,7 @@ export const LaporanEkspor = () => {
             <div className="text-xl font-extrabold text-white mt-1">{stats.totalRt || rtList.length} RT</div>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Sampah RA Terjual</span>
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Total Sampah Terjual</span>
             <div className="text-xl font-extrabold text-white mt-1">{formatWeight(stats.totalBeratSampahKg)}</div>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
@@ -115,7 +115,7 @@ export const LaporanEkspor = () => {
             <button
               onClick={() => {
                 const headers = ['Kode RT', 'Nama RT', 'Dusun', 'RW', 'RT', 'Ketua RT', 'Kontak HP', 'Total Sampah (kg)', 'Saldo Kas (Rp)'];
-                const rows = rtList.map(r => [r.kode_rt, r.nama_rt, r.dusun, r.rw, r.rt, r.ketua_rt || '', r.no_telepon || '', r.total_sampah_terkumpul_kg || 0, r.saldo_kas]);
+                const rows = rtList.map(r => [r.kode_rt, r.nama_rt, r.dusun, r.rw, r.rt, r.ketua_rt || '', r.kontak || r.no_telepon || '', r.total_sampah_terkumpul_kg || 0, r.saldo_kas]);
                 exportToCSV('Rekap_Kas_RT_Mekarjaya', rows, headers);
               }}
               className="w-full py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold text-xs transition flex items-center justify-center gap-1.5"
@@ -162,17 +162,17 @@ export const LaporanEkspor = () => {
           </div>
         </div>
 
-        {/* Report 3: Katalog 4 Wadah RA */}
+        {/* Report 3: Katalog 4 Wadah Terpilah */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition">
           <div className="space-y-2">
             <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
               <Tag className="w-5 h-5 text-amber-600" />
             </div>
             <h4 className="font-extrabold text-base text-slate-900">
-              Katalog 4 Wadah RA & Tarif
+              Katalog 4 Wadah & Tarif
             </h4>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Daftar tarif acuan harga jual 4 wadah sampah terpilah di RA Mekarjaya ke pengepul (Botol Plastik, Plastik, Kardus/Kertas, Besi & Kaca).
+              Daftar tarif acuan harga jual 4 wadah sampah terpilah Bank Sampah Aktif ke pengepul (Botol Plastik, Plastik, Kardus/Kertas, Besi & Kaca).
             </p>
           </div>
 
@@ -181,7 +181,7 @@ export const LaporanEkspor = () => {
               onClick={() => {
                 const headers = ['Nama Kategori Wadah', 'Tipe Kode', 'Tarif ke Pengepul / Kg (Rp)', 'Status', 'Deskripsi Pemilahan'];
                 const rows = katalogList.map(k => [k.nama_kategori, k.tipe || 'WADAH', k.harga_per_kg, k.is_active ? 'Aktif' : 'Nonaktif', k.deskripsi || '-']);
-                exportToCSV('Katalog_4_Wadah_RA_Mekarjaya', rows, headers);
+                exportToCSV('Katalog_4_Wadah_Mekarjaya', rows, headers);
               }}
               className="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5"
             >

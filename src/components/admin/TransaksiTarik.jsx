@@ -93,7 +93,7 @@ export const TransaksiTarik = () => {
           Form Penyaluran Dana Kas Tabungan RT
         </h2>
         <p className="text-xs text-slate-500 mt-0.5">
-          Catat pengeluaran saldo tabungan kas warga RT dari hasil penjualan sampah RA untuk kebutuhan fasilitas lingkungan, kegiatan sosial, atau kerja bakti.
+          Catat pengeluaran saldo tabungan kas warga RT dari hasil penjualan sampah Bank Sampah Aktif untuk kebutuhan fasilitas lingkungan, kegiatan sosial, atau kerja bakti.
         </p>
       </div>
 
@@ -130,7 +130,7 @@ export const TransaksiTarik = () => {
                   {selectedRt.dusun} • RW {selectedRt.rw}
                 </div>
                 <div className="text-[11px] text-slate-600 mt-0.5">
-                  Ketua RT: <strong>{selectedRt.ketua_rt}</strong> ({selectedRt.no_telepon})
+                  Ketua RT: <strong>{selectedRt.ketua_rt}</strong> {(selectedRt.kontak || selectedRt.no_telepon) ? `(${selectedRt.kontak || selectedRt.no_telepon})` : ''}
                 </div>
               </div>
               <div className="text-right">

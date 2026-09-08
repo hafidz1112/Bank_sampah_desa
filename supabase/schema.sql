@@ -1,6 +1,6 @@
 -- ==============================================================================
--- SISTEM INFORMASI BANK SAMPAH DESA TERINTEGRASI (SI-BSDes) RA MEKARJAYA
--- Penerapan: Tempat Sampah Terpilah 4 Wadah di RA (Raudhatul Athfal) Mekarjaya
+-- SISTEM INFORMASI BANK SAMPAH DESA TERINTEGRASI (SI-BSDes) BANK SAMPAH AKTIF MEKARJAYA
+-- Penerapan: Tempat Sampah Terpilah 4 Wadah di Bank Sampah Aktif Mekarjaya
 -- Hasil Penjualan Sampah Dikelola sebagai Tabungan/Kas Warga per RT
 -- Lokasi: Desa Mekarjaya, Kec. Ciawigebang, Kab. Kuningan
 -- Dusun: Cimenang, Ciganda, Cimuda
@@ -49,7 +49,7 @@ CREATE TABLE transaksi (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 5. TABEL DETAIL PENJUALAN SAMPAH DARI 4 TONG RA
+-- 5. TABEL DETAIL PENJUALAN SAMPAH DARI 4 WADAH AKTIF
 CREATE TABLE detail_setoran (
     id BIGSERIAL PRIMARY KEY,
     transaksi_id BIGINT REFERENCES transaksi(id) ON DELETE CASCADE,
@@ -108,7 +108,7 @@ CREATE POLICY "Allow All Detail Setoran" ON detail_setoran FOR ALL TO public USI
 -- 9. SEED DATA AWAL (4 KATEGORI SAMPAH & DATA RT DESA MEKARJAYA)
 -- ==============================================================================
 
--- 4 Kategori Tempat Sampah Terpilah di RA Mekarjaya
+-- 4 Kategori Tempat Sampah Terpilah di Bank Sampah Aktif Mekarjaya
 INSERT INTO kategori_sampah (nama_kategori, tipe, harga_per_kg, deskripsi, is_active) VALUES
 ('Botol Plastik (PET Bening / Bersih)', 'botol_plastik', 3500, 'Botol air mineral bersih, botol teh/jus bening, tutup botol dilepas', true),
 ('Plastik (Kresek, Gelas PP & Campur)', 'plastik', 2200, 'Gelas plastik minuman kemasan (PP), kantong kresek kering, kemasan plastik bersih', true),
@@ -126,7 +126,7 @@ INSERT INTO tabungan_rt (kode_rt, nama_rt, dusun, rw, rt, ketua_rt, kontak, sald
 
 -- Riwayat Penjualan Sampah Terpilah Awal
 INSERT INTO transaksi (kode_transaksi, rt_id, jenis, total_berat_kg, total_nominal, keterangan) VALUES
-('PJL-20260210-1011', 1, 'penjualan', 25.0, 75000.00, 'Penjualan berkala sampah botol plastik & kardus dari RA untuk RT 01 Cimenang'),
-('PJL-20260215-2022', 3, 'penjualan', 34.0, 110000.00, 'Hasil penjualan kaleng besi dan botol plastik wadah pilah RA'),
+('PJL-20260210-1011', 1, 'penjualan', 25.0, 75000.00, 'Penjualan berkala sampah botol plastik & kardus wadah pilah aktif untuk RT 01 Cimenang'),
+('PJL-20260215-2022', 3, 'penjualan', 34.0, 110000.00, 'Hasil penjualan kaleng besi dan botol plastik wadah pilah aktif'),
 ('SLR-20260220-3033', 1, 'penyaluran', 0, 30000.00, 'Penyaluran dana kas tabungan sampah untuk pengadaan tempat sampah jalan RT 01'),
-('PJL-20260225-4044', 5, 'penjualan', 28.5, 87500.00, 'Penjualan botol kaca dan kertas kardus terkumpul di RA');
+('PJL-20260225-4044', 5, 'penjualan', 28.5, 87500.00, 'Penjualan botol kaca dan kertas kardus terkumpul di wadah pilah aktif');

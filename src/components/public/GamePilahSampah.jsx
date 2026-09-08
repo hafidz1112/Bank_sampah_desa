@@ -17,13 +17,13 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-// 4 Tempat Sampah Realistis Tematik RA Mekarjaya
+// 4 Tempat Sampah Realistis Tematik Bank Sampah Aktif
 const REAL_TRASH_BINS = [
   {
     id: 'botol_plastik',
     title: 'Botol Plastik',
     shortTitle: 'BOTOL PET',
-    subtitle: 'Wadah 1 di RA',
+    subtitle: 'Wadah 1 (Aktif)',
     mainColor: '#0284c7', // Sky 600
     darkColor: '#0c4a6e', // Sky 900
     lightColor: '#38bdf8', // Sky 400
@@ -35,7 +35,7 @@ const REAL_TRASH_BINS = [
     id: 'plastik',
     title: 'Plastik',
     shortTitle: 'PLASTIK',
-    subtitle: 'Wadah 2 di RA',
+    subtitle: 'Wadah 2 (Aktif)',
     mainColor: '#0d9488', // Teal 600
     darkColor: '#134e4a', // Teal 900
     lightColor: '#2dd4bf', // Teal 400
@@ -47,7 +47,7 @@ const REAL_TRASH_BINS = [
     id: 'kardus_kertas',
     title: 'Kardus & Kertas',
     shortTitle: 'KERTAS/BOX',
-    subtitle: 'Wadah 3 di RA',
+    subtitle: 'Wadah 3 (Aktif)',
     mainColor: '#eab308', // Yellow 500
     darkColor: '#78350f', // Amber 900
     lightColor: '#fde047', // Yellow 300
@@ -59,7 +59,7 @@ const REAL_TRASH_BINS = [
     id: 'besi_kaca',
     title: 'Besi & Kaca',
     shortTitle: 'BESI & BELING',
-    subtitle: 'Wadah 4 di RA',
+    subtitle: 'Wadah 4 (Aktif)',
     mainColor: '#e11d48', // Rose 600
     darkColor: '#881337', // Rose 900
     lightColor: '#fb7185', // Rose 400
@@ -400,7 +400,7 @@ export const GamePilahSampah = ({ onNavigate }) => {
 
               <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-emerald-700 mt-2">
                 <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
-                <span>Sentuh salah satu dari 4 wadah di RA di bawah:</span>
+                <span>Sentuh salah satu dari 4 wadah di bawah:</span>
                 <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
               </div>
             </div>
@@ -485,11 +485,11 @@ export const GamePilahSampah = ({ onNavigate }) => {
               {lives > 0 ? 'Permainan Selesai!' : 'Kesempatan Habis!'}
             </span>
             <h2 className="text-xl sm:text-2xl font-black text-slate-900">
-              {lives > 0 ? 'Pahlawan Pilah Sampah RA Mekarjaya! 🌟' : 'Terus Berlatih Memilah Sampah! 💪'}
+              {lives > 0 ? 'Pahlawan Pilah Sampah Desa Mekarjaya! 🌟' : 'Terus Berlatih Memilah Sampah! 💪'}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
               {lives > 0
-                ? `Hebat! Anda berhasil memilah ${sortedCount} sampah ke 4 wadah di RA dengan total skor ${score} poin.`
+                ? `Hebat! Anda berhasil memilah ${sortedCount} sampah ke 4 wadah Bank Sampah Aktif dengan total skor ${score} poin.`
                 : `Terus semangat! Anda telah mengumpulkan ${score} poin dari ${sortedCount} sampah yang terpilah.`}
             </p>
           </div>
@@ -545,7 +545,7 @@ export const GamePilahSampah = ({ onNavigate }) => {
       <div className="bg-slate-100/80 rounded-xl p-3 border border-slate-200 text-[11px] text-slate-600 flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5">
           <HelpCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-          <span>Game ini mengajarkan cara memilah sampah ke 4 wadah pilah di RA Mekarjaya.</span>
+          <span>Game ini mengajarkan cara memilah sampah ke 4 wadah Bank Sampah Aktif Mekarjaya.</span>
         </div>
         <button
           onClick={startNewGame}

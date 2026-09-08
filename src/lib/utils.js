@@ -1,6 +1,6 @@
 /**
- * Formatting and utility helpers for SI-BSDes RA Mekarjaya
- * Bank Sampah Terpilah 4 Wadah di RA Mekarjaya & Tabungan Kas RT
+ * Formatting and utility helpers for SI-BSDes Bank Sampah Aktif Mekarjaya
+ * Bank Sampah Terpilah 4 Wadah & Tabungan Kas RT
  */
 
 // Format number to IDR currency
@@ -49,9 +49,24 @@ export const generateTxCode = (type = 'PENJUALAN') => {
 };
 
 // Generate unique RT Code: RT-0X-DUSUN
-export const generateKodeRt = (rtNum, rwNum, dusun) => {
-  const cleanDusun = String(dusun || 'CIMENANG').replace(/dusun /i, '').toUpperCase().trim();
-  const rtFormatted = String(rtNum || '01').padStart(2, '0');
+export const generateKodeRt = (arg1, arg2, arg3) => {
+  let rtNum = '01';
+  let dusun = 'CIMENANG';
+
+  // If first arg looks like dusun (contains 'dusun' or matches dusun name)
+  if (typeof arg1 === 'string' && (arg1.toLowerCase().includes('dusun') || arg1.toLowerCase().includes('ci'))) {
+    dusun = arg1;
+    rtNum = arg2 || '01';
+  } else {
+    rtNum = arg1 || '01';
+    dusun = arg3 || arg2 || 'CIMENANG';
+  }
+
+  const cleanDusun = String(dusun || 'CIMENANG')
+    .replace(/dusun /i, '')
+    .toUpperCase()
+    .trim();
+  const rtFormatted = String(rtNum).replace(/\D/g, '').padStart(2, '0') || '01';
   return `RT-${rtFormatted}-${cleanDusun}`;
 };
 
@@ -62,7 +77,7 @@ export const DUSUN_LIST = [
   'Dusun Cimuda'
 ];
 
-// 4 Kategori Sampah Resmi Wadah Pilah RA Mekarjaya
+// 4 Kategori Sampah Resmi Wadah Pilah Bank Sampah Aktif
 export const KATEGORI_SAMPAH_4 = [
   {
     id: 'botol_plastik',

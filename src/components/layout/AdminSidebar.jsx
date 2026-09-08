@@ -37,9 +37,9 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
           />
           <div>
             <h2 className="text-sm font-black text-white tracking-tight leading-none">
-              Bank Sampah <span className="text-emerald-400">Desa</span>
+              Bank Sampah <span className="text-emerald-400">Aktif</span>
             </h2>
-            <p className="text-[10px] text-slate-400 mt-1">Desa Mekarjaya • Operator</p>
+            <p className="text-[10px] text-slate-400 mt-1">Desa Mekarjaya • Pengurus</p>
           </div>
         </div>
       </div>
@@ -72,15 +72,15 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
           );
         })}
 
-        {/* Info RA Section */}
-        <div className="pt-4 mt-3 border-t border-slate-800">
+        {/* Info Pos Section */}
+        <div className="pt-3 mt-2 border-t border-slate-800">
           <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 pb-2">
             Pos Wadah Pilah
           </div>
           <div className="px-3 py-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60 text-xs text-emerald-300">
             <div className="font-bold flex items-center gap-1.5 text-[11px]">
               <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Lokasi: Pos RA Mekarjaya</span>
+              <span>Status: Bank Sampah Aktif</span>
             </div>
             <p className="text-[10px] text-slate-400 mt-0.5">
               4 Wadah: Botol PET, Plastik, Kardus, Besi & Kaca
@@ -94,9 +94,9 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
         <div className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/50 flex items-center justify-between text-xs">
           <div className="truncate pr-2">
             <div className="font-bold text-white truncate text-[11px]">
-              {user?.user_metadata?.full_name || user?.email || 'Pengurus RA Mekarjaya'}
+              {user?.user_metadata?.full_name || user?.email || 'Pengurus Bank Sampah Aktif'}
             </div>
-            <div className="text-[10px] text-emerald-400 font-medium">Operator Bank Sampah</div>
+            <div className="text-[10px] text-emerald-400 font-medium">Operator Bank Sampah Aktif</div>
           </div>
         </div>
 

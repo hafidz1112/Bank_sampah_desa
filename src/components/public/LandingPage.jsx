@@ -69,7 +69,7 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
 
             {/* Sub-description */}
             <p className="text-xs sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
-              Inisiatif Bank Sampah Desa Mekarjaya dengan titik pemilahan <strong>4 wadah</strong> yang berlokasi di <strong>RA (Raudhatul Athfal)</strong>. Warga tidak perlu mendaftar akun perorangan—cukup buang sampah terpilah ke wadahnya. Sampah dijual berkala dan seluruh hasilnya menjadi <strong>tabungan kas warga per RT</strong>!
+              Inisiatif <strong>Bank Sampah Aktif Desa Mekarjaya</strong> dengan sistem pemilahan <strong>4 wadah tematik</strong>. Warga tidak perlu mendaftar akun perorangan—cukup buang sampah terpilah ke wadahnya. Sampah dijual berkala dan seluruh hasilnya menjadi <strong>tabungan kas warga per RT</strong>!
             </p>
 
             {/* Quick Balance Search Form in Hero */}
@@ -107,7 +107,7 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
                 className="w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs sm:text-sm shadow-sm transition flex items-center justify-center gap-2 min-h-[42px]"
               >
                 <BookOpen className="w-4 h-4 text-emerald-300" />
-                <span>Panduan 4 Wadah di RA</span>
+                <span>Panduan 4 Wadah Pilah</span>
               </button>
               <button
                 onClick={() => onNavigate('katalog-public')}
@@ -132,7 +132,7 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-6 sm:mb-8">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-800 tracking-tight">
-            Statistik Capaian Bank Sampah RA
+            Statistik Capaian Bank Sampah Aktif
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Akumulasi timbangan sampah terpilah dan saldo tabungan kas warga seluruh RT Desa Mekarjaya
@@ -153,7 +153,7 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
                 {formatWeight(stats.totalBeratSampahKg)}
               </div>
               <p className="mt-1 text-[10px] sm:text-xs text-emerald-600 font-semibold flex items-center gap-1 line-clamp-1">
-                <Leaf className="w-3 h-3 flex-shrink-0" /> Dari 4 wadah di RA
+                <Leaf className="w-3 h-3 flex-shrink-0" /> Dari 4 wadah terpilah
               </p>
             </div>
           </div>
@@ -223,7 +223,7 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
               Transparansi Saldo Kas RT di 3 Dusun
             </h3>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-              Seluruh hasil penjualan sampah terpilah di RA dialokasikan secara adil dan transparan untuk kas masing-masing RT di Dusun Cimenang, Ciganda, dan Cimuda.
+              Seluruh hasil penjualan sampah terpilah Bank Sampah Aktif dialokasikan secara adil dan transparan untuk kas masing-masing RT di Dusun Cimenang, Ciganda, dan Cimuda.
             </p>
           </div>
 
@@ -248,7 +248,7 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
         </div>
       </section>
 
-      {/* 4 Wadah Sampah di RA Section */}
+      {/* 4 Wadah Sampah Terpilah Section */}
       <section id="panduan-warga" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24 space-y-8 sm:space-y-10">
         <div className="text-center max-w-3xl mx-auto space-y-2.5">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] sm:text-xs font-bold border border-emerald-200">
@@ -256,10 +256,10 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
             Konsep Pemilahan Praktis Tanpa Registrasi
           </span>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
-            Cukup Buang ke 4 Tempat Sampah di RA
+            Cukup Buang ke 4 Tempat Sampah Terpilah
           </h2>
           <p className="text-xs sm:text-base text-slate-600 leading-relaxed">
-            Warga dan siswa tidak dibebani buku tabungan individu. Cukup pisahkan sampah Anda ke <strong>4 wadah tematik</strong> di bawah ini saat berada di lingkungan RA Mekarjaya:
+            Warga tidak dibebani buku tabungan individu. Cukup pisahkan sampah Anda ke <strong>4 wadah tematik</strong> di titik Bank Sampah Aktif Desa Mekarjaya:
           </p>
         </div>
 
@@ -345,7 +345,7 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
               Pertanyaan yang Sering Diajukan Warga
             </span>
             <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
-              Tanya Jawab Seputar Bank Sampah Terpilah RA
+              Tanya Jawab Seputar Bank Sampah Aktif
             </h3>
           </div>
 
@@ -353,22 +353,22 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
             {[
               {
                 q: 'Apakah warga harus mendaftarkan NIK atau nomor rekening pribadi?',
-                a: 'Sama sekali TIDAK PERLU. Pada sistem bank sampah terpilah di RA ini, warga maupun siswa cukup membuang sampah ke wadah yang sesuai. Tidak ada administrasi perorangan yang membingungkan.'
+                a: 'Sama sekali TIDAK PERLU. Pada sistem Bank Sampah Aktif ini, warga cukup membuang sampah ke wadah yang sesuai. Tidak ada administrasi perorangan yang membingungkan.'
               },
               {
                 q: 'Kemana uang hasil penjualan sampah disalurkan?',
                 a: 'Seluruh uang hasil penjualan 4 jenis sampah terpilah ini 100% masuk ke kas tabungan lingkungan RT warga (RT 01, RT 02 Dusun Cimenang, Ciganda, dan Cimuda). Dana ini digunakan untuk kegiatan sosial, kerja bakti, sarana kebersihan, dan kemaslahatan warga RT.'
               },
               {
-                q: 'Kapan sampah dari 4 wadah di RA ditimbang dan dijual?',
-                a: 'Pengurus secara berkala mengumpulkan sampah dari wadah RA ke pos penampungan sementara, kemudian memanggil pengepul/lapak saat volume sudah mencukupi untuk ditimbang dan dijual dengan harga terbaik.'
+                q: 'Kapan sampah dari 4 wadah Bank Sampah Aktif ditimbang dan dijual?',
+                a: 'Pengurus secara berkala mengumpulkan sampah dari 4 wadah ke pos penampungan sementara, kemudian memanggil pengepul/lapak saat volume sudah mencukupi untuk ditimbang dan dijual dengan harga terbaik.'
               },
               {
                 q: 'Bagaimana warga bisa memantau saldo kas tabungan RT-nya?',
                 a: 'Sangat mudah! Buka menu "Transparansi Kas RT" di website ini, lalu pilih nomor RT Anda. Saldo terkini, riwayat penjualan timbangan sampah, dan bukti penyaluran dana kas dapat dilihat secara terbuka kapan saja.'
               },
               {
-                q: 'Apa saja 4 jenis sampah yang boleh dibuang di RA Mekarjaya?',
+                q: 'Apa saja 4 jenis sampah yang boleh disetorkan di Bank Sampah Aktif?',
                 a: 'Hanya 4 kategori: (1) Botol Plastik PET bening, (2) Plastik campur & gelas PP, (3) Kardus & kertas, serta (4) Kaleng besi & botol kaca/beling.'
               }
             ].map((faq, fIdx) => {
@@ -408,7 +408,7 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
               Game Edukasi 4 Wadah Pilah
             </span>
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
-              Ayo Latihan: Game 4 Wadah Pilah RA Mekarjaya!
+              Ayo Latihan: Game 4 Wadah Pilah Sampah Aktif!
             </h3>
             <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed">
               Uji ketangkasan memilah botol plastik, gelas kemasan, kardus karton, serta kaleng & botol beling ke tempat sampah yang benar. Main langsung di HP Anda!

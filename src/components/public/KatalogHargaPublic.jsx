@@ -36,7 +36,7 @@ export const KatalogHargaPublic = () => {
           Katalog Sampah & Harga Jual per Kilogram
         </h1>
         <p className="text-xs sm:text-sm lg:text-base text-slate-600 leading-relaxed">
-          Harga acuan penjualan sampah dari 4 wadah pemilahan di pos RA ke pengepul daur ulang. Hasil penjualan 100% masuk ke tabungan kas warga RT!
+          Harga acuan penjualan sampah dari 4 wadah Bank Sampah Aktif ke pengepul daur ulang. Hasil penjualan 100% masuk ke tabungan kas warga RT!
         </p>
       </div>
 
@@ -49,7 +49,7 @@ export const KatalogHargaPublic = () => {
               <span>Simulasi Cepat Tabungan RT</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold text-white">
-              Kalkulator Hasil Penjualan Sampah RA
+              Kalkulator Hasil Penjualan Bank Sampah Aktif
             </h2>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
               Pilih kategori dari 4 wadah dan masukkan berat timbangan untuk melihat estimasi rupiah yang masuk ke kas tabungan warga RT Anda.
@@ -60,7 +60,7 @@ export const KatalogHargaPublic = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
               <div>
                 <label className="block text-[11px] sm:text-xs font-bold text-slate-700 mb-1">
-                  Pilih Wadah Sampah di RA
+                  Pilih Wadah Sampah Terpilah
                 </label>
                 <Select
                   value={calcKategoriId}
@@ -120,7 +120,7 @@ export const KatalogHargaPublic = () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 uppercase">
-                    Wadah Resmi RA
+                    Wadah Resmi Terpilah
                   </span>
                   <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Diterima
@@ -129,7 +129,7 @@ export const KatalogHargaPublic = () => {
 
                 <h4 className="text-base font-bold text-slate-900 leading-snug">{item.nama_kategori}</h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  {item.deskripsi || 'Pilah bersih dan buang ke tong yang sesuai di RA Mekarjaya.'}
+                  {item.deskripsi || 'Pilah bersih dan buang ke tong yang sesuai.'}
                 </p>
               </div>
 
@@ -161,13 +161,13 @@ export const KatalogHargaPublic = () => {
       <div className="bg-slate-100/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-slate-200">
         <h3 className="text-base sm:text-lg font-extrabold text-slate-800 mb-3 flex items-center gap-2">
           <Info className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-          <span>Petunjuk Pemilahan Sampah 4 Wadah di RA Mekarjaya</span>
+          <span>Petunjuk Pemilahan 4 Wadah Bank Sampah Aktif</span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-600 leading-relaxed">
           <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1">
             <h4 className="font-bold text-slate-800 text-sky-800">1. Wadah Botol Plastik & 2. Wadah Plastik</h4>
             <p>• Botol air mineral/teh dikosongkan airnya dan dilepas tutupnya.</p>
-            <p>• Kempeskan botol agar tempat sampah di RA tidak cepat penuh.</p>
+            <p>• Kempeskan botol agar wadah sampah tidak cepat penuh.</p>
             <p>• Gelas plastik kemasan (PP) dan kantong kresek dipastikan dalam keadaan kering.</p>
           </div>
           <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1">

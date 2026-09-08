@@ -1,85 +1,103 @@
 # SI-BSDes Mekarjaya 🌿
-### Sistem Informasi Bank Sampah Desa Terintegrasi & Sirkular Maggot BSF
+### Sistem Informasi Bank Sampah Aktif Desa Terintegrasi
+**Penerapan: Pemilahan 4 Wadah Bank Sampah Aktif & Pengelolaan Hasil Penjualan Menjadi Tabungan Kas RT**  
 **Program Kerja Individu KKM Informatika UMC 2026**  
 **Lokasi Implementasi:** Desa Mekarjaya, Kec. Ciawigebang, Kab. Kuningan (Dusun Cimenang, Dusun Ciganda, Dusun Cimuda)
 
 ---
 
 ## 📌 Ringkasan Program Kerja
-**SI-BSDes Mekarjaya** adalah platform web terpadu, responsive, dan production-ready yang mengintegrasikan tata kelola tabungan sampah anorganik warga berbasis saldo rupiah dengan rantai ekonomi sirkular sampah organik ke unit **Biopond Maggot BSF (*Hermetia illucens*)** guna menyediakan pakan alami berprotein tinggi (~40%) untuk unit bebek petelur BUMDes Mekarjaya serta menghasilkan pupuk organik padat (kasgot) untuk pertanian desa.
+**SI-BSDes Mekarjaya** adalah platform web modern, responsif, dan *production-ready* yang dirancang untuk mendukung operasional program **Bank Sampah Aktif Desa Mekarjaya**. 
+
+Sistem ini mengadopsi model **titik pemilahan terpusat berbasis 4 Wadah Tematik**:
+1. 🧴 **Botol Plastik** (PET Bening / Bersih)
+2. 🥤 **Plastik** (Gelas Plastik PP, Kresek & Lembaran)
+3. 📦 **Kardus & Kertas** (Box Karton, HVS, Koran, Buku Tulis)
+4. 🥫 **Besi & Kaca** (Kaleng Soda/Susu, Seng, Potongan Besi, Botol Kaca/Beling)
+
+Warga dapat langsung membuang sampah terpilah ke dalam 4 wadah tanpa hambatan birokrasi pendaftaran perorangan. Sampah yang terkumpul ditimbang dan dijual secara berkala ke pengepul. Seluruh hasil penjualan dicatat transparan ke dalam sistem dan dialokasikan menjadi **Tabungan / Kas Warga per RT** (Dusun Cimenang, Dusun Ciganda, Dusun Cimuda) untuk mendanai kegiatan sosial, kebersihan, dan pembangunan lingkungan RT.
 
 ---
 
 ## 🚀 Tech Stack & Arsitektur
-- **Frontend Framework:** React (Vite SPA) + Tailwind CSS + Lucide React Icons
-- **State Management & Data Engine:** React Hooks & Context API + Dual-Engine (Supabase PostgreSQL Client SDK `@supabase/supabase-js` & Local Storage Engine)
-- **Backend & Database:** Supabase (PostgreSQL, Supabase Auth, Row Level Security, Automated Stored Procedure Triggers)
-- **Ekspor Dokumen:** jsPDF & jsPDF-AutoTable (Struk Termal Digital, Rekap PDF & CSV)
-- **Deployment Target:** Vercel (Pure Client-side, Serverless, Zero Custom Backend)
+- **Frontend Framework:** React 18 (Vite SPA) + Tailwind CSS + Lucide React Icons
+- **State Management & Data Engine:** React Context API + **Dual-Engine Architecture**:
+  - **Supabase Cloud Engine:** PostgreSQL Database, Row Level Security (RLS), Automated Triggers.
+  - **Local Storage Engine:** Otomatis aktif sebagai *graceful fallback* bila jaringan offline atau database cloud sedang dalam proses inisialisasi, sehingga sistem tidak pernah *freeze* atau *crash*.
+- **Ekspor Dokumen & Laporan:** jsPDF & jsPDF-AutoTable (Struk Digital Termal 80mm, Rekap PDF Kas RT, Buku Transaksi PDF, dan Rekap CSV).
+- **Gamifikasi Edukasi:** Game Interaktif Pilah Sampah 4 Wadah dengan drag & drop dan drag-touch friendly.
+- **Deployment Target:** Vercel / Netlify (Pure Client-side SPA, zero custom server required).
 
 ---
 
 ## 👥 Hak Akses & Fitur Utama
 
-### 1. Admin / Operator (Karang Taruna & Pengurus Bank Sampah)
-- **Autentikasi Aman:** Login via Supabase Auth (atau 1-Click Kredensial Demo).
-- **Dashboard Eksekutif:** KPI Real-time (Total Sampah Terkelola, Saldo Aktif, Partisipasi per Dusun Cimenang, Ciganda, Cimuda).
-- **CRUD Data Nasabah:** Kelola warga (Nama, NIK 16 digit, No Rekening otomatis `BSDES-MJ-XXX`, RT, RW, Dusun) + Cetak Kartu Anggota Digital.
-- **Katalog & Tarif Sampah:** Manajemen harga per kg (Organik & Anorganik) serta toggle status aktif.
-- **Form Penimbangan Setoran (Live Scale):** Input multi-kategori sampah, auto kalkulasi subtotal dan total rupiah, penambahan saldo otomatis, serta trigger otomatis pencatatan maggot jika terdapat sampah organik.
-- **Form Penarikan Saldo:** Validasi batas kecukupan saldo aktif nasabah secara realtime.
-- **Log Sirkular Maggot BSF:** Pencatatan pasokan sampah organik harian ke Biopond Maggot (Unit 1-4), estimasi panen maggot (~20%), dan target alokasi pakan bebek petelur BUMDes.
-- **Cetak Nota & Ekspor Laporan:** Cetak struk termal digital langsung ke printer atau unduh PDF / CSV untuk arsip Kepala Desa & Dosen Pembimbing KKM UMC.
+### 1. Admin / Operator (Pengurus Bank Sampah Aktif & Karang Taruna)
+- **Autentikasi Aman:** Login via Supabase Auth atau 1-Click Kredensial Demo.
+- **Dashboard Overview:** KPI Real-time (Total Kas Terkumpul, Total Sampah Terpilah Terjual, Total Penyaluran Dana, Partisipasi per RT & Dusun).
+- **Form Penjualan Sampah (Live Scale):** Input timbangan hasil pengumpulan dari 4 wadah ke pengepul, multi-kategori dinamis, auto kalkulasi subtotal dan total rupiah, cetak struk termal seketika, serta auto-sync penambahan saldo kas RT terpilih.
+- **Form Penyaluran Dana Kas RT:** Penarikan saldo kas RT untuk kegiatan sosial dengan proteksi validasi batas saldo aktif.
+- **Manajemen Kas & Rekening RT:** Kelola data RT (Kode RT `RT-XX-DUSUN`, Nama RT, Dusun, Ketua RT, No Telepon/WhatsApp, Saldo Kas) + Cetak Kartu Tabungan RT Digital.
+- **Manajemen Katalog & Tarif Sampah:** Penyesuaian harga jual per kg mengikuti fluktuasi harga pasar/pengepul serta toggle status aktif.
+- **Buku Riwayat Transaksi & Struk:** Filter pencarian berdasarkan kode transaksi, RT, atau jenis mutasi (Penjualan / Penyaluran) serta cetak ulang struk digital.
+- **Laporan & Ekspor:** Unduh Laporan Rekap Saldo Kas RT (PDF/CSV) dan Rekap Mutasi Transaksi (PDF/CSV) untuk arsip Kepala Desa & Dosen Pembimbing Lapangan KKM UMC.
 
-### 2. Portal Publik & Warga (Nasabah)
-- **Cek Saldo Cepat Tanpa Registrasi Rumit:** Cukup masukkan 16 Digit NIK atau Nomor Rekening.
-- **Buku Tabungan Digital:** Menampilkan saldo aktif, rincian timbangan per transaksi, mutasi keluar/masuk, dan cetak PDF rekening koran.
-- **Katalog Harga Terbuka:** Daftar harga acuan transparan dan kalkulator simulasi estimasi pendapatan sampah warga.
-- **Diagram Edukasi Alur Sirkular:** Visualisasi 5 tahap pemilahan organik -> Biopond Maggot -> Pakan Bebek BUMDes -> Pupuk Kasgot.
+### 2. Portal Publik & Warga (Masyarakat Desa Mekarjaya)
+- **Cek Saldo Kas RT Terbuka:** Warga dapat memilih RT atau Dusun (Cimenang, Ciganda, Cimuda) atau memasukkan Kode RT untuk memantau tabungan kas mereka secara transparan.
+- **Panduan 4 Wadah Tematik:** Edukasi detail jenis sampah yang diterima pada masing-masing dari 4 wadah Bank Sampah Aktif beserta tips pemilahannya.
+- **Katalog Tarif Terbuka & Kalkulator Simulasi:** Transparansi harga beli pengepul dan kalkulator simulasi estimasi pendapatan rupiah dari timbangan sampah.
+- **Game Pilah Sampah Interaktif:** Mini game edukasi seru untuk melatih anak-anak dan warga memilah sampah ke wadah yang tepat.
 
 ---
 
 ## 🗄️ Struktur Database Supabase (PostgreSQL)
 
-Skrip SQL lengkap tersedia di file [`supabase/schema.sql`](./supabase/schema.sql) dan dapat diakses langsung dari menu **"Skrip SQL Supabase"** di aplikasi.
+Skrip SQL lengkap tersedia di file [`supabase/schema.sql`](./supabase/schema.sql) dan dapat disalin langsung dari menu **"Skrip SQL Supabase"** di dalam Dashboard Admin.
 
 ```sql
-CREATE TYPE waste_type AS ENUM ('organik', 'anorganik');
-CREATE TYPE tx_type AS ENUM ('setor', 'tarik');
+-- 1. ENUMS
+CREATE TYPE waste_category_type AS ENUM ('botol_plastik', 'plastik', 'kardus_kertas', 'besi_kaca');
+CREATE TYPE tx_flow_type AS ENUM ('penjualan', 'penyaluran');
 
-CREATE TABLE nasabah (
+-- 2. TABEL TABUNGAN / KAS RT
+CREATE TABLE tabungan_rt (
     id BIGSERIAL PRIMARY KEY,
-    no_rekening VARCHAR(20) UNIQUE NOT NULL,
-    nik VARCHAR(16) UNIQUE NOT NULL,
-    nama VARCHAR(100) NOT NULL,
-    dusun VARCHAR(50) NOT NULL,
-    rw VARCHAR(5) NOT NULL,
-    rt VARCHAR(5) NOT NULL,
-    no_hp VARCHAR(20),
-    saldo_aktif NUMERIC(12, 2) DEFAULT 0 CHECK (saldo_aktif >= 0),
+    kode_rt VARCHAR(20) UNIQUE NOT NULL,      -- Contoh: RT-01-CIMENANG
+    nama_rt VARCHAR(100) NOT NULL,            -- Contoh: RT 01 / RW 01
+    dusun VARCHAR(50) NOT NULL,               -- Dusun Cimenang / Dusun Ciganda / Dusun Cimuda
+    rw VARCHAR(5) NOT NULL,                   -- 01 / 02 / 03
+    rt VARCHAR(5) NOT NULL,                   -- 01 / 02 / 03
+    ketua_rt VARCHAR(100) NOT NULL,           -- Nama Ketua RT / Penanggung Jawab
+    kontak VARCHAR(20),                       -- No WhatsApp / Telepon
+    saldo_kas NUMERIC(12, 2) DEFAULT 0 CHECK (saldo_kas >= 0),
+    total_sampah_terkumpul_kg NUMERIC(10, 2) DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 3. TABEL KATALOG 4 WADAH SAMPAH TERPILAH
 CREATE TABLE kategori_sampah (
     id BIGSERIAL PRIMARY KEY,
     nama_kategori VARCHAR(100) NOT NULL,
-    tipe waste_type NOT NULL,
+    tipe waste_category_type NOT NULL,
     harga_per_kg NUMERIC(10, 2) NOT NULL CHECK (harga_per_kg >= 0),
+    deskripsi TEXT,
     is_active BOOLEAN DEFAULT TRUE,
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 4. TABEL TRANSAKSI (PENJUALAN KE PENGEPUL & PENYALURAN KAS)
 CREATE TABLE transaksi (
     id BIGSERIAL PRIMARY KEY,
     kode_transaksi VARCHAR(30) UNIQUE NOT NULL,
-    nasabah_id BIGINT REFERENCES nasabah(id) ON DELETE RESTRICT,
-    jenis tx_type NOT NULL,
+    rt_id BIGINT REFERENCES tabungan_rt(id) ON DELETE RESTRICT,
+    jenis tx_flow_type NOT NULL,
     total_berat_kg NUMERIC(8, 2) DEFAULT 0,
     total_nominal NUMERIC(12, 2) NOT NULL CHECK (total_nominal > 0),
     keterangan TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 5. TABEL DETAIL PENJUALAN DARI 4 WADAH AKTIF
 CREATE TABLE detail_setoran (
     id BIGSERIAL PRIMARY KEY,
     transaksi_id BIGINT REFERENCES transaksi(id) ON DELETE CASCADE,
@@ -89,35 +107,32 @@ CREATE TABLE detail_setoran (
     subtotal NUMERIC(12, 2) NOT NULL
 );
 
-CREATE TABLE log_aliran_organik (
-    id BIGSERIAL PRIMARY KEY,
-    tanggal DATE NOT NULL DEFAULT CURRENT_DATE,
-    volume_sampah_organik_kg NUMERIC(8, 2) NOT NULL,
-    tujuan_biopond VARCHAR(50) DEFAULT 'Biopond Maggot Unit 1',
-    est_maggot_panen_kg NUMERIC(8, 2) DEFAULT 0,
-    target_alokasi VARCHAR(100) DEFAULT 'Pakan Bebek Petelur BUMDes',
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Trigger Otomatis Pembaruan Saldo Nasabah
-CREATE OR REPLACE FUNCTION tr_update_saldo()
-RETURNS TRIGGER AS $$ 
+-- 6. TRIGGER OTOMATIS PEMBARUAN SALDO KAS RT & AKUMULASI SAMPAH
+CREATE OR REPLACE FUNCTION tr_update_saldo_rt()
+RETURNS TRIGGER 
+SECURITY DEFINER
+AS $$ 
 BEGIN     
-    IF NEW.jenis = 'setor' THEN         
-        UPDATE nasabah SET saldo_aktif = saldo_aktif + NEW.total_nominal WHERE id = NEW.nasabah_id;     
-    ELSIF NEW.jenis = 'tarik' THEN         
-        IF (SELECT saldo_aktif FROM nasabah WHERE id = NEW.nasabah_id) < NEW.total_nominal THEN             
-            RAISE EXCEPTION 'Saldo tidak mencukupi';         
+    IF NEW.jenis = 'penjualan' THEN         
+        UPDATE tabungan_rt 
+        SET saldo_kas = saldo_kas + NEW.total_nominal,
+            total_sampah_terkumpul_kg = total_sampah_terkumpul_kg + COALESCE(NEW.total_berat_kg, 0)
+        WHERE id = NEW.rt_id;     
+    ELSIF NEW.jenis = 'penyaluran' THEN         
+        IF (SELECT saldo_kas FROM tabungan_rt WHERE id = NEW.rt_id) < NEW.total_nominal THEN             
+            RAISE EXCEPTION 'Saldo kas RT tidak mencukupi untuk melakukan penyaluran dana';         
         END IF;         
-        UPDATE nasabah SET saldo_aktif = saldo_aktif - NEW.total_nominal WHERE id = NEW.nasabah_id;     
+        UPDATE tabungan_rt 
+        SET saldo_kas = saldo_kas - NEW.total_nominal 
+        WHERE id = NEW.rt_id;     
     END IF;     
     RETURN NEW; 
 END; 
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER tr_sync_saldo_nasabah
+CREATE TRIGGER tr_sync_saldo_rt
 AFTER INSERT ON transaksi
-FOR EACH ROW EXECUTE FUNCTION tr_update_saldo();
+FOR EACH ROW EXECUTE FUNCTION tr_update_saldo_rt();
 ```
 
 ---
@@ -139,14 +154,18 @@ FOR EACH ROW EXECUTE FUNCTION tr_update_saldo();
    ```bash
    cp .env.example .env
    ```
-   Isi `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` sesuai project Supabase Anda.  
-   *(Catatan: Aplikasi juga memiliki fitur konfigurasi UI langsung di navbar atau dapat berjalan offline dalam Mode Demo Lokal).*
+   Isi dengan URL dan Kunci Anonim proyek Supabase Anda:
+   ```env
+   VITE_SUPABASE_URL=https://your-project.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-anon-key
+   ```
+   *Jika tabel belum dibuat di Supabase, buka Supabase SQL Editor dan jalankan skrip dari `supabase/schema.sql`.*
 
 4. **Jalankan Development Server:**
    ```bash
    npm run dev
    ```
-   Aplikasi akan terbuka di browser pada: `http://localhost:3000`
+   Aplikasi akan otomatis berjalan pada: `http://localhost:3000` (atau port yang tertera pada terminal).
 
 5. **Build untuk Production:**
    ```bash
@@ -155,30 +174,32 @@ FOR EACH ROW EXECUTE FUNCTION tr_update_saldo();
 
 ---
 
-## ☁️ Panduan Deploy ke Vercel (1-Click)
-1. Push kode ke repository GitHub Anda.
+## 🧪 Akun & Data Uji Coba Demo (Out of the Box)
+
+- **Login Admin/Operator:**
+  - Email: `admin@mekarjaya.desa.id`
+  - Password: `admin123`
+  - *(Tersedia tombol 1-Click Isi Otomatis di modal login).*
+- **Contoh Kode RT untuk Cek Saldo Publik:**
+  - `RT-01-CIMENANG` (RT 01 / RW 01 - Dusun Cimenang - Ketua: Bpk. Suryana)
+  - `RT-02-CIMENANG` (RT 02 / RW 01 - Dusun Cimenang - Ketua: Bpk. Casmita)
+  - `RT-01-CIGANDA` (RT 01 / RW 02 - Dusun Ciganda - Ketua: Ibu Siti Aminah)
+  - `RT-02-CIGANDA` (RT 02 / RW 02 - Dusun Ciganda - Ketua: Bpk. Sutrisno)
+  - `RT-01-CIMUDA` (RT 01 / RW 03 - Dusun Cimuda - Ketua: Bpk. Dedi Supriadi)
+  - `RT-02-CIMUDA` (RT 02 / RW 03 - Dusun Cimuda - Ketua: Bpk. Yayat Sudrajat)
+
+---
+
+## ☁️ Panduan Deploy ke Vercel
+1. Push kode ke repository GitHub Anda (`main` branch).
 2. Buka dashboard [Vercel](https://vercel.com) dan pilih **Add New Project**.
-3. Import repository SI-BSDes Mekarjaya.
+3. Hubungkan repository GitHub.
 4. Pada bagian **Environment Variables**, tambahkan:
-   - `VITE_SUPABASE_URL` : URL Supabase Anda
-   - `VITE_SUPABASE_ANON_KEY` : Anon Public Key Supabase Anda
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
 5. Klik **Deploy**. Selesai!
 
 ---
 
-## 🧪 Akun & Data Uji Coba Demo (Out of the Box)
-- **Login Pengurus:**  
-  Email: `admin@mekarjaya.desa.id`  
-  Password: `admin123`  
-  *(Tersedia tombol 1-Click Isi Otomatis di modal login).*
-- **Contoh NIK Warga untuk Cek Saldo:**  
-  - `3208051204850001` (Bapak Suryana - Dusun Cimenang)
-  - `3208055508920002` (Ibu Siti Aminah - Dusun Ciganda)
-  - `3208052101780003` (Pak Dedi Supriadi - Dusun Cimuda)
-  - `3208056211900004` (Ibu Neng Maryati - Dusun Cimenang)
-- **Contoh No. Rekening:** `BSDES-MJ-001` s/d `BSDES-MJ-006`
-
----
-
 Dibuat dengan dedikasi untuk kemajuan **Desa Mekarjaya, Kec. Ciawigebang, Kab. Kuningan**  
-© 2026 KKM Teknik Informatika Universitas Muhammadiyah Cirebon (UMC).
+© 2026 KKM Tematik Teknik Informatika Universitas Muhammadiyah Cirebon (UMC).

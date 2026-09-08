@@ -74,7 +74,7 @@ export const NasabahManagement = () => {
       r.rw,
       r.rt,
       r.ketua_rt || '',
-      r.no_telepon || '',
+      r.kontak || r.no_telepon || '',
       r.total_sampah_terkumpul_kg || 0,
       r.saldo_kas || 0
     ]);
@@ -97,7 +97,7 @@ export const NasabahManagement = () => {
             Data RT & Tabungan Kas Warga
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Pengelolaan unit RT penerima alokasi hasil penjualan sampah terpilah 4 wadah di RA Mekarjaya
+            Pengelolaan unit RT penerima alokasi hasil penjualan sampah terpilah 4 wadah Bank Sampah Aktif
           </p>
         </div>
 
@@ -233,10 +233,10 @@ export const NasabahManagement = () => {
                   </td>
                   <td className="py-3 px-4 text-slate-600">
                     <div className="font-medium text-slate-800">{r.ketua_rt || '-'}</div>
-                    {r.no_telepon && (
+                    {(r.kontak || r.no_telepon) && (
                       <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 font-mono">
                         <Phone className="w-3 h-3 text-slate-400" />
-                        {r.no_telepon}
+                        {r.kontak || r.no_telepon}
                       </span>
                     )}
                   </td>

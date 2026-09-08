@@ -1,6 +1,6 @@
 /**
- * Initial Seed Data for SI-BSDes RA Mekarjaya
- * Penerapan: Tempat Sampah Terpilah 4 Wadah di RA Mekarjaya
+ * Initial Seed Data for SI-BSDes Bank Sampah Aktif Mekarjaya
+ * Penerapan: Tempat Sampah Terpilah 4 Wadah
  * Hasil Penjualan Sampah Menjadi Tabungan / Kas Warga per RT
  * Desa Mekarjaya, Kec. Ciawigebang, Kab. Kuningan
  */
@@ -131,7 +131,7 @@ export const INITIAL_TRANSAKSI = [
     jenis: 'penjualan',
     total_berat_kg: 25.0,
     total_nominal: 75000,
-    keterangan: 'Penjualan berkala sampah botol plastik & kardus dari wadah RA',
+    keterangan: 'Penjualan berkala sampah botol plastik & kardus dari wadah pilah aktif',
     created_at: '2026-02-10T09:00:00Z',
     items: [
       { kategori_id: 1, nama_kategori: 'Botol Plastik (PET Bening / Bersih)', berat_kg: 10.0, harga_per_kg: 3500, subtotal: 35000 },
@@ -147,7 +147,7 @@ export const INITIAL_TRANSAKSI = [
     jenis: 'penjualan',
     total_berat_kg: 34.0,
     total_nominal: 110000,
-    keterangan: 'Hasil penjualan kaleng besi dan botol plastik wadah pilah RA',
+    keterangan: 'Hasil penjualan kaleng besi dan botol plastik wadah pilah aktif',
     created_at: '2026-02-15T10:30:00Z',
     items: [
       { kategori_id: 4, nama_kategori: 'Besi & Kaca (Kaleng, Seng, Beling Botol)', berat_kg: 20.0, harga_per_kg: 3000, subtotal: 60000 },
@@ -177,7 +177,7 @@ export const INITIAL_TRANSAKSI = [
     jenis: 'penjualan',
     total_berat_kg: 28.5,
     total_nominal: 87500,
-    keterangan: 'Penjualan botol kaca dan kertas kardus terkumpul di wadah RA',
+    keterangan: 'Penjualan botol kaca dan kertas kardus terkumpul di wadah pilah aktif',
     created_at: '2026-02-25T14:20:00Z',
     items: [
       { kategori_id: 3, nama_kategori: 'Kardus & Kertas (Karton / Buku / Koran)', berat_kg: 15.0, harga_per_kg: 2500, subtotal: 37500 },

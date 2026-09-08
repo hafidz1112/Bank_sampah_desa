@@ -67,7 +67,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
             />
             <div className="flex flex-col justify-center min-w-0">
               <div className="text-sm sm:text-base lg:text-lg font-black text-slate-950 tracking-tight leading-tight group-hover:text-emerald-700 transition-colors truncate">
-                Bank Sampah Desa
+                Bank Sampah Aktif
               </div>
               <div className="text-[10px] sm:text-[11px] text-slate-500 font-medium tracking-tight sm:tracking-wide truncate">
                 Desa Mekarjaya • Tabungan Kas RT
@@ -149,7 +149,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
                     }`}
                   >
                     <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>4 Wadah Pilah RA</span>
+                    <span>4 Wadah Pilah Aktif</span>
                   </button>
 
                   <div className="my-1 border-t border-slate-100" />
@@ -269,7 +269,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
             className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
           >
             <BookOpen className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-            <span>Panduan Pemilahan di RA</span>
+            <span>Panduan 4 Wadah Pilah</span>
           </button>
 
           <button
@@ -280,7 +280,7 @@ export const Navbar = ({ activeTab, setActiveTab, onOpenLogin }) => {
           >
             <span className="flex items-center gap-2.5">
               <Sparkles className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-              <span>Detail 4 Wadah Pilah RA</span>
+              <span>Detail 4 Wadah Pilah Aktif</span>
             </span>
             {activeTab === 'sirkular' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />}
           </button>

@@ -9,7 +9,7 @@ export const AdminHeader = ({ onToggleSidebar, activeTab }) => {
 
   const tabTitles = {
     dashboard: 'Ringkasan Statistik & Kas RT',
-    setor: 'Form Penimbangan & Penjualan Sampah RA',
+    setor: 'Form Penimbangan & Penjualan Sampah',
     tarik: 'Form Penyaluran / Pengeluaran Kas RT',
     nasabah: 'Manajemen Data RT & Tabungan Warga',
     transaksi: 'Buku Jurnal Mutasi Kas RT',
@@ -31,12 +31,12 @@ export const AdminHeader = ({ onToggleSidebar, activeTab }) => {
             {tabTitles[activeTab] || 'Dashboard Pengurus'}
           </h1>
           <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
-            Bank Sampah Desa Mekarjaya • Pos Pemilahan 4 Wadah di RA & Kas Warga RT
+            Bank Sampah Aktif • Desa Mekarjaya & Tabungan Kas Warga RT
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-2 sm:gap-2.5">
         {/* Sync / Refresh Button */}
         <button
           onClick={loadData}
@@ -54,9 +54,9 @@ export const AdminHeader = ({ onToggleSidebar, activeTab }) => {
           </div>
           <div className="hidden md:block text-left">
             <div className="text-xs font-bold text-slate-800">
-              {user?.user_metadata?.full_name || 'Operator RA'}
+              {user?.user_metadata?.full_name || 'Operator Bank Sampah'}
             </div>
-            <div className="text-[10px] text-slate-400">Pengurus Bank Sampah</div>
+            <div className="text-[10px] text-slate-400">Pengurus Bank Sampah Aktif</div>
           </div>
         </div>
       </div>

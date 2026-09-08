@@ -52,7 +52,7 @@ export const NasabahCardModal = ({ isOpen, onClose, nasabah }) => {
                 />
                 <div>
                   <h4 className="font-extrabold text-sm tracking-tight text-white leading-none">
-                    BANK SAMPAH DESA MEKARJAYA
+                    BANK SAMPAH AKTIF MEKARJAYA
                   </h4>
                   <p className="text-[9px] text-emerald-200 mt-0.5">
                     Pos Pemilahan 4 Wadah & Kas Warga RT
@@ -79,7 +79,7 @@ export const NasabahCardModal = ({ isOpen, onClose, nasabah }) => {
               {nasabah.ketua_rt && (
                 <div className="text-[10px] text-emerald-200 flex items-center gap-1 mt-1">
                   <span>Ketua RT: <strong>{nasabah.ketua_rt}</strong></span>
-                  {nasabah.no_telepon && <span>({nasabah.no_telepon})</span>}
+                  {(nasabah.kontak || nasabah.no_telepon) && <span>({nasabah.kontak || nasabah.no_telepon})</span>}
                 </div>
               )}
             </div>
@@ -87,7 +87,7 @@ export const NasabahCardModal = ({ isOpen, onClose, nasabah }) => {
             {/* Card Footer */}
             <div className="pt-3 border-t border-white/20 flex items-end justify-between relative z-10 text-[10px]">
               <div>
-                <span className="text-emerald-300 block text-[8px] uppercase font-bold">Total Sampah RA Terjual</span>
+                <span className="text-emerald-300 block text-[8px] uppercase font-bold">Total Sampah Terjual</span>
                 <span className="font-bold text-white text-xs">{formatWeight(totalSampah)}</span>
               </div>
               <div className="text-right">
@@ -98,7 +98,7 @@ export const NasabahCardModal = ({ isOpen, onClose, nasabah }) => {
           </div>
 
           <p className="no-print text-center text-[11px] text-slate-500">
-            Kartu informasi alokasi tabungan kas warga RT dari hasil penjualan sampah 4 wadah di RA Mekarjaya.
+            Kartu informasi alokasi tabungan kas warga RT dari hasil penjualan 4 wadah Bank Sampah Aktif.
           </p>
         </div>
 

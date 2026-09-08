@@ -49,10 +49,10 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
           <div className="text-center space-y-1 pb-3 border-b border-dashed border-slate-300">
             <div className="flex items-center justify-center gap-1.5 font-bold text-base text-emerald-800 font-sans">
               <Recycle className="w-5 h-5 text-emerald-600 inline" />
-              BANK SAMPAH DESA MEKARJAYA
+              BANK SAMPAH AKTIF MEKARJAYA
             </div>
             <div className="text-[11px] font-sans text-slate-600">
-              Pos Pemilahan 4 Wadah di RA & Kas RT
+              Pos Pemilahan 4 Wadah & Tabungan Kas RT
             </div>
             <div className="text-[10px] text-slate-500 font-sans">
               Desa Mekarjaya, Ciawigebang, Kuningan
@@ -99,7 +99,7 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
             {isPenjualan && transaksi.items && transaksi.items.length > 0 ? (
               <div className="space-y-2">
                 <div className="grid grid-cols-12 font-bold text-[10px] text-slate-600 uppercase">
-                  <div className="col-span-6">Wadah Sampah RA</div>
+                  <div className="col-span-6">Wadah Sampah Terpilah</div>
                   <div className="col-span-3 text-right">Berat / Tarif</div>
                   <div className="col-span-3 text-right">Subtotal</div>
                 </div>
@@ -156,7 +156,7 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
               *|||||||||||| {transaksi.kode_transaksi} ||||||||||||*
             </div>
             <p className="text-[10px] text-slate-500 font-sans italic leading-tight">
-              Sampah terpilah 4 wadah di RA dimanfaatkan menjadi dana kas kemaslahatan warga RT Desa Mekarjaya.
+              Sampah terpilah 4 wadah Bank Sampah Aktif dimanfaatkan menjadi dana kas kemaslahatan warga RT Desa Mekarjaya.
             </p>
           </div>
         </div>

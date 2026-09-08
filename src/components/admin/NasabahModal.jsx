@@ -35,7 +35,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
         rw: editingNasabah.rw || '01',
         rt: editingNasabah.rt || '01',
         ketua_rt: editingNasabah.ketua_rt || '',
-        no_telepon: editingNasabah.no_telepon || editingNasabah.no_hp || '',
+        no_telepon: editingNasabah.kontak || editingNasabah.no_telepon || editingNasabah.no_hp || '',
         saldo_kas: editingNasabah.saldo_kas ?? 0
       });
     } else {
@@ -43,7 +43,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
       const defaultRt = '01';
       setFormData({
         nama_rt: `RT ${defaultRt} Cimenang`,
-        kode_rt: generateKodeRt(defaultDusun, defaultRt),
+        kode_rt: generateKodeRt(defaultRt, '01', defaultDusun),
         dusun: defaultDusun,
         rw: '01',
         rt: defaultRt,
@@ -59,7 +59,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
 
   const handleDusunChange = (dusun) => {
     const dusunLabel = dusun.replace('Dusun ', '');
-    const newKode = generateKodeRt(dusun, formData.rt);
+    const newKode = generateKodeRt(formData.rt, formData.rw, dusun);
     setFormData(prev => ({
       ...prev,
       dusun,
@@ -70,7 +70,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
 
   const handleRtNumChange = (rtNum) => {
     const dusunLabel = formData.dusun.replace('Dusun ', '');
-    const newKode = generateKodeRt(formData.dusun, rtNum);
+    const newKode = generateKodeRt(rtNum, formData.rw, formData.dusun);
     setFormData(prev => ({
       ...prev,
       rt: rtNum,
@@ -105,19 +105,19 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
     }
 
     setLoading(true);
+    const payload = {
+      ...formData,
+      nama: formData.nama_rt, // alias
+      kontak: formData.no_telepon.trim() || null,
+      no_telepon: formData.no_telepon.trim() || null,
+      saldo_kas: parseFloat(formData.saldo_kas) || 0
+    };
+
     let res;
     if (editingNasabah) {
-      res = await updateRt(editingNasabah.id, {
-        ...formData,
-        nama: formData.nama_rt, // alias
-        saldo_kas: parseFloat(formData.saldo_kas) || 0
-      });
+      res = await updateRt(editingNasabah.id, payload);
     } else {
-      res = await addRt({
-        ...formData,
-        nama: formData.nama_rt, // alias
-        saldo_kas: parseFloat(formData.saldo_kas) || 0
-      });
+      res = await addRt(payload);
     }
     setLoading(false);
 
@@ -141,7 +141,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
               <h3 className="font-extrabold text-base">
                 {editingNasabah ? 'Edit Data Unit RT' : 'Tambah Unit RT Baru'}
               </h3>
-              <p className="text-[10px] text-emerald-200">Bank Sampah 4 Wadah RA Mekarjaya, Ciawigebang</p>
+              <p className="text-[10px] text-emerald-200">Bank Sampah Aktif Desa Mekarjaya, Ciawigebang</p>
             </div>
           </div>
           <button
@@ -278,7 +278,7 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
               className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
             <span className="text-[10px] text-slate-400 mt-1 block">
-              Saldo kas akan bertambah otomatis setiap kali hasil penjualan sampah RA dialokasikan ke RT ini.
+              Saldo kas akan bertambah otomatis setiap kali hasil penjualan sampah Bank Sampah Aktif dialokasikan ke RT ini.
             </span>
           </div>
 

@@ -86,8 +86,8 @@ export const AlurSirkularMaggot = () => {
   const flowSteps = [
     {
       step: '01',
-      title: 'Pembuangan Terpilah di RA',
-      desc: 'Warga, siswa, dan orang tua membuang sampah langsung ke salah satu dari 4 wadah yang tersedia di RA Mekarjaya.',
+      title: 'Pembuangan Terpilah',
+      desc: 'Warga membuang sampah langsung ke salah satu dari 4 wadah yang tersedia di pos Bank Sampah Aktif Mekarjaya.',
       icon: '🗑️'
     },
     {
@@ -116,13 +116,13 @@ export const AlurSirkularMaggot = () => {
       <div className="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
           <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-          Bank Sampah Desa Mekarjaya
+          Bank Sampah Aktif Desa Mekarjaya
         </span>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Panduan 4 Wadah Sampah Terpilah Bank Sampah Desa
+          Panduan 4 Wadah Sampah Terpilah Bank Sampah Aktif
         </h1>
         <p className="text-xs sm:text-sm lg:text-base text-slate-600 leading-relaxed">
-          Program Bank Sampah Desa Mekarjaya menyediakan titik kumpul pemilahan di pos <strong>RA (Raudhatul Athfal)</strong>. Siapa pun dapat membuang sampah ke dalam <strong>4 wadah tematik</strong> tanpa prosedur pendaftaran perorangan. Sampah yang terkumpul dijual berkala ke pengepul dan seluruh hasilnya menjadi <strong>tabungan kas RT</strong>!
+          Program Bank Sampah Aktif Desa Mekarjaya menyediakan sarana pemilahan <strong>4 wadah tematik</strong>. Siapa pun dapat langsung membuang sampah terpilah tanpa prosedur pendaftaran perorangan. Sampah yang terkumpul dijual berkala ke pengepul dan seluruh hasilnya menjadi <strong>tabungan kas RT</strong>!
         </p>
       </div>
 
@@ -130,12 +130,12 @@ export const AlurSirkularMaggot = () => {
       <div className="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center sm:text-left">
           <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
-            <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Total Sampah Terjual dari RA</span>
+            <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Total Sampah Terjual</span>
             <div className="mt-2 text-2xl sm:text-3xl font-black font-sans text-white">
               {formatWeight(stats.totalBeratSampahKg)}
             </div>
             <p className="text-[11px] text-emerald-100 mt-1">
-              Dari 4 wadah pilah di lingkungan RA
+              Dari 4 wadah pilah Bank Sampah Aktif
             </p>
           </div>
 
@@ -165,7 +165,7 @@ export const AlurSirkularMaggot = () => {
       <div className="space-y-4">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Kenali 4 Tempat Sampah Terpilah di RA Mekarjaya
+            Kenali 4 Tempat Sampah Terpilah Bank Sampah Aktif
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             Setiap jenis sampah memiliki wadah khusus dan harga jual berbeda yang menguntungkan kas RT
@@ -214,7 +214,7 @@ export const AlurSirkularMaggot = () => {
             Bagaimana Sampah Menjadi Tabungan Kas RT?
           </h3>
           <p className="text-xs text-slate-500 mt-1">
-            Warga tidak perlu repot membuka rekening tabungan sendiri. Cukup pilah saat membuang sampah di RA.
+            Warga tidak perlu repot membuka rekening tabungan sendiri. Cukup pilah saat membuang ke 4 wadah Bank Sampah Aktif.
           </p>
         </div>
 
@@ -246,7 +246,7 @@ export const AlurSirkularMaggot = () => {
               Kalkulator Potensi Tabungan Kas RT
             </h3>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-              Ketahui estimasi dana kas yang terkumpul untuk warga RT jika sampah dari 4 wadah pilah di RA berhasil dikumpulkan setiap bulan.
+              Ketahui estimasi dana kas yang terkumpul untuk warga RT jika sampah dari 4 wadah Bank Sampah Aktif berhasil dikumpulkan setiap bulan.
             </p>
           </div>
 

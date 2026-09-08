@@ -24,7 +24,7 @@ export const Footer = ({ onOpenLogin, onNavigate }) => {
               </div>
             </div>
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-md">
-              Program Bank Sampah Desa Mekarjaya: memilah 4 kategori sampah (Botol Plastik, Plastik, Kardus/Kertas, Besi & Kaca) dengan titik kumpul di pos RA. Hasil penjualan sampah dikonversi menjadi tabungan kas warga per RT.
+              Program Bank Sampah Aktif Desa Mekarjaya: memilah 4 kategori sampah (Botol Plastik, Plastik, Kardus/Kertas, Besi & Kaca). Hasil penjualan sampah dikonversi menjadi tabungan kas warga per RT.
             </p>
             <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-1 text-[11px] sm:text-xs">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800 text-emerald-300 border border-slate-700">
@@ -49,7 +49,7 @@ export const Footer = ({ onOpenLogin, onNavigate }) => {
               <li>• KKM Universitas Muhammadiyah Cirebon 2026</li>
               <li>• Program Studi Teknik Informatika</li>
               <li>• Lokasi: Desa Mekarjaya, Kec. Ciawigebang</li>
-              <li>• Mitra: RA (Raudhatul Athfal) Mekarjaya</li>
+              <li>• Inisiatif: Bank Sampah Aktif Desa Mekarjaya</li>
               {onNavigate && (
                 <li>
                   • Edukasi: <button onClick={() => onNavigate('game-edukasi')} className="text-emerald-400 hover:text-emerald-300 underline font-semibold">🎮 Game 4 Wadah Pilah</button>
@@ -69,7 +69,7 @@ export const Footer = ({ onOpenLogin, onNavigate }) => {
                 onClick={onOpenLogin}
                 className="w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 transition text-xs font-semibold min-h-[44px]"
               >
-                <span>Login Operator & Pengurus RA</span>
+                <span>Login Operator & Pengurus</span>
                 <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
               </button>
             </div>
@@ -81,7 +81,7 @@ export const Footer = ({ onOpenLogin, onNavigate }) => {
           <p>© 2026 KKM Informatika UMC • Desa Mekarjaya, Ciawigebang, Kuningan.</p>
           <p className="flex items-center justify-center gap-1.5 text-emerald-400 font-medium">
             <Leaf className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-            <span>Pilah Sampah di 4 Wadah RA, Jadi Tabungan Bersama Kesejahteraan RT</span>
+            <span>Pilah Sampah di 4 Wadah Bank Sampah Aktif, Jadi Tabungan Bersama Kesejahteraan RT</span>
           </p>
         </div>
       </div>

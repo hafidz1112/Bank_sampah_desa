@@ -39,10 +39,10 @@ export const exportRtPDF = (rtList) => {
   // Header Desa Mekarjaya
   doc.setFontSize(16);
   doc.setTextColor(22, 101, 52); // Brand green
-  doc.text('BANK SAMPAH DESA MEKARJAYA', 14, 15);
+  doc.text('BANK SAMPAH AKTIF MEKARJAYA', 14, 15);
   doc.setFontSize(10);
   doc.setTextColor(71, 85, 105);
-  doc.text('Program Bank Sampah Desa Mekarjaya • Pos Pemilahan 4 Wadah di RA & Kas RT', 14, 21);
+  doc.text('Program Bank Sampah Aktif Desa Mekarjaya • 4 Wadah Terpilah & Kas RT', 14, 21);
   doc.text('Program Kerja Individu KKM Informatika UMC 2026 - Kec. Ciawigebang, Kuningan', 14, 26);
   doc.setLineWidth(0.5);
   doc.setDrawColor(203, 213, 225);
@@ -81,7 +81,7 @@ export const exportRtPDF = (rtList) => {
     }
   });
 
-  doc.save(`Rekap_Kas_RT_BSDes_RA_Mekarjaya_${new Date().toISOString().slice(0, 10)}.pdf`);
+  doc.save(`Rekap_Kas_RT_Bank_Sampah_Aktif_${new Date().toISOString().slice(0, 10)}.pdf`);
 };
 
 // Export Transaksi Ledger to PDF
@@ -90,10 +90,10 @@ export const exportTransaksiPDF = (transaksiList, filterInfo = 'Semua Periode') 
 
   doc.setFontSize(16);
   doc.setTextColor(22, 101, 52);
-  doc.text('BANK SAMPAH DESA MEKARJAYA', 14, 15);
+  doc.text('BANK SAMPAH AKTIF MEKARJAYA', 14, 15);
   doc.setFontSize(10);
   doc.setTextColor(71, 85, 105);
-  doc.text('Program Bank Sampah Desa Mekarjaya • Pos Pemilahan 4 Wadah di RA & Kas RT', 14, 21);
+  doc.text('Program Bank Sampah Aktif Desa Mekarjaya • 4 Wadah Terpilah & Kas RT', 14, 21);
   doc.text('Program Kerja Individu KKM Informatika UMC 2026 - Kec. Ciawigebang, Kuningan', 14, 26);
   doc.line(14, 29, 196, 29);
 
@@ -142,11 +142,11 @@ export const exportSingleReceiptPDF = (tx, rt, items = []) => {
 
   doc.setFontSize(10);
   doc.setTextColor(22, 101, 52);
-  doc.text('BANK SAMPAH DESA MEKARJAYA', 40, 8, { align: 'center' });
+  doc.text('BANK SAMPAH AKTIF MEKARJAYA', 40, 8, { align: 'center' });
   
   doc.setFontSize(7);
   doc.setTextColor(100, 116, 139);
-  doc.text('Pos Pemilahan 4 Wadah di RA', 40, 12, { align: 'center' });
+  doc.text('Pos Pemilahan 4 Wadah Terpilah', 40, 12, { align: 'center' });
   doc.text('Tabungan Kas Warga RT • KKM UMC 2026', 40, 15, { align: 'center' });
   doc.line(4, 18, 76, 18);
 
@@ -202,7 +202,7 @@ export const exportSingleReceiptPDF = (tx, rt, items = []) => {
   currentY += 4;
   doc.setFontSize(7);
   doc.setTextColor(100, 116, 139);
-  doc.text('Pilah Sampahmu di 4 Wadah RA Mekarjaya', 40, currentY, { align: 'center' });
+  doc.text('Pilah Sampahmu di 4 Wadah Bank Sampah Aktif', 40, currentY, { align: 'center' });
   doc.text('Menjadi Tabungan Nyata Kesejahteraan Warga RT!', 40, currentY + 3.5, { align: 'center' });
 
   doc.save(`Struk_${tx.kode_transaksi}.pdf`);

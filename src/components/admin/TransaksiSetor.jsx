@@ -25,7 +25,7 @@ export const TransaksiSetor = () => {
   const [items, setItems] = useState([
     { id: 1, kategori_id: katalogList[0]?.id || 1, berat_kg: '', harga_per_kg: katalogList[0]?.harga_per_kg || 2500, subtotal: 0 }
   ]);
-  const [keterangan, setKeterangan] = useState('Penjualan sampah 4 wadah RA Mekarjaya ke pengepul');
+  const [keterangan, setKeterangan] = useState('Penjualan 4 wadah sampah terpilah ke pengepul');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -134,7 +134,7 @@ export const TransaksiSetor = () => {
       setCompletedRt(res.rt);
       // Reset form
       setItems([{ id: Date.now(), kategori_id: activeKatalog[0]?.id || 1, berat_kg: '', harga_per_kg: activeKatalog[0]?.harga_per_kg || 2500, subtotal: 0 }]);
-      setKeterangan('Penjualan sampah 4 wadah RA Mekarjaya ke pengepul');
+      setKeterangan('Penjualan 4 wadah sampah terpilah ke pengepul');
     } else {
       setErrorMsg(res.error || 'Gagal memproses penjualan.');
     }
@@ -145,10 +145,10 @@ export const TransaksiSetor = () => {
       {/* Header */}
       <div>
         <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-          Timbang & Jual Sampah dari RA ke Pengepul
+          Timbang & Jual Sampah Terpilah ke Pengepul
         </h2>
         <p className="text-xs text-slate-500 mt-0.5">
-          Timbang muatan sampah terpilah dari 4 wadah di RA, hitung penerimaan tunai dari pengepul, dan alokasikan langsung ke Kas Tabungan Warga RT.
+          Timbang muatan sampah terpilah dari 4 wadah Bank Sampah Aktif, hitung penerimaan tunai dari pengepul, dan alokasikan langsung ke Kas Tabungan Warga RT.
         </p>
       </div>
 
@@ -182,7 +182,7 @@ export const TransaksiSetor = () => {
                 size="md"
               />
               <p className="text-[11px] text-slate-400 mt-1">
-                Sampah dibuang warga secara mandiri ke 4 wadah di RA. Hasil penjualan dikreditkan ke kas RT terpilih.
+                Sampah dibuang warga secara mandiri ke 4 wadah Bank Sampah Aktif. Hasil penjualan dikreditkan ke kas RT terpilih.
               </p>
             </div>
 
@@ -195,13 +195,12 @@ export const TransaksiSetor = () => {
                     {selectedRt.dusun} • RW {selectedRt.rw}
                   </div>
                   <div className="text-[11px] text-slate-600 mt-1">
-                    Ketua RT: <strong className="text-slate-800">{selectedRt.ketua_rt}</strong> ({selectedRt.no_telepon})
+                    Ketua RT: <strong className="text-slate-800">{selectedRt.ketua_rt}</strong> {(selectedRt.kontak || selectedRt.no_telepon) ? `(${selectedRt.kontak || selectedRt.no_telepon})` : ''}
                   </div>
-                  <div className="font-mono text-[10px] text-slate-500 mt-0.5">Kode: {selectedRt.kode_rt}</div>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] text-emerald-600 font-bold block">Saldo Kas Saat Ini:</span>
-                  <span className="text-base font-extrabold text-emerald-800 font-sans block">
+                  <span className="text-[10px] text-emerald-600 font-bold block">Saldo Kas RT Saat Ini:</span>
+                  <span className="font-extrabold text-sm sm:text-base text-emerald-800 font-sans block">
                     {formatRupiah(selectedRt.saldo_kas)}
                   </span>
                   <span className="text-[10px] text-slate-500 mt-1 block">
@@ -210,19 +209,19 @@ export const TransaksiSetor = () => {
                 </div>
               </div>
             ) : (
-              <div className="p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-xs text-slate-400 flex items-center justify-center text-center">
-                Pilih unit RT di samping untuk melihat profil kas dan penanggung jawab
+              <div className="p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-xs text-slate-400 flex items-center justify-center">
+                Pilih RT di sebelah kiri untuk melihat saldo dan informasi pengurus
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 2: Penimbangan 4 Kategori Wadah RA */}
+        {/* Section 2: Penimbangan 4 Kategori Wadah Terpilah */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-700">
               <Scale className="w-4 h-4" />
-              Langkah 2: Penimbangan Sampah Terpilah (4 Wadah RA)
+              Langkah 2: Penimbangan Sampah Terpilah (4 Wadah Bank Sampah Aktif)
             </div>
             <button
               type="button"
