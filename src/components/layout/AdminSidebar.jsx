@@ -7,8 +7,9 @@ import {
   Receipt, 
   Tag, 
   FileSpreadsheet, 
-  LogOut,
-  Sparkles
+  FileDown,
+  BookCheck,
+  LogOut
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -23,6 +24,8 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
     { id: 'transaksi', label: 'Buku Jurnal Mutasi', icon: Receipt },
     { id: 'katalog', label: 'Katalog 4 Wadah', icon: Tag },
     { id: 'laporan', label: 'Laporan & Ekspor Data', icon: FileSpreadsheet },
+    { id: 'template', label: 'Template Pembukuan', icon: FileDown },
+    { id: 'panduan', label: 'Buku Panduan Sistem', icon: BookCheck },
   ];
 
   return (
@@ -72,21 +75,6 @@ export const AdminSidebar = ({ activeTab, setActiveTab }) => {
           );
         })}
 
-        {/* Info Pos Section */}
-        <div className="pt-3 mt-2 border-t border-slate-800">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 pb-2">
-            Pos Wadah Pilah
-          </div>
-          <div className="px-3 py-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60 text-xs text-emerald-300">
-            <div className="font-bold flex items-center gap-1.5 text-[11px]">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Status: Bank Sampah Aktif</span>
-            </div>
-            <p className="text-[10px] text-slate-400 mt-0.5">
-              4 Wadah: Botol PET, Plastik, Kardus, Besi & Kaca
-            </p>
-          </div>
-        </div>
       </nav>
 
       {/* User Info & Logout Button */}

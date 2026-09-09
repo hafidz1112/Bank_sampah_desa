@@ -19,7 +19,7 @@ import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah, formatWeight } from '../../lib/utils';
 import { exportRtPDF, exportTransaksiPDF, exportToCSV } from '../../lib/exportUtils';
 
-export const LaporanEkspor = () => {
+export const LaporanEkspor = ({ onNavigate }) => {
   const { rtList, transaksiList, katalogList, getStats } = useBankSampah();
   const stats = getStats();
 
@@ -31,15 +31,41 @@ export const LaporanEkspor = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-8 max-w-5xl mx-auto">
-      {/* Header */}
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
       <div>
         <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-          Laporan Rekapitulasi & Ekspor Dokumen
+          Laporan Rekapitulasi & Ekspor Data Bank Sampah
         </h2>
         <p className="text-xs text-slate-500 mt-0.5">
-          Generate dokumen PDF & CSV resmi untuk pertanggungjawaban Program Kerja KKM Informatika UMC 2026 dan Arsip Kas Warga RT Desa Mekarjaya
+          Ekspor data resmi kas RT, buku mutasi, dan tarif 4 wadah terpilah ke format PDF siap cetak maupun spreadsheet Excel (CSV).
         </p>
+      </div>
+
+      {/* Banner Shortcut to Template Pembukuan */}
+      <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-3xl p-5 sm:p-6 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 flex-shrink-0">
+            <BookOpen className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="font-extrabold text-sm sm:text-base text-white">
+              Template Dokumen & Pembukuan PDF (8 File Tersedia)
+            </h3>
+            <p className="text-xs text-purple-200/80 mt-0.5">
+              Unduh master cetak Buku Kas, Buku Penerimaan, Penjualan, Register Nasabah, dan Rekapitulasi Bulanan satu per satu.
+            </p>
+          </div>
+        </div>
+
+        {onNavigate && (
+          <button
+            onClick={() => onNavigate('template')}
+            className="px-5 py-2.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-extrabold text-xs shadow-md transition flex items-center gap-2 flex-shrink-0 cursor-pointer"
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>Buka Menu Template PDF</span>
+          </button>
+        )}
       </div>
 
       {/* Program Summary Card */}

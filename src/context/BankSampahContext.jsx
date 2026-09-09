@@ -6,7 +6,7 @@ import {
   INITIAL_RT,
   INITIAL_TRANSAKSI
 } from '../data/initialData';
-import { generateTxCode, generateKodeRt } from '../lib/utils';
+import { generateTxCode, generateKodeRt, formatRupiah } from '../lib/utils';
 
 const BankSampahContext = createContext();
 

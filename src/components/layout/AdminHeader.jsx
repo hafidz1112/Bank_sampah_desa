@@ -15,6 +15,8 @@ export const AdminHeader = ({ onToggleSidebar, activeTab }) => {
     transaksi: 'Buku Jurnal Mutasi Kas RT',
     katalog: 'Katalog 4 Wadah Sampah Terpilah',
     laporan: 'Laporan Rekapitulasi & Ekspor Data',
+    template: 'Template Pembukuan & Dokumen PDF Bank Sampah',
+    panduan: 'Buku Panduan & Manual Operasional Sistem',
   };
 
   return (

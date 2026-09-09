@@ -41,9 +41,22 @@ export const TransaksiTarik = () => {
   const remainingSaldo = currentSaldo - withdrawAmount;
   const isInsufficient = selectedRt && withdrawAmount > currentSaldo;
 
+  const handleNominalChange = (e) => {
+    // Ambil hanya karakter angka
+    const cleanDigits = e.target.value.replace(/\D/g, '');
+    if (!cleanDigits) {
+      setNominal('');
+      return;
+    }
+    const num = parseInt(cleanDigits, 10);
+    setNominal(String(num));
+  };
+
+  const displayNominal = nominal !== '' ? Number(nominal).toLocaleString('id-ID') : '';
+
   const handleQuickAmount = (amt) => {
     if (amt === 'all') {
-      setNominal(String(currentSaldo));
+      setNominal(String(Math.floor(currentSaldo)));
     } else {
       setNominal(String(amt));
     }
@@ -155,14 +168,13 @@ export const TransaksiTarik = () => {
                 Rp
               </span>
               <input
-                type="number"
-                min="1"
-                step="any"
+                type="text"
+                inputMode="numeric"
                 required
-                value={nominal}
-                onChange={(e) => setNominal(e.target.value)}
+                value={displayNominal}
+                onChange={handleNominalChange}
                 placeholder="0"
-                className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-lg font-extrabold focus:outline-none focus:ring-2 font-mono ${
+                className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-lg font-extrabold focus:outline-none focus:ring-2 font-mono tracking-wide ${
                   isInsufficient
                     ? 'border-red-400 text-red-600 focus:ring-red-500 bg-red-50/30'
                     : 'border-slate-200 text-slate-900 focus:ring-amber-500'
@@ -170,9 +182,18 @@ export const TransaksiTarik = () => {
               />
             </div>
 
-            {isInsufficient && (
+            {isInsufficient ? (
               <p className="text-xs text-red-600 font-semibold mt-1.5 flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" /> Nominal pengeluaran melebihi saldo kas RT!
+              </p>
+            ) : withdrawAmount > 0 ? (
+              <p className="text-xs text-amber-700 font-medium mt-1.5 flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                Terbaca: <strong className="font-bold">{formatRupiah(withdrawAmount)}</strong>
+              </p>
+            ) : (
+              <p className="text-[11px] text-slate-400 mt-1">
+                Ketik angka nominal (tanda titik pemisah ribuan otomatis ditampilkan, misal: 50.000).
               </p>
             )}
           </div>

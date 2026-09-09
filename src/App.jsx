@@ -17,6 +17,8 @@ import { NasabahManagement } from './components/admin/NasabahManagement';
 import { RiwayatTransaksi } from './components/admin/RiwayatTransaksi';
 import { KatalogManagement } from './components/admin/KatalogManagement';
 import { LaporanEkspor } from './components/admin/LaporanEkspor';
+import { TemplatePembukuan } from './components/admin/TemplatePembukuan';
+import { BukuPanduan } from './components/admin/BukuPanduan';
 import { LoginModal } from './components/auth/LoginModal';
 import { ReceiptModal } from './components/common/ReceiptModal';
 import { Toast } from './components/common/Toast';
@@ -109,7 +111,9 @@ const MainApp = () => {
             {adminTab === 'nasabah' && <NasabahManagement />}
             {adminTab === 'transaksi' && <RiwayatTransaksi />}
             {adminTab === 'katalog' && <KatalogManagement />}
-            {adminTab === 'laporan' && <LaporanEkspor />}
+            {adminTab === 'laporan' && <LaporanEkspor onNavigate={(t) => setAdminTab(t)} />}
+            {adminTab === 'template' && <TemplatePembukuan />}
+            {adminTab === 'panduan' && <BukuPanduan onNavigate={(t) => setAdminTab(t)} />}
           </main>
         </div>
 
