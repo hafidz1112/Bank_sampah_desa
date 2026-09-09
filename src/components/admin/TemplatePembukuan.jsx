@@ -216,7 +216,7 @@ export const TemplatePembukuan = () => {
             <button
               onClick={handleDownloadAllSequentially}
               disabled={batchDownloading || filteredTemplates.length === 0}
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 text-emerald-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-950/20 transition disabled:opacity-50 cursor-pointer flex-shrink-0"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 text-emerald-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-950/20 transition disabled:opacity-50 cursor-pointer flex-shrink-0"
             >
               <ArrowDownToLine className={`w-4 h-4 ${batchDownloading ? 'animate-bounce' : ''}`} />
               <span>
@@ -226,22 +226,22 @@ export const TemplatePembukuan = () => {
           </div>
 
           {/* Quick Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-white/10 text-xs">
-            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
-              <span className="text-[11px] text-emerald-200 block">Total Template</span>
-              <span className="text-lg font-black text-white">{TEMPLATES_DATA.length} File PDF</span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 pt-3 border-t border-white/10 text-xs">
+            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10 min-w-0">
+              <span className="text-[10px] sm:text-[11px] text-emerald-200 block truncate">Total Template</span>
+              <span className="text-sm sm:text-lg font-black text-white truncate block">{TEMPLATES_DATA.length} File PDF</span>
             </div>
-            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
-              <span className="text-[11px] text-emerald-200 block">Format Cetak</span>
-              <span className="text-lg font-black text-white">A4 & Folio Siap</span>
+            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10 min-w-0">
+              <span className="text-[10px] sm:text-[11px] text-emerald-200 block truncate">Format Cetak</span>
+              <span className="text-sm sm:text-lg font-black text-white truncate block">A4 & Folio Siap</span>
             </div>
-            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
-              <span className="text-[11px] text-emerald-200 block">Kategori Lengkap</span>
-              <span className="text-lg font-black text-white">4 Pilar Buku</span>
+            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10 min-w-0">
+              <span className="text-[10px] sm:text-[11px] text-emerald-200 block truncate">Kategori Lengkap</span>
+              <span className="text-sm sm:text-lg font-black text-white truncate block">4 Pilar Buku</span>
             </div>
-            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10">
-              <span className="text-[11px] text-emerald-200 block">Lokasi File</span>
-              <span className="text-lg font-black text-emerald-300">public/pembukuan</span>
+            <div className="bg-white/5 backdrop-blur-xs rounded-xl p-3 border border-white/10 min-w-0">
+              <span className="text-[10px] sm:text-[11px] text-emerald-200 block truncate">Lokasi File</span>
+              <span className="text-sm sm:text-lg font-black text-emerald-300 truncate block">public/pembukuan</span>
             </div>
           </div>
         </div>

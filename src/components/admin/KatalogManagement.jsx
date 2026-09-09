@@ -129,7 +129,7 @@ export const KatalogManagement = () => {
       {/* Table */}
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[680px] text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
               <tr>
                 <th className="py-3.5 px-4">Nama Wadah / Kategori</th>
@@ -197,10 +197,10 @@ export const KatalogManagement = () => {
 
       {/* Modal Add / Edit */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 animate-scale-in">
-            <div className="bg-gradient-to-r from-emerald-800 to-teal-900 px-6 py-4 text-white flex items-center justify-between">
-              <h3 className="font-extrabold text-base">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 animate-scale-in">
+            <div className="bg-gradient-to-r from-emerald-800 to-teal-900 px-4 sm:px-6 py-3.5 sm:py-4 text-white flex items-center justify-between">
+              <h3 className="font-extrabold text-sm sm:text-base">
                 {editingItem ? 'Edit Kategori Wadah' : 'Tambah Kategori Wadah'}
               </h3>
               <button
@@ -211,7 +211,7 @@ export const KatalogManagement = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
               {errorMsg && (
                 <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4" />

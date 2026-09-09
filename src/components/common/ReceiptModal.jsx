@@ -23,13 +23,13 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 animate-scale-in">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 animate-scale-in">
         {/* Top Action Bar (hidden on print) */}
-        <div className="no-print bg-slate-50 px-6 py-3.5 border-b border-slate-100 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-slate-700">Bukti Transaksi Kas RT</span>
-            <span className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase ${
+        <div className="no-print bg-slate-50 px-4 sm:px-6 py-3.5 border-b border-slate-100 flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0 pr-2">
+            <span className="text-xs sm:text-sm font-semibold text-slate-700 truncate">Bukti Transaksi Kas RT</span>
+            <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-bold uppercase flex-shrink-0 ${
               isPenjualan ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
             }`}>
               {isPenjualan ? 'Penjualan' : 'Penyaluran'}
@@ -37,14 +37,14 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition"
+            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition flex-shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Printable Thermal Receipt Canvas */}
-        <div id="printable-receipt" className="p-6 bg-white font-mono text-xs text-slate-800 space-y-3">
+        <div id="printable-receipt" className="p-4 sm:p-6 bg-white font-mono text-xs text-slate-800 space-y-3">
           {/* Header */}
           <div className="text-center space-y-1 pb-3 border-b border-dashed border-slate-300">
             <div className="flex items-center justify-center gap-1.5 font-bold text-base text-emerald-800 font-sans">
@@ -135,9 +135,9 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
 
           {/* Grand Total */}
           <div className="space-y-1 pt-1">
-            <div className="flex justify-between items-center text-sm font-bold font-sans">
-              <span className="text-slate-700">TOTAL {isPenjualan ? 'HASIL PENJUALAN' : 'DANA DISALURKAN'}:</span>
-              <span className={`text-base font-extrabold ${isPenjualan ? 'text-emerald-700' : 'text-amber-700'}`}>
+            <div className="flex justify-between items-center text-xs sm:text-sm font-bold font-sans">
+              <span className="text-slate-700 truncate pr-2">TOTAL {isPenjualan ? 'HASIL PENJUALAN' : 'DANA DISALURKAN'}:</span>
+              <span className={`text-sm sm:text-base font-extrabold flex-shrink-0 ${isPenjualan ? 'text-emerald-700' : 'text-amber-700'}`}>
                 {formatRupiah(transaksi.total_nominal)}
               </span>
             </div>
@@ -162,20 +162,20 @@ export const ReceiptModal = ({ isOpen, onClose, transaksi, nasabah }) => {
         </div>
 
         {/* Action Buttons (hidden on print) */}
-        <div className="no-print bg-slate-50 px-6 py-4 border-t border-slate-100 flex items-center justify-between gap-3">
+        <div className="no-print bg-slate-50 px-4 sm:px-6 py-3.5 sm:py-4 border-t border-slate-100 flex items-center justify-between gap-2.5 sm:gap-3">
           <button
             onClick={handleDownloadPDF}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-medium text-xs shadow-sm transition"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-medium text-xs shadow-sm transition"
           >
             <Download className="w-4 h-4 text-slate-500" />
-            Unduh PDF
+            <span>Unduh PDF</span>
           </button>
           <button
             onClick={handlePrint}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-sm shadow-emerald-600/30 transition"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-sm shadow-emerald-600/30 transition"
           >
             <Printer className="w-4 h-4" />
-            Cetak Nota
+            <span>Cetak Nota</span>
           </button>
         </div>
       </div>

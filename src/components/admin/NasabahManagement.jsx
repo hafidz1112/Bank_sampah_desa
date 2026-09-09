@@ -101,24 +101,24 @@ export const NasabahManagement = () => {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
           <button
             onClick={handleExportCSV}
-            className="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition flex items-center gap-1.5"
+            className="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition flex items-center justify-center gap-1.5"
           >
             <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
             <span>Ekspor CSV</span>
           </button>
           <button
             onClick={handleExportPDF}
-            className="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition flex items-center gap-1.5"
+            className="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition flex items-center justify-center gap-1.5"
           >
             <Download className="w-4 h-4 text-emerald-600" />
             <span>Ekspor PDF</span>
           </button>
           <button
             onClick={handleOpenAdd}
-            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/30 transition flex items-center gap-1.5"
+            className="col-span-2 sm:col-span-1 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/30 transition flex items-center justify-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
             <span>+ Tambah Unit RT</span>
@@ -127,34 +127,34 @@ export const NasabahManagement = () => {
       </div>
 
       {/* Summary Mini Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold flex-shrink-0">
             <Building2 className="w-5 h-5" />
           </div>
-          <div>
+          <div className="min-w-0 flex-1">
             <span className="text-[11px] text-slate-500 block font-medium">Total Unit RT Terdaftar</span>
-            <span className="text-xl font-extrabold text-slate-900">{rtList.length} RT</span>
+            <span className="text-lg sm:text-xl font-extrabold text-slate-900 truncate block">{rtList.length} RT</span>
           </div>
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold flex-shrink-0">
             <Coins className="w-5 h-5" />
           </div>
-          <div>
+          <div className="min-w-0 flex-1">
             <span className="text-[11px] text-slate-500 block font-medium">Total Saldo Kas Terhimpun</span>
-            <span className="text-xl font-extrabold text-emerald-800">{formatRupiah(totalSaldoSemua)}</span>
+            <span className="text-lg sm:text-xl font-extrabold text-emerald-800 truncate block">{formatRupiah(totalSaldoSemua)}</span>
           </div>
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold flex-shrink-0">
             <Scale className="w-5 h-5" />
           </div>
-          <div>
+          <div className="min-w-0 flex-1">
             <span className="text-[11px] text-slate-500 block font-medium">Total Sampah Terkumpul</span>
-            <span className="text-xl font-extrabold text-slate-900">{formatWeight(totalSampahSemua)}</span>
+            <span className="text-lg sm:text-xl font-extrabold text-slate-900 truncate block">{formatWeight(totalSampahSemua)}</span>
           </div>
         </div>
       </div>
@@ -203,7 +203,7 @@ export const NasabahManagement = () => {
       {/* Table of RT */}
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[700px] text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
               <tr>
                 <th className="py-3.5 px-4">Kode RT</th>

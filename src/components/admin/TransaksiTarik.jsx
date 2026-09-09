@@ -136,19 +136,19 @@ export const TransaksiTarik = () => {
 
           {/* Balance card */}
           {selectedRt && (
-            <div className="p-4 bg-amber-50/70 rounded-2xl border border-amber-200 flex items-center justify-between text-xs animate-fade-in">
-              <div>
-                <div className="font-extrabold text-sm text-amber-950">{selectedRt.nama_rt}</div>
+            <div className="p-3.5 sm:p-4 bg-amber-50/70 rounded-2xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs animate-fade-in">
+              <div className="min-w-0">
+                <div className="font-extrabold text-sm text-amber-950 truncate">{selectedRt.nama_rt}</div>
                 <div className="text-[11px] text-amber-800">
                   {selectedRt.dusun} • RW {selectedRt.rw}
                 </div>
-                <div className="text-[11px] text-slate-600 mt-0.5">
+                <div className="text-[11px] text-slate-600 mt-0.5 truncate">
                   Ketua RT: <strong>{selectedRt.ketua_rt}</strong> {(selectedRt.kontak || selectedRt.no_telepon) ? `(${selectedRt.kontak || selectedRt.no_telepon})` : ''}
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-amber-200/60">
                 <span className="text-[10px] text-amber-700 block font-semibold">Saldo Kas Tersedia:</span>
-                <span className="text-xl font-black text-amber-900 font-sans">
+                <span className="text-lg sm:text-xl font-black text-amber-900 font-sans truncate block">
                   {formatRupiah(currentSaldo)}
                 </span>
               </div>
@@ -157,7 +157,7 @@ export const TransaksiTarik = () => {
         </div>
 
         {/* Amount Input */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        <div className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200/80 shadow-sm space-y-4">
           <label className="block text-xs font-bold uppercase tracking-wider text-amber-800">
             2. Nominal Penyaluran / Pengeluaran Kas
           </label>
@@ -241,12 +241,12 @@ export const TransaksiTarik = () => {
         </div>
 
         {/* Summary & Submit */}
-        <div className="bg-gradient-to-r from-amber-600 via-amber-700 to-yellow-800 rounded-3xl p-6 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
+        <div className="bg-gradient-to-r from-amber-600 via-amber-700 to-yellow-800 rounded-3xl p-5 sm:p-6 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="min-w-0">
             <span className="text-xs font-bold uppercase tracking-wider text-amber-200">
               Sisa Saldo Kas RT Setelah Penyaluran
             </span>
-            <div className="text-2xl sm:text-3xl font-black font-sans text-white mt-1">
+            <div className="text-xl sm:text-3xl font-black font-sans text-white mt-1 truncate">
               {formatRupiah(selectedRt ? Math.max(0, remainingSaldo) : 0)}
             </div>
           </div>
@@ -254,7 +254,7 @@ export const TransaksiTarik = () => {
           <button
             type="submit"
             disabled={loading || !selectedRtId || withdrawAmount <= 0 || isInsufficient}
-            className="px-8 py-3.5 rounded-2xl bg-white hover:bg-amber-50 text-amber-950 font-black text-sm shadow-xl transition flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-2xl bg-white hover:bg-amber-50 text-amber-950 font-black text-sm shadow-xl transition flex items-center justify-center gap-2 disabled:opacity-50 flex-shrink-0"
           >
             <Save className="w-5 h-5 text-amber-700" />
             <span>{loading ? 'Memproses...' : 'Proses Penyaluran Kas'}</span>

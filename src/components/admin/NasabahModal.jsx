@@ -129,31 +129,31 @@ export const NasabahModal = ({ isOpen, onClose, editingNasabah }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100 animate-scale-in">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100 animate-scale-in">
         {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-800 to-teal-900 px-6 py-4 text-white flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/30 flex items-center justify-center">
+        <div className="bg-gradient-to-r from-emerald-800 to-teal-900 px-4 sm:px-6 py-3.5 sm:py-4 text-white flex items-center justify-between">
+          <div className="flex items-center gap-2.5 min-w-0 pr-2">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/30 flex items-center justify-center flex-shrink-0">
               <Building2 className="w-4 h-4 text-emerald-300" />
             </div>
-            <div>
-              <h3 className="font-extrabold text-base">
+            <div className="min-w-0">
+              <h3 className="font-extrabold text-sm sm:text-base truncate">
                 {editingNasabah ? 'Edit Data Unit RT' : 'Tambah Unit RT Baru'}
               </h3>
-              <p className="text-[10px] text-emerald-200">Bank Sampah Aktif Desa Mekarjaya, Ciawigebang</p>
+              <p className="text-[10px] text-emerald-200 truncate">Bank Sampah Aktif Desa Mekarjaya, Ciawigebang</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition"
+            className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition flex-shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
           {errorMsg && (
             <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />

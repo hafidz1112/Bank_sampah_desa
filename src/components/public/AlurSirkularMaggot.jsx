@@ -127,34 +127,34 @@ export const AlurSirkularMaggot = () => {
       </div>
 
       {/* Ringkasan Dampak Kas RT Saat Ini */}
-      <div className="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center sm:text-left">
-          <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
-            <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Total Sampah Terjual</span>
-            <div className="mt-2 text-2xl sm:text-3xl font-black font-sans text-white">
+      <div className="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-5 sm:p-8 text-white shadow-xl">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-center sm:text-left">
+          <div className="p-4 rounded-2xl bg-white/10 border border-white/10 min-w-0">
+            <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider block truncate">Total Sampah Terjual</span>
+            <div className="mt-2 text-xl sm:text-3xl font-black font-sans text-white truncate">
               {formatWeight(stats.totalBeratSampahKg)}
             </div>
-            <p className="text-[11px] text-emerald-100 mt-1">
+            <p className="text-[11px] text-emerald-100 mt-1 truncate">
               Dari 4 wadah pilah Bank Sampah Aktif
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
-            <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Total Kas Tabungan RT Terhimpun</span>
-            <div className="mt-2 text-2xl sm:text-3xl font-black font-sans text-emerald-300">
+          <div className="p-4 rounded-2xl bg-white/10 border border-white/10 min-w-0">
+            <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider block truncate">Total Kas RT Terhimpun</span>
+            <div className="mt-2 text-xl sm:text-3xl font-black font-sans text-emerald-300 truncate">
               {formatRupiah(stats.totalSaldoKas)}
             </div>
-            <p className="text-[11px] text-emerald-100 mt-1">
+            <p className="text-[11px] text-emerald-100 mt-1 truncate">
               Saldo aktif milik warga di seluruh RT
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
-            <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Cakupan Wilayah Penerima</span>
-            <div className="mt-2 text-2xl sm:text-3xl font-black font-sans text-white">
+          <div className="p-4 rounded-2xl bg-white/10 border border-white/10 min-w-0">
+            <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider block truncate">Cakupan Wilayah Penerima</span>
+            <div className="mt-2 text-xl sm:text-3xl font-black font-sans text-white truncate">
               {stats.totalRt} RT
             </div>
-            <p className="text-[11px] text-emerald-100 mt-1">
+            <p className="text-[11px] text-emerald-100 mt-1 truncate">
               Dusun Cimenang, Ciganda, & Cimuda
             </p>
           </div>
@@ -294,18 +294,18 @@ export const AlurSirkularMaggot = () => {
               </div>
             </div>
 
-            <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-between">
-              <div>
+            <div className="p-3.5 sm:p-4 bg-emerald-50 rounded-2xl border border-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+              <div className="min-w-0">
                 <span className="text-[11px] text-emerald-700 font-bold block">
                   Total Estimasi Dana Kas Masuk ke RT:
                 </span>
-                <span className="text-2xl sm:text-3xl font-black text-emerald-800 font-sans">
+                <span className="text-xl sm:text-3xl font-black text-emerald-800 font-sans truncate block">
                   {formatRupiah(totalEstimasiRupiah)}
                 </span>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right pt-2 sm:pt-0 border-t sm:border-t-0 border-emerald-200 w-full sm:w-auto">
                 <span className="text-[10px] text-slate-500 block">Total Bobot:</span>
-                <span className="font-bold text-sm text-slate-800">{formatWeight(totalBeratSimulasi)}</span>
+                <span className="font-bold text-xs sm:text-sm text-slate-800">{formatWeight(totalBeratSimulasi)}</span>
               </div>
             </div>
           </div>

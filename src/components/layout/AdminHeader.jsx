@@ -20,19 +20,20 @@ export const AdminHeader = ({ onToggleSidebar, activeTab }) => {
   };
 
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 sm:px-6 py-3 flex items-center justify-between shadow-xs">
-      <div className="flex items-center gap-3">
+    <header className="bg-white border-b border-slate-200 sticky top-0 z-30 px-3.5 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between shadow-xs gap-2">
+      <div className="flex items-center gap-2.5 min-w-0 flex-1">
         <button
           onClick={onToggleSidebar}
-          className="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition"
+          className="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition flex-shrink-0"
+          aria-label="Toggle Sidebar"
         >
           <Menu className="w-5 h-5" />
         </button>
-        <div>
-          <h1 className="text-base sm:text-lg font-extrabold text-slate-800 tracking-tight">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-sm sm:text-lg font-extrabold text-slate-800 tracking-tight truncate">
             {tabTitles[activeTab] || 'Dashboard Pengurus'}
           </h1>
-          <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
+          <p className="text-[10px] sm:text-[11px] text-slate-400 font-medium hidden sm:block truncate">
             Bank Sampah Aktif • Desa Mekarjaya & Tabungan Kas Warga RT
           </p>
         </div>

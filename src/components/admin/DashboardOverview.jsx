@@ -23,14 +23,14 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
   const recentTx = transaksiList.slice(0, 6);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
+    <div className="p-3.5 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-5 sm:p-8 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
         <div className="space-y-2 max-w-xl">
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
+          <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-emerald-300">
             Panel Pengurus Bank Sampah Aktif
           </span>
-          <h2 className="text-2xl sm:text-3xl font-black">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight">
             Selamat Bertugas di Bank Sampah Aktif Mekarjaya!
           </h2>
           <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
@@ -39,27 +39,27 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
         </div>
 
         {/* Action Quick Buttons */}
-        <div className="flex flex-wrap gap-2.5 self-start md:self-center">
+        <div className="flex flex-wrap gap-2 w-full md:w-auto">
           <button
             onClick={() => onNavigate('setor')}
-            className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition flex items-center gap-1.5"
+            className="flex-1 sm:flex-none px-3.5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition flex items-center justify-center gap-1.5"
           >
             <Scale className="w-4 h-4" />
-            + Timbang & Jual Sampah
+            <span>+ Timbang & Jual</span>
           </button>
           <button
             onClick={() => onNavigate('tarik')}
-            className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md shadow-amber-500/20 transition flex items-center gap-1.5"
+            className="flex-1 sm:flex-none px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-xs shadow-md shadow-amber-500/20 transition flex items-center justify-center gap-1.5"
           >
             <Wallet className="w-4 h-4" />
-            Penyaluran Kas RT
+            <span>Penyaluran Kas</span>
           </button>
           <button
             onClick={() => onNavigate('nasabah')}
-            className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 transition flex items-center gap-1.5"
+            className="w-full sm:w-auto px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 transition flex items-center justify-center gap-1.5"
           >
             <Building2 className="w-4 h-4" />
-            + Data Unit RT
+            <span>Data RT</span>
           </button>
         </div>
       </div>
@@ -73,56 +73,56 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
               <Wallet className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 text-2xl font-black text-emerald-800 font-sans">
+          <div className="mt-3 text-xl sm:text-2xl font-black text-emerald-800 font-sans truncate">
             {formatRupiah(stats.totalSaldoKas)}
           </div>
           <div className="mt-1 text-xs text-emerald-600 font-semibold flex items-center gap-1">
-            <TrendingUp className="w-3.5 h-3.5" /> Tabungan aktif warga
+            <TrendingUp className="w-3.5 h-3.5 flex-shrink-0" /> Tabungan aktif warga
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Sampah Terjual</span>
-            <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+            <span className="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Total Sampah Terjual</span>
+            <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center flex-shrink-0">
               <Scale className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 text-2xl font-extrabold text-slate-900 font-sans">
+          <div className="mt-3 text-xl sm:text-2xl font-extrabold text-slate-900 font-sans truncate">
             {formatWeight(stats.totalBeratSampahKg)}
           </div>
-          <div className="mt-1 text-xs text-sky-600 font-semibold">
+          <div className="mt-1 text-xs text-sky-600 font-semibold truncate">
             Dari 4 Wadah Pemilahan Aktif
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Unit RT Terfasilitasi</span>
-            <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+            <span className="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Unit RT Terfasilitasi</span>
+            <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0">
               <Building2 className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 text-2xl font-extrabold text-slate-900 font-sans">
-            {stats.totalRt} <span className="text-sm font-normal text-slate-500">Rukun Tetangga</span>
+          <div className="mt-3 text-xl sm:text-2xl font-extrabold text-slate-900 font-sans truncate">
+            {stats.totalRt} <span className="text-xs sm:text-sm font-normal text-slate-500">Rukun Tetangga</span>
           </div>
-          <div className="mt-1 text-xs text-purple-600 font-semibold">
+          <div className="mt-1 text-xs text-purple-600 font-semibold truncate">
             3 Dusun Mekarjaya
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Kas Tersalurkan ke RT</span>
-            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <span className="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Kas Tersalurkan ke RT</span>
+            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
               <Coins className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 text-2xl font-extrabold text-amber-800 font-sans">
+          <div className="mt-3 text-xl sm:text-2xl font-extrabold text-amber-800 font-sans truncate">
             {formatRupiah(stats.totalUangPenyaluran || 0)}
           </div>
-          <div className="mt-1 text-xs text-amber-700 font-semibold flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5" /> Untuk kegiatan & sosial warga
+          <div className="mt-1 text-xs text-amber-700 font-semibold flex items-center gap-1 truncate">
+            <Sparkles className="w-3.5 h-3.5 flex-shrink-0" /> Untuk kegiatan warga
           </div>
         </div>
       </div>
@@ -174,26 +174,26 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
             {recentTx.map((tx) => {
               const isPenjualan = tx.jenis === 'penjualan' || tx.jenis === 'setor';
               return (
-                <div key={tx.id} className="py-3.5 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                <div key={tx.id} className="py-3 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                    <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
                       isPenjualan ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
                     }`}>
                       {isPenjualan ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
                     </div>
-                    <div>
-                      <div className="font-bold text-xs text-slate-800">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-bold text-xs text-slate-800 truncate">
                         {tx.rt_nama}
                       </div>
-                      <div className="text-[11px] text-slate-400 font-mono">
+                      <div className="text-[10px] sm:text-[11px] text-slate-400 font-mono truncate">
                         {tx.kode_transaksi} • {formatDate(tx.created_at, false)}
                       </div>
                     </div>
                   </div>
 
-                  <div className="text-right flex items-center gap-2">
+                  <div className="text-right flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                     <div>
-                      <div className={`text-xs font-bold ${isPenjualan ? 'text-emerald-700' : 'text-amber-700'}`}>
+                      <div className={`text-xs sm:text-sm font-bold ${isPenjualan ? 'text-emerald-700' : 'text-amber-700'}`}>
                         {isPenjualan ? '+' : '-'} {formatRupiah(tx.total_nominal)}
                       </div>
                       {isPenjualan && tx.total_berat_kg > 0 && (
@@ -205,7 +205,7 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
                     <button
                       onClick={() => onSelectTx(tx)}
                       title="Lihat Bukti"
-                      className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition"
+                      className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
                     >
                       <FileText className="w-3.5 h-3.5" />
                     </button>

@@ -276,24 +276,25 @@ export const TransaksiSetor = () => {
                     </div>
                   </div>
 
-                  {/* Subtotal (3 cols) */}
-                  <div className="sm:col-span-3 text-right">
-                    <span className="block text-[10px] text-slate-400 font-semibold">Subtotal Penjualan</span>
-                    <span className="text-base font-extrabold text-slate-900 font-sans">
+                  {/* Subtotal (3 cols on desktop, flex row on mobile) */}
+                  <div className="sm:col-span-3 flex sm:block items-center justify-between sm:text-right pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/60">
+                    <span className="block text-[11px] sm:text-[10px] text-slate-500 font-semibold">Subtotal Penjualan:</span>
+                    <span className="text-sm sm:text-base font-extrabold text-slate-900 font-sans">
                       {formatRupiah(row.subtotal)}
                     </span>
                   </div>
 
                   {/* Remove Button (1 col) */}
-                  <div className="sm:col-span-1 text-center">
+                  <div className="sm:col-span-1 text-right sm:text-center">
                     <button
                       type="button"
                       disabled={items.length <= 1}
                       onClick={() => handleRemoveItem(idx)}
-                      className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition disabled:opacity-30"
+                      className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 active:bg-rose-100 transition disabled:opacity-30 cursor-pointer inline-flex items-center gap-1 text-xs"
                       title="Hapus baris"
                     >
                       <Trash2 className="w-4 h-4" />
+                      <span className="sm:hidden text-rose-600 font-semibold text-[11px]">Hapus</span>
                     </button>
                   </div>
                 </div>
@@ -316,36 +317,38 @@ export const TransaksiSetor = () => {
         </div>
 
         {/* Section 3: Ringkasan Kalkulasi & Tombol Simpan */}
-        <div className="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-6 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
+        <div className="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-5 sm:p-6 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
+          <div className="space-y-1.5">
+            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-emerald-300">
               Ringkasan Penerimaan Hasil Penjualan
             </span>
-            <div className="flex items-baseline gap-4">
+            <div className="flex flex-wrap sm:flex-nowrap items-baseline gap-3 sm:gap-4">
               <div>
-                <span className="text-[11px] text-emerald-200 block">Total Berat Terjual:</span>
-                <span className="text-2xl font-extrabold font-sans text-white">{formatWeight(totalBerat)}</span>
+                <span className="text-[10px] sm:text-[11px] text-emerald-200 block">Total Berat:</span>
+                <span className="text-xl sm:text-2xl font-extrabold font-sans text-white">{formatWeight(totalBerat)}</span>
               </div>
-              <div className="h-8 w-px bg-white/20" />
+              <div className="h-6 sm:h-8 w-px bg-white/20 hidden sm:block" />
               <div>
-                <span className="text-[11px] text-emerald-200 block">Total Uang Masuk Kas:</span>
-                <span className="text-3xl font-black font-sans text-emerald-300">{formatRupiah(totalNominal)}</span>
+                <span className="text-[10px] sm:text-[11px] text-emerald-200 block">Uang Masuk Kas:</span>
+                <span className="text-2xl sm:text-3xl font-black font-sans text-emerald-300 truncate block">
+                  {formatRupiah(totalNominal)}
+                </span>
               </div>
             </div>
             {selectedRt && (
-              <p className="text-xs text-emerald-100 pt-1">
+              <p className="text-xs text-emerald-100 pt-1 leading-snug">
                 Estimasi Saldo Kas Akhir {selectedRt.nama_rt}: <strong>{formatRupiah(projectedSaldo)}</strong>
               </p>
             )}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full md:w-auto">
             <button
               type="submit"
               disabled={loading || totalNominal <= 0}
-              className="w-full md:w-auto px-8 py-4 rounded-2xl bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-black text-sm shadow-xl transition flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full md:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 text-emerald-950 font-black text-xs sm:text-sm shadow-xl transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
-              <Save className="w-5 h-5" />
+              <Save className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>{loading ? 'Memproses...' : 'Simpan & Cetak Bukti'}</span>
             </button>
           </div>

@@ -15,27 +15,27 @@ export const NasabahCardModal = ({ isOpen, onClose, nasabah }) => {
   const totalSampah = nasabah.total_sampah_terkumpul_kg ?? 0;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 animate-scale-in">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 animate-scale-in">
         {/* Top bar */}
-        <div className="no-print bg-slate-50 px-6 py-3 border-b border-slate-100 flex items-center justify-between">
-          <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-            <CreditCard className="w-4 h-4 text-emerald-600" />
-            Kartu Informasi Kas Tabungan RT
+        <div className="no-print bg-slate-50 px-4 sm:px-6 py-3 border-b border-slate-100 flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5 truncate">
+            <CreditCard className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span className="truncate">Kartu Informasi Kas Tabungan RT</span>
           </span>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200"
+            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200 flex-shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Printable Card */}
-        <div className="p-6 space-y-4">
+        <div className="p-4 sm:p-6 space-y-4">
           <div
             id="printable-receipt"
-            className="bg-gradient-to-tr from-emerald-900 via-emerald-800 to-teal-700 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[230px]"
+            className="bg-gradient-to-tr from-emerald-900 via-emerald-800 to-teal-700 rounded-2xl p-4 sm:p-6 text-white shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[220px]"
           >
             {/* Background watermarks */}
             <div className="absolute right-0 bottom-0 translate-x-6 translate-y-6 opacity-10 pointer-events-none">

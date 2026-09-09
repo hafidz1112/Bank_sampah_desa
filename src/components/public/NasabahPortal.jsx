@@ -153,7 +153,7 @@ export const NasabahPortal = ({ initialSearch = '' }) => {
                 </div>
 
                 <div className="mt-4">
-                  <div className="text-3xl sm:text-4xl font-black tracking-tight font-sans">
+                  <div className="text-2xl sm:text-4xl font-black tracking-tight font-sans truncate">
                     {showBalance ? formatRupiah(selectedRt.saldo_kas) : 'Rp ••••••••'}
                   </div>
                   <p className="text-xs text-emerald-200 mt-1">
@@ -333,12 +333,12 @@ export const NasabahPortal = ({ initialSearch = '' }) => {
 
                       {/* Expanded Item Details */}
                       {isExpanded && tx.items && tx.items.length > 0 && (
-                        <div className="bg-slate-50 rounded-2xl p-3 text-xs space-y-1.5 border border-slate-100 ml-12">
+                        <div className="bg-slate-50 rounded-2xl p-3 text-xs space-y-1.5 border border-slate-100 mt-2 ml-0 sm:ml-10">
                           <div className="font-bold text-[11px] text-slate-700 mb-1">Rincian Timbangan dari 4 Wadah Terpilah:</div>
                           {tx.items.map((it, idx) => (
-                            <div key={idx} className="flex items-center justify-between text-slate-600">
-                              <span>• {it.nama_kategori} ({formatWeight(it.berat_kg)})</span>
-                              <span className="font-bold text-slate-800">{formatRupiah(it.subtotal)}</span>
+                            <div key={idx} className="flex items-center justify-between text-slate-600 gap-2">
+                              <span className="truncate">• {it.nama_kategori} ({formatWeight(it.berat_kg)})</span>
+                              <span className="font-bold text-slate-800 flex-shrink-0">{formatRupiah(it.subtotal)}</span>
                             </div>
                           ))}
                         </div>

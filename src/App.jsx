@@ -72,7 +72,7 @@ const MainApp = () => {
   // 2. ADMIN VIEW (Fixed Viewport: Sidebar stays locked in position, Main content scrolls smoothly)
   if (user) {
     return (
-      <div className="h-screen w-screen overflow-hidden bg-slate-50 flex font-sans">
+      <div className="h-screen w-full max-w-full overflow-hidden bg-slate-50 flex font-sans">
         {/* Sidebar Container (Fixed height on desktop, Drawer on mobile) */}
         <div className={`fixed inset-y-0 left-0 z-50 transform ${adminSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 lg:z-auto transition duration-200 ease-in-out flex-shrink-0 h-full`}>
           <AdminSidebar

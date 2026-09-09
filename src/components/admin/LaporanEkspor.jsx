@@ -69,14 +69,14 @@ export const LaporanEkspor = ({ onNavigate }) => {
       </div>
 
       {/* Program Summary Card */}
-      <div className="bg-gradient-to-r from-emerald-800 via-emerald-900 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl space-y-6">
+      <div className="bg-gradient-to-r from-emerald-800 via-emerald-900 to-slate-900 rounded-3xl p-5 sm:p-8 text-white shadow-xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
-              <Award className="w-4 h-4" />
-              Laporan Eksekutif Program Kerja KKM UMC 2026
+              <Award className="w-4 h-4 flex-shrink-0" />
+              <span>Laporan Eksekutif Program Kerja KKM UMC 2026</span>
             </span>
-            <h3 className="text-2xl font-black">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-black">
               Bank Sampah Aktif Desa Mekarjaya
             </h3>
             <p className="text-xs text-emerald-100">
@@ -86,7 +86,7 @@ export const LaporanEkspor = ({ onNavigate }) => {
 
           <button
             onClick={handleExportAllPDF}
-            className="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-black text-xs shadow-lg transition flex items-center gap-2 self-start sm:self-auto"
+            className="w-full sm:w-auto px-5 sm:px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-black text-xs shadow-lg transition flex items-center justify-center gap-2 flex-shrink-0"
           >
             <Download className="w-4 h-4" />
             <span>Ekspor Semua Berkas PDF</span>
@@ -94,22 +94,22 @@ export const LaporanEkspor = ({ onNavigate }) => {
         </div>
 
         {/* Aggregate KPI Grid in Report */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Unit RT Terdaftar</span>
-            <div className="text-xl font-extrabold text-white mt-1">{stats.totalRt || rtList.length} RT</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 pt-2">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border border-white/10 min-w-0">
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold block truncate">Unit RT Terdaftar</span>
+            <div className="text-base sm:text-xl font-extrabold text-white mt-1 truncate">{stats.totalRt || rtList.length} RT</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Total Sampah Terjual</span>
-            <div className="text-xl font-extrabold text-white mt-1">{formatWeight(stats.totalBeratSampahKg)}</div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border border-white/10 min-w-0">
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold block truncate">Total Sampah Terjual</span>
+            <div className="text-base sm:text-xl font-extrabold text-white mt-1 truncate">{formatWeight(stats.totalBeratSampahKg)}</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Total Saldo Kas RT</span>
-            <div className="text-xl font-extrabold text-emerald-300 mt-1">{formatRupiah(stats.totalSaldoKas)}</div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border border-white/10 min-w-0">
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold block truncate">Total Saldo Kas RT</span>
+            <div className="text-base sm:text-xl font-extrabold text-emerald-300 mt-1 truncate">{formatRupiah(stats.totalSaldoKas)}</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Kas Disalurkan</span>
-            <div className="text-xl font-extrabold text-amber-300 mt-1">{formatRupiah(stats.totalUangPenyaluran)}</div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border border-white/10 min-w-0">
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold block truncate">Kas Disalurkan</span>
+            <div className="text-base sm:text-xl font-extrabold text-amber-300 mt-1 truncate">{formatRupiah(stats.totalUangPenyaluran)}</div>
           </div>
         </div>
       </div>

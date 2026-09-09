@@ -121,22 +121,22 @@ export const RiwayatTransaksi = () => {
       </div>
 
       {/* Summary Filter Strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs">
-          <span className="text-[11px] font-bold text-slate-400 uppercase">Jumlah Transaksi</span>
-          <div className="text-xl font-bold text-slate-900 mt-1">{filtered.length} Transaksi</div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase line-clamp-1">Jumlah Transaksi</span>
+          <div className="text-base sm:text-xl font-bold text-slate-900 mt-1 truncate">{filtered.length} Transaksi</div>
         </div>
-        <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs">
-          <span className="text-[11px] font-bold text-slate-400 uppercase">Total Sampah Terjual</span>
-          <div className="text-xl font-bold text-slate-900 mt-1">{formatWeight(totalBerat)}</div>
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase line-clamp-1">Total Sampah Terjual</span>
+          <div className="text-base sm:text-xl font-bold text-slate-900 mt-1 truncate">{formatWeight(totalBerat)}</div>
         </div>
-        <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs">
-          <span className="text-[11px] font-bold text-emerald-600 uppercase">Total Penjualan (Masuk Kas)</span>
-          <div className="text-xl font-bold text-emerald-700 mt-1">+{formatRupiah(totalNominalPenjualan)}</div>
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-emerald-600 uppercase line-clamp-1">Penjualan (Masuk Kas)</span>
+          <div className="text-base sm:text-xl font-bold text-emerald-700 mt-1 truncate">+{formatRupiah(totalNominalPenjualan)}</div>
         </div>
-        <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs">
-          <span className="text-[11px] font-bold text-amber-600 uppercase">Total Penyaluran (Keluar Kas)</span>
-          <div className="text-xl font-bold text-amber-700 mt-1">-{formatRupiah(totalNominalPenyaluran)}</div>
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-amber-600 uppercase line-clamp-1">Penyaluran (Keluar Kas)</span>
+          <div className="text-base sm:text-xl font-bold text-amber-700 mt-1 truncate">-{formatRupiah(totalNominalPenyaluran)}</div>
         </div>
       </div>
 
@@ -201,7 +201,7 @@ export const RiwayatTransaksi = () => {
       {/* Ledger Table */}
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[760px] text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
               <tr>
                 <th className="py-3.5 px-4">Kode TRX</th>
