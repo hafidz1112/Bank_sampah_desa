@@ -18,8 +18,10 @@ import {
   Lightbulb, 
   Check,
   PhoneCall,
-  FileText
+  FileText,
+  Download
 } from 'lucide-react';
+import { exportPanduanPDF } from '../../lib/exportUtils';
 
 export const BukuPanduan = ({ onNavigate }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -229,7 +231,7 @@ export const BukuPanduan = ({ onNavigate }) => {
   });
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-6xl mx-auto">
+    <div id="printable-panduan" className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-6xl mx-auto">
       {/* Header Ramah & Menenangkan */}
       <div className="bg-gradient-to-r from-emerald-700 via-teal-800 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
         <div className="relative z-10 space-y-3">
@@ -245,23 +247,34 @@ export const BukuPanduan = ({ onNavigate }) => {
             Tidak perlu khawatir jika merasa gaptek atau baru pertama kali memegang sistem ini. Ikuti panduan praktis langkah demi langkah di bawah ini sesuai hal yang ingin Anda kerjakan.
           </p>
 
-          <div className="pt-2 flex flex-wrap items-center gap-3 text-xs">
+          <div className="pt-2 flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs no-print">
+            <button
+              onClick={exportPanduanPDF}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-extrabold shadow-sm transition cursor-pointer"
+              title="Unduh Dokumen PDF Resmi Buku Panduan"
+            >
+              <Download className="w-4 h-4" />
+              <span>Unduh Berkas PDF Resmi</span>
+            </button>
+
             <button
               onClick={() => window.print()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-emerald-50 text-emerald-950 font-bold shadow-sm transition cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold border border-white/20 shadow-sm transition cursor-pointer"
+              title="Cetak Panduan ke Kertas Printer"
             >
-              <Printer className="w-3.5 h-3.5 text-emerald-700" />
-              <span>Cetak / Simpan ke Kertas (PDF)</span>
+              <Printer className="w-4 h-4 text-white" />
+              <span>Cetak ke Kertas (Printer)</span>
             </button>
+
             <div className="text-[11px] text-emerald-200">
-              💡 <em>Tips: Cukup baca bagian yang Anda perlukan saat itu saja.</em>
+              💡 <em>Dokumen resmi siap cetak format A4 / Folio.</em>
             </div>
           </div>
         </div>
       </div>
 
       {/* Bagian 1: Ringkasan Cepat Fungsi Semua Menu (8 Kotak Sederhana) */}
-      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-4">
+      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-4 break-inside-avoid">
         <div>
           <h3 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
             <BookCheck className="w-5 h-5 text-emerald-600" />
@@ -278,7 +291,7 @@ export const BukuPanduan = ({ onNavigate }) => {
             return (
               <div 
                 key={idx}
-                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/80 transition flex items-center justify-between gap-3 group"
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/80 transition flex items-center justify-between gap-3 group break-inside-avoid"
               >
                 <div className="flex items-start gap-3 min-w-0">
                   <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 text-emerald-700 flex items-center justify-center flex-shrink-0 shadow-xs group-hover:bg-emerald-600 group-hover:text-white transition">
@@ -298,7 +311,7 @@ export const BukuPanduan = ({ onNavigate }) => {
                   <button
                     onClick={() => onNavigate(item.tab)}
                     title={`Buka menu ${item.nama}`}
-                    className="p-2 rounded-xl bg-white hover:bg-emerald-600 hover:text-white text-slate-500 border border-slate-200 transition flex-shrink-0 cursor-pointer text-[11px] font-bold"
+                    className="p-2 rounded-xl bg-white hover:bg-emerald-600 hover:text-white text-slate-500 border border-slate-200 transition flex-shrink-0 cursor-pointer text-[11px] font-bold no-print"
                   >
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
@@ -323,7 +336,7 @@ export const BukuPanduan = ({ onNavigate }) => {
           </div>
 
           {/* Search bar santai */}
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-64 no-print">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -343,7 +356,7 @@ export const BukuPanduan = ({ onNavigate }) => {
             return (
               <div
                 key={task.id}
-                className="bg-white rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition overflow-hidden"
+                className="bg-white rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition overflow-hidden break-inside-avoid"
               >
                 {/* Header Kartu */}
                 <div className="p-3.5 sm:p-5 bg-slate-50 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -369,7 +382,7 @@ export const BukuPanduan = ({ onNavigate }) => {
                   {onNavigate && (
                     <button
                       onClick={() => onNavigate(task.tabKey)}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex-shrink-0 cursor-pointer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex-shrink-0 cursor-pointer no-print"
                     >
                       <span>Buka Menu Ini</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -406,7 +419,7 @@ export const BukuPanduan = ({ onNavigate }) => {
       </div>
 
       {/* Bagian 3: Pertanyaan yang Sering Muncul (FAQ Santai) */}
-      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-4">
+      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-4 break-inside-avoid">
         <h3 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
           <HelpCircle className="w-5 h-5 text-purple-600" />
           <span>Pertanyaan yang Sering Ditanyakan (Anti-Bingung)</span>
@@ -414,7 +427,7 @@ export const BukuPanduan = ({ onNavigate }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {easyFaq.map((faq, fIdx) => (
-            <div key={fIdx} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+            <div key={fIdx} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5 break-inside-avoid">
               <div className="font-bold text-xs text-slate-900 flex items-start gap-1.5">
                 <span className="text-emerald-700 font-black">T:</span>
                 <span>{faq.tanya}</span>
@@ -428,7 +441,7 @@ export const BukuPanduan = ({ onNavigate }) => {
       </div>
 
       {/* Footer Catatan Semangat */}
-      <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-1">
+      <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-1 break-inside-avoid">
         <div className="text-xs font-bold text-emerald-900">
           🌱 Semangat Menjaga Kebersihan & Kesejahteraan Kas RT Desa Mekarjaya!
         </div>

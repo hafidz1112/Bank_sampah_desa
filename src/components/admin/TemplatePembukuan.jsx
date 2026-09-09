@@ -13,7 +13,8 @@ import {
   Calendar, 
   Printer,
   Sparkles,
-  ArrowDownToLine
+  ArrowDownToLine,
+  Tag
 } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
 
@@ -53,6 +54,18 @@ export const TEMPLATES_DATA = [
     colorClass: 'from-teal-500 to-emerald-600',
     badgeClass: 'bg-teal-50 text-teal-700 border-teal-200',
     fitur: ['Tarif Pengepul Terkini', 'Rincian Tonase (Kg)', 'Bukti Pembayaran Pengepul']
+  },
+  {
+    id: 'buku-daftar-harga',
+    nama: 'Buku Daftar Harga Sampah',
+    kategori: 'Operasional',
+    filename: 'BUKU DAFTAR HARGA SAMPAH.pdf',
+    ukuran: '75.0 KB',
+    deskripsi: 'Format tabel resmi daftar harga sampah terpilah per kilogram (Jenis Sampah, Satuan, Harga Jual/Kg, dan Keterangan) untuk transparansi tarif ke warga dan lapak/pengepul.',
+    icon: Tag,
+    colorClass: 'from-amber-500 to-emerald-600',
+    badgeClass: 'bg-amber-50 text-amber-800 border-amber-200',
+    fitur: ['Tabel Jenis Sampah & Satuan', 'Tarif Harga Jual/Kg', 'Kolom Syarat / Keterangan']
   },
   {
     id: 'buku-register',

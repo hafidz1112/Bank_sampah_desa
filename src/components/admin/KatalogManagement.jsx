@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tag, Plus, Edit, Trash2, CheckCircle2, XCircle, Search, DollarSign, X, AlertCircle, Sparkles } from 'lucide-react';
+import { Tag, Plus, Edit, Trash2, CheckCircle2, XCircle, Search, DollarSign, X, AlertCircle, Sparkles, Download } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah } from '../../lib/utils';
 import { Select } from '../ui/Select';
@@ -100,13 +100,26 @@ export const KatalogManagement = () => {
           </p>
         </div>
 
-        <button
-          onClick={handleOpenAdd}
-          className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/30 transition flex items-center gap-1.5 self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>+ Tambah Kategori</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          <a
+            href={encodeURI('/pembukuan template/BUKU DAFTAR HARGA SAMPAH.pdf')}
+            download="BUKU DAFTAR HARGA SAMPAH.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+            title="Unduh Formulir Cetak Buku Daftar Harga Sampah (PDF)"
+          >
+            <Download className="w-4 h-4 text-emerald-600" />
+            <span>Unduh Buku Daftar Harga (PDF)</span>
+          </a>
+          <button
+            onClick={handleOpenAdd}
+            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/30 transition flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" />
+            <span>+ Tambah Kategori</span>
+          </button>
+        </div>
       </div>
 
       {/* Search bar */}

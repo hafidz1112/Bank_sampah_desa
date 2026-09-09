@@ -11,7 +11,8 @@ import {
   MapPin, 
   ChevronRight, 
   Coins,
-  Leaf
+  Leaf,
+  Download
 } from 'lucide-react';
 import { useBankSampah } from '../../context/BankSampahContext';
 import { formatRupiah, formatWeight, formatDate } from '../../lib/utils';
@@ -286,8 +287,19 @@ export const DashboardOverview = ({ onNavigate, onSelectTx }) => {
             </div>
           </div>
 
-          <div className="pt-2 text-center text-xs text-emerald-200/90 font-medium">
-            Sampah terkumpul dijual ke pengepul dan masuk kas RT terpilih.
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-emerald-200/90 font-medium border-t border-white/10 mt-3">
+            <span>Sampah terkumpul dijual ke pengepul dan masuk kas RT.</span>
+            <a
+              href={encodeURI('/pembukuan template/BUKU DAFTAR HARGA SAMPAH.pdf')}
+              download="BUKU DAFTAR HARGA SAMPAH.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-[11px] transition shadow-xs flex-shrink-0 cursor-pointer"
+              title="Unduh Formulir Cetak Buku Daftar Harga Sampah"
+            >
+              <Download className="w-3.5 h-3.5 text-emerald-300" />
+              <span>Unduh Buku Daftar Harga (PDF)</span>
+            </a>
           </div>
         </div>
       </div>

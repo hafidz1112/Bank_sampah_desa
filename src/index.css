@@ -30,21 +30,65 @@
   background: #94a3b8;
 }
 
-/* Print styles for Receipt & Reports */
+/* Print styles for Receipt, Buku Panduan, & Reports */
 @media print {
-  body * {
+  .no-print, nav, aside, header, [role="navigation"] {
+    display: none !important;
+  }
+
+  /* Reset all containers that restrict height or overflow during printing */
+  html, body, #root {
+    background: white !important;
+    color: black !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  .h-screen,
+  .min-h-screen,
+  .overflow-hidden,
+  .overflow-y-auto,
+  .overflow-x-hidden {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+
+  /* Page break controls to prevent awkward cuts across paper edges */
+  .break-inside-avoid,
+  .page-break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* If receipt modal is open, isolate receipt */
+  body:has(#printable-receipt) * {
     visibility: hidden;
   }
-  #printable-receipt, #printable-receipt * {
-    visibility: visible;
+  body:has(#printable-receipt) #printable-receipt,
+  body:has(#printable-receipt) #printable-receipt * {
+    visibility: visible !important;
   }
-  #printable-receipt {
+  body:has(#printable-receipt) #printable-receipt {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
   }
-  .no-print {
-    display: none !important;
+
+  /* Ensure printable-panduan is always visible and prints properly across multiple pages */
+  #printable-panduan, #printable-panduan * {
+    visibility: visible !important;
+  }
+  #printable-panduan {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 }
