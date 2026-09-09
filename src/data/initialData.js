@@ -16,11 +16,11 @@ export const INITIAL_KATALOG = [
   },
   {
     id: 2,
-    nama_kategori: 'Plastik (Kresek, Gelas PP & Campur)',
+    nama_kategori: 'Plastik Keras / Emberan (Ember, Baskom, dll)',
     tipe: 'plastik',
     harga_per_kg: 2200,
     is_active: true,
-    deskripsi: 'Gelas plastik minuman kemasan (PP), kantong kresek kering, kemasan plastik bersih'
+    deskripsi: 'Ember bekas, baskom, gayung, jerigen, botol sabun/shampo tebal, kursi plastik patah, dan perabotan plastik lainnya'
   },
   {
     id: 3,

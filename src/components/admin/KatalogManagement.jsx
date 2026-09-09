@@ -256,7 +256,7 @@ export const KatalogManagement = () => {
                     onChange={(val) => setFormData({ ...formData, tipe: val })}
                     options={[
                       { value: 'botol_plastik', label: 'Botol Plastik', badge: 'BOTOL' },
-                      { value: 'plastik', label: 'Plastik Campur', badge: 'PLASTIK' },
+                      { value: 'plastik', label: 'Plastik Keras / Emberan', badge: 'EMBERAN' },
                       { value: 'kardus_kertas', label: 'Kardus & Kertas', badge: 'KERTAS' },
                       { value: 'besi_kaca', label: 'Besi & Kaca', badge: 'LOGAM' }
                     ]}

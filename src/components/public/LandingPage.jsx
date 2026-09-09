@@ -290,14 +290,14 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
                 <span className="w-8 h-8 rounded-xl bg-teal-100 text-teal-800 font-black text-xs flex items-center justify-center">02</span>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">Rp 2.200/kg</span>
               </div>
-              <div className="text-3xl">🥤</div>
-              <h3 className="font-extrabold text-base text-slate-900">Plastik & Gelas PP</h3>
+              <div className="text-3xl">🪣</div>
+              <h3 className="font-extrabold text-base text-slate-900">Plastik Keras / Emberan</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Gelas plastik minuman kemasan, sedotan, kantong kresek, dan lembaran bersih.
+                Sampah plastik tebal seperti ember bekas, baskom, gayung, jerigen, botol sampo/sabun tebal, pot bunga plastik, dan perabotan plastik lainnya.
               </p>
             </div>
             <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-teal-700">
-              💡 Buang sisa cairan manis sebelum dimasukkan ke tong.
+              💡 Bersihkan dari sisa kotoran semen atau tanah dan rapikan sebelum dimasukkan ke wadah.
             </div>
           </div>
 
@@ -369,7 +369,7 @@ export const LandingPage = ({ onNavigate, onQuickCheck }) => {
               },
               {
                 q: 'Apa saja 4 jenis sampah yang boleh disetorkan di Bank Sampah Aktif?',
-                a: 'Hanya 4 kategori: (1) Botol Plastik PET bening, (2) Plastik campur & gelas PP, (3) Kardus & kertas, serta (4) Kaleng besi & botol kaca/beling.'
+                a: 'Hanya 4 kategori: (1) Botol Plastik PET bening, (2) Sampah plastik keras / emberan (ember, baskom, gayung, jerigen), (3) Kardus & kertas, serta (4) Kaleng besi & botol kaca/beling.'
               }
             ].map((faq, fIdx) => {
               const isOpen = openFaqIndex === fIdx;

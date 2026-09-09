@@ -88,10 +88,10 @@ export const KATEGORI_SAMPAH_4 = [
   },
   {
     id: 'plastik',
-    label: 'Plastik',
-    sublabel: 'Gelas Plastik PP, Kantong Kresek & Lembaran Bersih',
-    color: '#0ea5e9',
-    icon: '🥤'
+    label: 'Plastik Keras / Emberan',
+    sublabel: 'Ember, Baskom, Gayung, Jerigen & Perabotan Plastik',
+    color: '#0d9488',
+    icon: '🪣'
   },
   {
     id: 'kardus_kertas',

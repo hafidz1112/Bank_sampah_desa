@@ -33,15 +33,15 @@ const REAL_TRASH_BINS = [
   },
   {
     id: 'plastik',
-    title: 'Plastik',
-    shortTitle: 'PLASTIK',
+    title: 'Plastik Keras / Emberan',
+    shortTitle: 'EMBERAN',
     subtitle: 'Wadah 2 (Aktif)',
     mainColor: '#0d9488', // Teal 600
     darkColor: '#134e4a', // Teal 900
     lightColor: '#2dd4bf', // Teal 400
-    iconEmoji: '🥤',
+    iconEmoji: '🪣',
     badgeText: 'Rp 2.200/kg',
-    desc: 'Gelas plastik PP, kantong kresek, kemasan plastik bersih'
+    desc: 'Ember bekas, baskom, gayung, jerigen, perabotan plastik'
   },
   {
     id: 'kardus_kertas',
@@ -79,13 +79,13 @@ const ALL_TRASH_ITEMS = [
   { id: 'bp5', name: 'Botol Saus Sambal Plastik', category: 'botol_plastik', emoji: '🍶', hint: 'Botol Plastik Bening', tip: 'Bilas bersih sisa saus agar tidak mengundang semut.' },
   { id: 'bp6', name: 'Botol Shampo / Sabun Cair', category: 'botol_plastik', emoji: '🧴', hint: 'Botol Plastik Tebal HDPE', tip: 'Plastik HDPE tebal bernilai timbangan tinggi di pengepul.' },
   
-  // 2. Plastik Campur & Gelas PP
-  { id: 'p1', name: 'Gelas Minuman Teh Poci (PP)', category: 'plastik', emoji: '🥤', hint: 'Gelas Plastik Bersih', tip: 'Masukkan ke Wadah Plastik. Lepaskan sedotan & tutup segelnya.' },
-  { id: 'p2', name: 'Kantong Kresek Belanja', category: 'plastik', emoji: '🛍️', hint: 'Plastik Lembaran', tip: 'Pastikan kresek kering dan tidak bercampur tanah/sisa sayur.' },
-  { id: 'p3', name: 'Sedotan Plastik Minuman', category: 'plastik', emoji: '🥤', hint: 'Plastik Kecil', tip: 'Dapat didaur ulang bersama gelas plastik kemasan.' },
-  { id: 'p4', name: 'Gelas Kopi Plastik Bening', category: 'plastik', emoji: '☕', hint: 'Plastik PP Bersih', tip: 'Bilas sisa es kopi dan buang ke tong plastik.' },
-  { id: 'p5', name: 'Wadah Thinwall Mika Makanan', category: 'plastik', emoji: '🍱', hint: 'Plastik PP Bening', tip: 'Bilas bersih minyak makanan sebelum dibuang ke tong.' },
-  { id: 'p6', name: 'Bungkus Plastik Roti / Snack', category: 'plastik', emoji: '🍬', hint: 'Plastik Kemasan Kering', tip: 'Kumpulkan dalam wadah plastik agar mudah dipress.' },
+  // 2. Plastik Keras & Emberan
+  { id: 'p1', name: 'Ember Plastik Bekas Cucian', category: 'plastik', emoji: '🪣', hint: 'Plastik Keras / Emberan', tip: 'Masukkan ke Wadah Plastik Keras. Sangat laku di pengepul daur ulang.' },
+  { id: 'p2', name: 'Gayung Mandi Plastik Pecah', category: 'plastik', emoji: '🪣', hint: 'Plastik Emberan', tip: 'Gayung plastik tebal masuk kategori emberan bernilai timbangan bagus.' },
+  { id: 'p3', name: 'Baskom Plastik Rusak', category: 'plastik', emoji: '🥣', hint: 'Plastik Emberan', tip: 'Bersihkan kotoran tanah/debu sebelum disetor ke pos wadah.' },
+  { id: 'p4', name: 'Jerigen Plastik Minyak / Air', category: 'plastik', emoji: '🛢️', hint: 'Plastik HDPE Keras', tip: 'Tiriskan sisa cairan dan lepas tutupnya sebelum ditimbang.' },
+  { id: 'p5', name: 'Pot Bunga Plastik Hitam', category: 'plastik', emoji: '🪴', hint: 'Plastik Keras PP', tip: 'Keluarkan tanah di dalamnya agar tidak memberatkan timbangan kotor.' },
+  { id: 'p6', name: 'Kursi Plastik Anak Patah', category: 'plastik', emoji: '🪑', hint: 'Plastik Keras Perabot', tip: 'Perabotan plastik keras seperti kursi patah masuk kategori emberan.' },
 
   // 3. Kardus & Kertas
   { id: 'k1', name: 'Kardus Box Paket Belanja', category: 'kardus_kertas', emoji: '📦', hint: 'Karton Gelombang', tip: 'Masukkan ke Wadah Kardus & Kertas. Lipat pipih agar muat banyak.' },

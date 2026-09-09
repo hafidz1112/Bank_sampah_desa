@@ -223,8 +223,8 @@ export const exportPanduanPDF = () => {
   const amberBorder = [245, 158, 11]; // #f59e0b
   const amberText = [146, 64, 14]; // #92400e
 
-  // Helper for automatic page breaking
-  let currentY = 32;
+  let currentY = 30;
+
   const checkPageBreak = (neededHeight) => {
     if (currentY + neededHeight > 275) {
       doc.addPage();
@@ -236,30 +236,62 @@ export const exportPanduanPDF = () => {
 
   // 1. Header Banner
   doc.setFillColor(...primaryColor);
-  doc.rect(0, 0, 210, 24, 'F');
+  doc.rect(0, 0, 210, 23, 'F');
 
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(13.5);
+  doc.setFontSize(13);
   doc.setFont('helvetica', 'bold');
-  doc.text('BUKU PANDUAN RESMI PENGURUS BANK SAMPAH', 14, 11);
+  doc.text('BUKU PANDUAN RESMI PENGURUS BANK SAMPAH', 14, 10);
 
   doc.setFontSize(8.5);
   doc.setFont('helvetica', 'normal');
-  doc.text('Bank Sampah Aktif Desa Mekarjaya, Ciawigebang, Kuningan • KKM Informatika UMC 2026', 14, 18);
+  doc.text('Bank Sampah Aktif Desa Mekarjaya, Ciawigebang, Kuningan • KKM Informatika UMC 2026', 14, 17);
 
-  // Subtitle / Intro Note
-  doc.setTextColor(...slateDark);
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'italic');
-  doc.text('Buku panduan praktis dan operasional sistem pencatatan berbasis 4 Wadah Pemilahan Sampah & Kas Komunal RT.', 14, currentY);
-  currentY += 7;
-
-  // BAGIAN A: FUNGSI RINGKAS 8 MENU UTAMA
+  // BAGIAN A: AKUN LOGIN RESMI & CARA MASUK PENGURUS
   doc.setTextColor(...primaryColor);
-  doc.setFontSize(11);
+  doc.setFontSize(10.5);
   doc.setFont('helvetica', 'bold');
-  doc.text('A. Ringkasan Fungsi 8 Menu Utama Sistem', 14, currentY);
+  doc.text('A. Akun Login Resmi & Hak Akses Pengurus', 14, currentY);
   currentY += 4;
+
+  // Login Box Card
+  const boxH = 25;
+  doc.setFillColor(15, 23, 42); // slate-900
+  doc.roundedRect(14, currentY, 182, boxH, 1.5, 1.5, 'F');
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(8.5);
+  doc.setFont('helvetica', 'bold');
+  doc.text('AKUN LOGIN OPERATOR POS BANK SAMPAH DESA MEKARJAYA', 18, currentY + 5.5);
+
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(52, 211, 153); // emerald-400
+  doc.text('• Email Pengurus: ', 18, currentY + 11);
+  doc.setFont('courier', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text('admin@mekarjaya.desa.id', 48, currentY + 11);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(251, 191, 36); // amber-400
+  doc.text('• Kata Sandi (Password): ', 18, currentY + 16.5);
+  doc.setFont('courier', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text('admin123', 57, currentY + 16.5);
+
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(7);
+  doc.setTextColor(203, 213, 225);
+  doc.text('Cara Masuk: Buka website > Klik "Login Pengurus" (pojok kanan atas) > Masukkan email & password di atas > Klik "Masuk Dashboard".', 18, currentY + 21.5);
+
+  currentY += boxH + 6;
+
+  // BAGIAN B: FUNGSI RINGKAS 8 MENU UTAMA
+  doc.setTextColor(...primaryColor);
+  doc.setFontSize(10.5);
+  doc.setFont('helvetica', 'bold');
+  doc.text('B. Ringkasan Fungsi 8 Menu Utama Sistem', 14, currentY);
+  currentY += 3.5;
 
   const menuRows = [
     ['1. Ringkasan & Kas RT', 'Melihat total saldo kas semua RT, total kg sampah, grafik penjualan, dan aktivitas dusun.'],
@@ -269,7 +301,7 @@ export const exportPanduanPDF = () => {
     ['5. Buku Jurnal Mutasi', 'Buku catatan semua uang kas masuk (+) dan keluar (-) secara transparan beserta cetak ulang nota.'],
     ['6. Katalog 4 Wadah', 'Tempat mengecek dan mengubah tarif acuan harga beli/jual sampah per kg dari bakul/pengepul.'],
     ['7. Laporan & Ekspor Data', 'Mencetak berkas rekapitulasi kas RT format PDF resmi ber-kop desa dan unduh data ke Excel (CSV).'],
-    ['8. Template Pembukuan', 'Mengunduh 9 master formulir cetak (buku kas, buku timbang, daftar harga, tanda terima, dll).']
+    ['8. Template Pembukuan', 'Mengunduh master formulir cetak (buku kas, buku timbang, daftar harga, tanda terima, dll).']
   ];
 
   autoTable(doc, {
@@ -281,67 +313,81 @@ export const exportPanduanPDF = () => {
       fillColor: primaryColor,
       textColor: [255, 255, 255],
       fontStyle: 'bold',
-      fontSize: 8,
+      fontSize: 7.5,
       halign: 'left'
     },
     bodyStyles: {
-      fontSize: 7.5,
+      fontSize: 7,
       textColor: slateDark,
-      cellPadding: 2
+      cellPadding: 1.8
     },
     columnStyles: {
-      0: { cellWidth: 46, fontStyle: 'bold' },
-      1: { cellWidth: 136 }
+      0: { cellWidth: 44, fontStyle: 'bold' },
+      1: { cellWidth: 138 }
     },
     margin: { left: 14, right: 14 }
   });
 
-  currentY = doc.lastAutoTable.finalY + 9;
+  currentY = doc.lastAutoTable.finalY + 8;
 
-  // BAGIAN B: PANDUAN LANGKAH DEMI LANGKAH (7 TUGAS HARIAN)
+  // BAGIAN C: PANDUAN LANGKAH DEMI LANGKAH (8 TUGAS UTAMA)
   checkPageBreak(15);
   doc.setTextColor(...primaryColor);
-  doc.setFontSize(11);
+  doc.setFontSize(10.5);
   doc.setFont('helvetica', 'bold');
-  doc.text('B. Panduan Praktis Langkah Demi Langkah (7 Tugas Utama Pengurus)', 14, currentY);
+  doc.text('C. Panduan Praktis Langkah Demi Langkah (Aktivitas Utama Pengurus)', 14, currentY);
   currentY += 4;
-  doc.setFontSize(8);
+  doc.setFontSize(7.5);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(...slateMuted);
-  doc.text('Ikuti panduan langkah berurut di bawah ini sesuai aktivitas yang ingin Anda kerjakan:', 14, currentY);
-  currentY += 6;
+  doc.text('Ikuti panduan langkah berurut di bawah ini saat bertugas di pos wadah sampah:', 14, currentY);
+  currentY += 5;
 
   const allTasks = [
     {
       num: 1,
+      judul: 'Cara Masuk / Login ke Dashboard Akun Pengurus',
+      kategori: 'Akses',
+      menuAsal: 'Tombol: Login Pengurus (Kanan Atas)',
+      langkah: [
+        'Buka website Bank Sampah Desa Mekarjaya di browser HP atau komputer.',
+        'Klik tombol hitam "Login Pengurus" di pojok kanan atas (atau via bilah menu di HP).',
+        'Ketik Email: admin@mekarjaya.desa.id',
+        'Ketik Kata Sandi: admin123',
+        'Klik tombol "Masuk Dashboard". Anda langsung masuk ke panel utama pengurus.'
+      ],
+      tips: 'Warga umum / nasabah RT tidak butuh login, warga bebas melihat saldo kas RT lewat menu Transparansi Kas RT.'
+    },
+    {
+      num: 2,
       judul: 'Cara Mencatat Sampah yang Dijual (Uang Masuk ke Kas RT)',
       kategori: 'Harian',
       menuAsal: 'Menu: Timbang & Jual Sampah',
       langkah: [
         'Buka menu "Timbang & Jual Sampah" di bilah samping.',
         'Pilih nama RT yang sampahnya dijual (misal: RT 01 Dusun Cimenang).',
-        'Pilih wadah sampah (Botol Plastik, Kardus/Kertas, Plastik Campur, Besi/Kaca), lalu ketik beratnya berapa Kilogram (Kg). Harganya otomatis dihitung.',
+        'Pilih wadah sampah (Botol Plastik, Kardus/Kertas, Plastik Keras/Emberan, Besi/Kaca), lalu ketik beratnya berapa Kilogram (Kg). Harganya otomatis dihitung.',
         'Kalau ada jenis wadah lain yang ikut ditimbang, klik tombol "+ Tambah Kategori Sampah".',
         'Klik tombol hijau "Simpan & Cetak Bukti". Uang kas RT otomatis bertambah dan nota struk bukti langsung muncul!'
       ],
       tips: 'Gunakan timbangan kiloan biasa di pos wadah. Setelah selesai, nota struk bukti bisa langsung disimpan ke HP atau dicetak.'
     },
     {
-      num: 2,
+      num: 3,
       judul: 'Cara Mencatat Pengeluaran Uang Kas RT (Uang Keluar)',
       kategori: 'Harian',
       menuAsal: 'Menu: Penyaluran Dana Kas',
       langkah: [
         'Buka menu "Penyaluran Dana Kas".',
         'Pilih nama RT yang ingin mencairkan uang kas tabungannya.',
-        'Ketik jumlah uang yang mau diambil. Tidak perlu repot ketik titik, titik pemisah ribuan otomatis muncul sendiri (misal ketik 50000 langsung jadi 50.000).',
+        'Ketik jumlah uang yang mau diambil. Titik pemisah ribuan otomatis muncul sendiri (misal ketik 50000 langsung jadi 50.000).',
         'Tulis uangnya digunakan untuk keperluan apa pada kolom catatan (contoh: "Beli lampu jalan gang RT 01").',
         'Klik tombol "Proses Penyaluran Kas". Selesai! Uang kas RT otomatis terpotong secara transparan.'
       ],
       tips: 'Sistem otomatis menolak jika uang yang mau diambil melebihi sisa tabungan RT, jadi kas tetap aman dan tidak bisa minus.'
     },
     {
-      num: 3,
+      num: 4,
       judul: 'Cara Melihat Catatan Uang & Cetak Ulang Nota Struk Bukti',
       kategori: 'Pemeriksaan',
       menuAsal: 'Menu: Buku Jurnal Mutasi',
@@ -353,12 +399,12 @@ export const exportPanduanPDF = () => {
       tips: 'Semua catatan mutasi kas tersimpan permanen secara online dan tidak akan hilang meskipun komputer atau HP dimatikan.'
     },
     {
-      num: 4,
+      num: 5,
       judul: 'Cara Mengganti Harga Sampah Kalau Ada Kenaikan/Penurunan',
       kategori: 'Pengaturan',
       menuAsal: 'Menu: Katalog 4 Wadah',
       langkah: [
-        'Buka menu "Katalog 4 Wadah". Di situ terlihat 4 wadah utama: Botol Plastik, Plastik Campur, Kardus/Kertas, dan Besi/Kaca.',
+        'Buka menu "Katalog 4 Wadah". Di situ terlihat 4 wadah utama: Botol Plastik, Plastik Keras / Emberan, Kardus/Kertas, dan Besi/Kaca.',
         'Klik tombol "Edit" pada jenis sampah yang harganya ingin diganti.',
         'Ketik harga baru per kilo dari pengepul (misal ganti jadi 3.500).',
         'Klik "Simpan Perubahan". Penimbangan selanjutnya otomatis langsung memakai harga baru tersebut.'
@@ -366,7 +412,7 @@ export const exportPanduanPDF = () => {
       tips: 'Harga acuan ini bisa disesuaikan kapan saja mengikuti kesepakatan harga terkini dengan bakul/pengepul sampah desa.'
     },
     {
-      num: 5,
+      num: 6,
       judul: 'Cara Menambah RT Baru atau Mengganti Nama Ketua RT',
       kategori: 'Pengaturan',
       menuAsal: 'Menu: Data RT & Tabungan',
@@ -379,12 +425,12 @@ export const exportPanduanPDF = () => {
       tips: 'Pastikan nomor HP/WhatsApp ketua RT dicatat dengan benar agar mudah dihubungi saat pembagian hasil kas.'
     },
     {
-      num: 6,
+      num: 7,
       judul: 'Cara Download Formulir & Buku Pembukuan untuk Ditulis Tangan',
       kategori: 'Dokumen',
       menuAsal: 'Menu: Template Pembukuan',
       langkah: [
-        'Buka menu "Template Pembukuan". Di situ tersedia 9 pilihan formulir cetak (Buku Kas, Buku Timbang, Buku Register, Daftar Harga, dll).',
+        'Buka menu "Template Pembukuan". Di situ tersedia master formulir cetak (Buku Kas, Buku Timbang, Buku Register, Daftar Harga, dll).',
         'Pilih buku formulir yang Anda perlukan, lalu klik tombol hijau "Unduh Template (PDF)".',
         'File formulir PDF akan tersimpan di komputer/HP Anda. Silakan buka dan cetak di kertas biasa (A4 atau Folio).',
         'Formulir cetak ini bisa diletakkan di pos wadah untuk dicatat menggunakan pulpen saat warga menyetor sampah.'
@@ -392,7 +438,7 @@ export const exportPanduanPDF = () => {
       tips: 'Buku Tabungan Kas RT dan Buku Penerimaan Sampah sangat dianjurkan dicetak sebagai pegangan arsip fisik masing-masing ketua RT.'
     },
     {
-      num: 7,
+      num: 8,
       judul: 'Cara Mencetak Rekapitulasi Laporan Bulanan untuk Desa',
       kategori: 'Dokumen',
       menuAsal: 'Menu: Laporan & Ekspor Data',
@@ -407,34 +453,34 @@ export const exportPanduanPDF = () => {
   ];
 
   allTasks.forEach(task => {
-    let estimatedH = 8;
+    let estimatedH = 7.5;
     task.langkah.forEach(l => {
       const lines = doc.splitTextToSize(l, 172);
-      estimatedH += lines.length * 3.5 + 1.2;
+      estimatedH += lines.length * 3.4 + 1.1;
     });
     const tipLines = doc.splitTextToSize('Tips Pengurus: ' + task.tips, 172);
-    estimatedH += tipLines.length * 3.2 + 8;
+    estimatedH += tipLines.length * 3.1 + 7;
 
     checkPageBreak(estimatedH);
 
     // Header Box
     doc.setFillColor(240, 253, 244);
     doc.setDrawColor(187, 247, 208);
-    doc.roundedRect(14, currentY, 182, 6.5, 1, 1, 'FD');
+    doc.roundedRect(14, currentY, 182, 6, 1, 1, 'FD');
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8.5);
+    doc.setFontSize(8);
     doc.setTextColor(22, 101, 52);
-    doc.text(`${task.num}. ${task.judul}`, 17, currentY + 4.5);
-    doc.setFontSize(7);
+    doc.text(`${task.num}. ${task.judul}`, 17, currentY + 4.2);
+    doc.setFontSize(6.8);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(100, 116, 139);
-    doc.text(`[${task.kategori}] • ${task.menuAsal}`, 192, currentY + 4.5, { align: 'right' });
-    currentY += 9;
+    doc.text(`[${task.kategori}] • ${task.menuAsal}`, 192, currentY + 4.2, { align: 'right' });
+    currentY += 8;
 
     // Steps
     task.langkah.forEach((l, sIdx) => {
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7.5);
+      doc.setFontSize(7.2);
       doc.setTextColor(22, 101, 52);
       doc.text(`${sIdx + 1}.`, 16, currentY);
 
@@ -442,28 +488,28 @@ export const exportPanduanPDF = () => {
       doc.setTextColor(30, 41, 59);
       const stepLines = doc.splitTextToSize(l, 172);
       doc.text(stepLines, 21, currentY);
-      currentY += stepLines.length * 3.5 + 1.2;
+      currentY += stepLines.length * 3.4 + 1.1;
     });
 
     // Tips box
-    const tipBoxH = tipLines.length * 3.2 + 3.5;
+    const tipBoxH = tipLines.length * 3.1 + 3.2;
     doc.setFillColor(...amberBg);
     doc.setDrawColor(...amberBorder);
     doc.roundedRect(17, currentY, 179, tipBoxH, 1, 1, 'FD');
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
+    doc.setFontSize(6.8);
     doc.setTextColor(...amberText);
-    doc.text(tipLines, 20, currentY + 3);
-    currentY += tipBoxH + 4.5;
+    doc.text(tipLines, 20, currentY + 2.8);
+    currentY += tipBoxH + 4;
   });
 
-  // Section C: FAQ
+  // BAGIAN D: FAQ
   checkPageBreak(30);
   doc.setTextColor(...primaryColor);
-  doc.setFontSize(11);
+  doc.setFontSize(10.5);
   doc.setFont('helvetica', 'bold');
-  doc.text('C. Tanya Jawab Sering Ditanyakan (Anti-Bingung)', 14, currentY);
-  currentY += 6;
+  doc.text('D. Tanya Jawab Sering Ditanyakan (Anti-Bingung)', 14, currentY);
+  currentY += 5;
 
   const faqs = [
     {
@@ -487,20 +533,20 @@ export const exportPanduanPDF = () => {
   faqs.forEach(faq => {
     const qLines = doc.splitTextToSize(`Tanya: ${faq.tanya}`, 178);
     const aLines = doc.splitTextToSize(`Jawab: ${faq.jawab}`, 178);
-    const needed = (qLines.length + aLines.length) * 3.5 + 5;
+    const needed = (qLines.length + aLines.length) * 3.3 + 4.5;
     checkPageBreak(needed);
 
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
+    doc.setFontSize(7.5);
     doc.setTextColor(22, 101, 52);
     doc.text(qLines, 14, currentY);
-    currentY += qLines.length * 3.5 + 1;
+    currentY += qLines.length * 3.3 + 0.8;
 
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7.5);
+    doc.setFontSize(7);
     doc.setTextColor(51, 65, 85);
     doc.text(aLines, 14, currentY);
-    currentY += aLines.length * 3.5 + 3.5;
+    currentY += aLines.length * 3.3 + 3;
   });
 
   // Footer on all pages
@@ -519,4 +565,5 @@ export const exportPanduanPDF = () => {
 
   doc.save('Buku_Panduan_Bank_Sampah_Mekarjaya.pdf');
 };
+
 

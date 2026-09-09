@@ -52,14 +52,14 @@ export const AlurSirkularMaggot = () => {
       tips: 'Kempeskan botol dan lepaskan tutup botol agar hemat tempat wadah.'
     },
     {
-      nama: '2. Wadah Plastik Campur',
-      badge: 'Gelas PP & Kresek',
-      color: 'border-blue-300 bg-blue-50/60',
-      tagColor: 'bg-blue-100 text-blue-800 border-blue-200',
-      icon: '🥤',
+      nama: '2. Wadah Plastik Keras / Emberan',
+      badge: 'Ember, Baskom & Jerigen',
+      color: 'border-teal-300 bg-teal-50/60',
+      tagColor: 'bg-teal-100 text-teal-800 border-teal-200',
+      icon: '🪣',
       tarif: 'Rp 2.200 /kg',
-      contoh: 'Gelas minuman cup (PP), kantong kresek kering, plastik lembaran bersih.',
-      tips: 'Pastikan plastik tidak berminyak dan bebas dari sisa air minum.'
+      contoh: 'Ember bekas, baskom, gayung pecah, jerigen, botol sabun/shampo tebal, pot bunga plastik.',
+      tips: 'Bersihkan dari sisa kotoran semen atau tanah agar dihargai maksimal oleh pengepul.'
     },
     {
       nama: '3. Wadah Kardus & Kertas',

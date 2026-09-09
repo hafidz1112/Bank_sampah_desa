@@ -19,16 +19,46 @@ import {
   Check,
   PhoneCall,
   FileText,
-  Download
+  Download,
+  KeyRound,
+  Copy,
+  Lock,
+  Mail
 } from 'lucide-react';
 import { exportPanduanPDF } from '../../lib/exportUtils';
 
 export const BukuPanduan = ({ onNavigate }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('semua');
+  const [copiedField, setCopiedField] = useState(null);
+
+  const handleCopy = (text, field) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
 
   // Panduan ringkas berbasis tugas harian
   const quickTasks = [
+    {
+      id: 'task-login',
+      tabKey: 'dashboard',
+      judul: 'Cara Masuk / Login ke Dashboard Akun Pengurus',
+      kategori: 'Akses',
+      warna: 'from-blue-600 to-indigo-700',
+      badgeBg: 'bg-blue-100 text-blue-800',
+      menuAsal: 'Tombol: Login Pengurus (Kanan Atas Layar)',
+      icon: KeyRound,
+      isLoginTask: true,
+      langkah: [
+        'Buka website Bank Sampah Desa Mekarjaya di browser HP atau laptop.',
+        'Klik tombol hitam "Login Pengurus" yang ada di pojok kanan atas layar (atau buka menu bilah di HP).',
+        'Ketik Email Pengurus: admin@mekarjaya.desa.id',
+        'Ketik Kata Sandi (Password): admin123',
+        'Klik tombol "Masuk Dashboard". Anda langsung masuk ke panel pengurus dan siap bertugas mencatat penimbangan sampah warga.'
+      ],
+      tipsMudah: 'Simpan email dan kata sandi ini. Warga umum / nasabah RT tidak butuh login dan bebas melihat kas RT lewat menu Transparansi Kas RT.'
+    },
     {
       id: 'task-setor',
       tabKey: 'setor',
@@ -48,6 +78,7 @@ export const BukuPanduan = ({ onNavigate }) => {
     },
     {
       id: 'task-tarik',
+
       tabKey: 'tarik',
       judul: 'Cara Mencatat Pengeluaran Uang Kas RT (Uang Keluar)',
       kategori: 'Harian',
@@ -89,7 +120,7 @@ export const BukuPanduan = ({ onNavigate }) => {
       menuAsal: 'Menu: Katalog 4 Wadah',
       icon: Tag,
       langkah: [
-        'Buka menu "Katalog 4 Wadah". Di situ terlihat 4 jenis wadah: Botol Plastik, Plastik Campur, Kardus/Kertas, dan Besi/Kaca.',
+        'Buka menu "Katalog 4 Wadah". Di situ terlihat 4 jenis wadah: Botol Plastik, Plastik Keras / Emberan, Kardus/Kertas, dan Besi/Kaca.',
         'Klik tombol "Edit" pada jenis sampah yang harganya mau diganti.',
         'Ketik harga baru per kilo dari pengepul (misal ganti jadi 3500).',
         'Klik "Simpan Perubahan". Penimbangan selanjutnya otomatis memakai harga baru tersebut.'
@@ -273,6 +304,100 @@ export const BukuPanduan = ({ onNavigate }) => {
         </div>
       </div>
 
+      {/* Bagian Akun Login Resmi Pengurus */}
+      <div className="bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 rounded-3xl p-5 sm:p-6 text-white border border-slate-700 shadow-md break-inside-avoid space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+              <KeyRound className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-extrabold text-sm sm:text-base text-white">
+                  Akun Login Resmi Pengurus & Operator Pos
+                </h3>
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/30">
+                  Data Akses
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-0.5">
+                Gunakan email dan kata sandi di bawah ini untuk masuk ke dashboard admin pos sampah:
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          {/* Box Email */}
+          <div className="bg-slate-800/90 border border-slate-700 rounded-2xl p-3.5 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5" />
+                <span>Email Pengurus:</span>
+              </div>
+              <div className="font-mono font-bold text-xs sm:text-sm text-white mt-1 truncate select-all">
+                admin@mekarjaya.desa.id
+              </div>
+            </div>
+            <button
+              onClick={() => handleCopy('admin@mekarjaya.desa.id', 'email')}
+              className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center gap-1.5 transition flex-shrink-0 cursor-pointer no-print"
+              title="Salin Email"
+            >
+              {copiedField === 'email' ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-400 text-[11px]">Tersalin</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5 text-slate-300" />
+                  <span className="text-slate-300 text-[11px]">Salin</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Box Password */}
+          <div className="bg-slate-800/90 border border-slate-700 rounded-2xl p-3.5 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5" />
+                <span>Kata Sandi (Password):</span>
+              </div>
+              <div className="font-mono font-bold text-xs sm:text-sm text-white mt-1 select-all">
+                admin123
+              </div>
+            </div>
+            <button
+              onClick={() => handleCopy('admin123', 'pass')}
+              className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center gap-1.5 transition flex-shrink-0 cursor-pointer no-print"
+              title="Salin Kata Sandi"
+            >
+              {copiedField === 'pass' ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-400 text-[11px]">Tersalin</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5 text-slate-300" />
+                  <span className="text-slate-300 text-[11px]">Salin</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-[11px] text-slate-300 flex items-start gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+          <span>
+            <strong>Cara Masuk: </strong>
+            Buka website di HP/komputer &gt; Klik tombol <strong>"Login Pengurus"</strong> di pojok kanan atas &gt; Masukkan email dan password di atas &gt; Klik <strong>"Masuk Dashboard"</strong>. Warga RT tidak butuh login dan bebas memantau kas lewat menu <em>Transparansi Kas RT</em>.
+          </span>
+        </div>
+      </div>
+
       {/* Bagian 1: Ringkasan Cepat Fungsi Semua Menu (8 Kotak Sederhana) */}
       <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-4 break-inside-avoid">
         <div>
@@ -402,6 +527,43 @@ export const BukuPanduan = ({ onNavigate }) => {
                       </div>
                     ))}
                   </div>
+
+                  {task.isLoginTask && (
+                    <div className="p-4 rounded-2xl bg-slate-900 text-white space-y-2.5 break-inside-avoid">
+                      <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <KeyRound className="w-3.5 h-3.5" />
+                        <span>Kredensial Login Pengurus:</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div className="bg-slate-800 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] text-slate-400 block">Email Pengurus:</span>
+                            <span className="text-xs font-mono font-bold text-emerald-300 select-all">admin@mekarjaya.desa.id</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopy('admin@mekarjaya.desa.id', 'email_task')}
+                            className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition no-print cursor-pointer"
+                            title="Salin Email"
+                          >
+                            {copiedField === 'email_task' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-300" />}
+                          </button>
+                        </div>
+                        <div className="bg-slate-800 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] text-slate-400 block">Kata Sandi (Password):</span>
+                            <span className="text-xs font-mono font-bold text-amber-300 select-all">admin123</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopy('admin123', 'pass_task')}
+                            className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition no-print cursor-pointer"
+                            title="Salin Kata Sandi"
+                          >
+                            {copiedField === 'pass_task' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-300" />}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Tips Mudah */}
                   <div className="p-3 rounded-2xl bg-amber-50/70 border border-amber-200/60 text-[11px] text-amber-900 flex items-start gap-2">
